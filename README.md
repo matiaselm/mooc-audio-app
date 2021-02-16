@@ -5,8 +5,8 @@ Application for school design course. Planned features:
  - Voice recognition for controlling audio
  - Audio to text for taking notes
  
- ## TODO: 
+ ## TODO
  - Implement soundcloud support
-
-## Current status: 
+ 
+## Current status
  - The app is basically empty
