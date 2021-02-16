@@ -38,7 +38,7 @@ export default class App extends React.Component {
 
     return (
       <Container>
-        <CustomButton></CustomButton>
+        <CustomButton />
       </Container>
     );
   }
