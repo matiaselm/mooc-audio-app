@@ -1,21 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import CustomButton from './components/CustomButton';
+
+/* TODO:
+ - How to get soundCloud audio playing to work
+ - Basic controls for soundCloud audio
+ - Voice recognition API for React/JavaScript
+ - Sound input to text
+*/
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+  return (<>
+    <StatusBar style="auto" />
+    <CustomButton />
+  </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
