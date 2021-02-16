@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Button } from 'react-native';
+import { Text, View, Button, } from 'native-base';
 import styles from '../styles/styles';
 
 const CustomButton = (props) => {
@@ -9,7 +9,9 @@ const CustomButton = (props) => {
 
     return (
         <View style={styles.container}>
-            <Button onPress={playAudio} title='play'></Button>
+            <Button block onPress={playAudio}>
+                <Text>playaudio</Text>
+            </Button>
         </View>
     );
 }
