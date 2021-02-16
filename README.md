@@ -8,5 +8,5 @@ Application for school design course. Planned features:
  ## TODO: 
  - Implement soundcloud support
 
-## Status: 
- - Project is basically empty
+## Current status: 
+ - The app is basically empty
