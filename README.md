@@ -1,4 +1,4 @@
-# MOOC-audio-app
+# MOOC audio-app
 
 Application for school design course. Planned features:
  - Play audio from different back-end sources using apps' controls
