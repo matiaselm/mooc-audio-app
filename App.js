@@ -1,6 +1,6 @@
 import React from 'react';
 import AppLoading from 'expo-app-loading';
-import { Container, Text } from 'native-base';
+import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, FooterTab, Button } from 'native-base';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import CustomButton from './components/CustomButton';
@@ -38,7 +38,28 @@ export default class App extends React.Component {
 
     return (
       <Container>
-        <CustomButton />
+        <Header>
+          <Body>
+            <Left />
+            <Title>Home</Title>
+            <Right />
+          </Body>
+        </Header>
+        <Content>
+          <CustomButton />
+        </Content>
+        <Footer>
+          <FooterTab>
+            <Button full>
+              <Text>Page1</Text>
+            </Button>
+          </FooterTab>
+          <FooterTab>
+            <Button full>
+              <Text>Page2</Text>
+            </Button>
+          </FooterTab>
+        </Footer>
       </Container>
     );
   }

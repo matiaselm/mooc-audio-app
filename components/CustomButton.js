@@ -9,7 +9,7 @@ const CustomButton = (props) => {
 
     return (
         <View style={styles.container}>
-            <Button block onPress={playAudio}>
+            <Button block onPress={playAudio} style={{ margin: 8 }}>
                 <Text>playaudio</Text>
             </Button>
         </View>
