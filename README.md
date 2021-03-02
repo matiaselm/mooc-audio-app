@@ -21,3 +21,4 @@ Application for school design course. Planned features:
     - If you have android/iOS emulator, start it up. I recommend installing an [android emulator](https://developer.android.com/studio/run/emulator) from [android studio](https://developer.android.com/studio/install)
     - If you want to run the app on your physical device, install [expo go](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en&gl=US) from the application store and scan the QR code shown on the site OR use usb-cable and connect it to your pc having [USB-debugging turned on](https://www.makeuseof.com/tag/what-is-usb-debugging-mode-on-android-makeuseof-explains/)
  - Now you should have the development build open on your device. You can see the changes live on the device whenever you save
+[What you should see on your device after these steps](https://i.imgur.com/r4LP0Yo.png)
