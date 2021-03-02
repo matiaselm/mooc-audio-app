@@ -14,7 +14,8 @@ Application for school design course. Planned features:
 ## How to install
  - Make sure you have [Node.js/npm](https://nodejs.org/en/) and [expo-cli](https://docs.expo.io/) installed to your machine
  - Clone this repo to somewhere on your pc
- - From project root, type 'npm install' to command line
+ - Open the project folder 'mooc-audio-app' with your favorite editor. I prefer [VS-Code](https://code.visualstudio.com/).
+ - From that project root, type 'npm install' to command line
  - After that, type 'npm start' to command line
  - If everything works correcly, expo interface should open up to a browser window
     - If you have android/iOS emulator, start it up. I recommend installing an [android emulator](https://developer.android.com/studio/run/emulator) from [android studio](https://developer.android.com/studio/install)
