@@ -36,6 +36,11 @@ export default class App extends React.Component {
       return <AppLoading />;
     }
 
+    // A basic example function that is passed to customButton and called from there via callback 
+    const playAudio = (button) => {
+      console.log('Button ' + button + ' pressed');      
+    }
+
     return (
       <Container>
         <Header>
@@ -46,7 +51,7 @@ export default class App extends React.Component {
           </Body>
         </Header>
         <Content>
-          <CustomButton />
+          <CustomButton playAudio={playAudio}/>
         </Content>
         <Footer>
           <FooterTab>
