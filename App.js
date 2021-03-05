@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import AppLoading from 'expo-app-loading';
-import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, FooterTab, Button } from 'native-base';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
-import CustomButton from './components/CustomButton';
-import { StatusBar } from 'expo-status-bar';
-import Home from './views/Home';
+import Home from './Home';
 
 /* TODO:
  - How to get soundCloud audio playing to work
@@ -15,24 +12,24 @@ import Home from './views/Home';
 */
 
 const App = (props) => {
-  const [state, setState] = useState({
-    isReady:false
-  })
+  const [isReady, setIsReady] = useState(false)
 
-  useEffect(() => {
-    Font.loadAsync({
+  const loadFont = async () => {
+    await Font.loadAsync({
       Roboto: require('native-base/Fonts/Roboto.ttf'),
       Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
       ...Ionicons.font,
+    }).then(()=>{
+      setIsReady(true)
     });
-    setState({ isReady: true });
+  }
+
+  useEffect(() => {
+    loadFont();
   },[]);
 
-  return (!state.isReady ? 
-  <AppLoading/> : 
-    <Container>
-      <Home></Home>
-    </Container>
+  return (!isReady ? 
+    <AppLoading/> : <Home/>
   );
 }
 
