@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import AppLoading from 'expo-app-loading';
 import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, FooterTab, Button } from 'native-base';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import CustomButton from './components/CustomButton';
 import { StatusBar } from 'expo-status-bar';
-
+import Home from './views/Home';
 
 /* TODO:
  - How to get soundCloud audio playing to work
@@ -14,58 +14,26 @@ import { StatusBar } from 'expo-status-bar';
  - Sound input to text
 */
 
-export default class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isReady: false,
-    };
-  }
+const App = (props) => {
+  const [state, setState] = useState({
+    isReady:false
+  })
 
-  async componentDidMount() {
-    await Font.loadAsync({
+  useEffect(() => {
+    Font.loadAsync({
       Roboto: require('native-base/Fonts/Roboto.ttf'),
       Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
       ...Ionicons.font,
     });
-    this.setState({ isReady: true });
-  }
+    setState({ isReady: true });
+  },[]);
 
-  render() {
-    if (!this.state.isReady) {
-      return <AppLoading />;
-    }
-
-    // A basic example function that is passed to customButton and called from there via callback 
-    const playAudio = (button) => {
-      console.log('Button ' + button + ' pressed');      
-    }
-
-    return (
-      <Container>
-        <Header>
-          <Body>
-            <Left />
-            <Title>Home</Title>
-            <Right />
-          </Body>
-        </Header>
-        <Content>
-          <CustomButton playAudio={playAudio}/>
-        </Content>
-        <Footer>
-          <FooterTab>
-            <Button full>
-              <Text>Page1</Text>
-            </Button>
-          </FooterTab>
-          <FooterTab>
-            <Button full>
-              <Text>Page2</Text>
-            </Button>
-          </FooterTab>
-        </Footer>
-      </Container>
-    );
-  }
+  return (!state.isReady ? 
+  <AppLoading/> : 
+    <Container>
+      <Home></Home>
+    </Container>
+  );
 }
+
+export default App;
