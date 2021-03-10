@@ -3,6 +3,8 @@ import { StyleSheet } from 'react-native';
 import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, FooterTab, Button, View, Icon } from 'native-base';
 import { CustomButton } from '../components/CustomButton';
 import { Ionicons } from '@expo/vector-icons';
+import TrackPlayer from 'react-native-track-player';
+import service from '../services/audio';
 
 
 const Audio = () => {
@@ -12,6 +14,34 @@ const Audio = () => {
         progress: 0,
         length: '37:45',
     });
+
+    // How the track object should look
+    /*
+    let track = {
+        id: 'unique track id', // Must be a string, required
+        
+        url: 'http://example.com/avaritia.mp3', // Load media from the network
+        url: require('./avaritia.ogg'), // Load media from the app bundle
+        url: 'file:///storage/sdcard0/Music/avaritia.wav', // Load media from the file system 
+    
+        title: 'Avaritia',
+        artist: 'deadmau5',
+        album: 'while(1<2)',
+        genre: 'Progressive House, Electro House',
+        date: '2014-05-20T07:00:00+00:00', // RFC 3339
+        
+        artwork: 'http://example.com/avaritia.png', // Load artwork from the network
+        artwork: require('./avaritia.jpg'), // Load artwork from the app bundle
+        artwork: 'file:///storage/sdcard0/Downloads/artwork.png' // Load artwork from the file system
+    };
+    */
+    
+
+    useEffect(()=>{
+        TrackPlayer.setupPlayer().then(()=>{
+            TrackPlayer.registerPlaybackService(service);
+        })
+    },[])
 
     // TODO: UI for audio controls
     // A basic example function that is passed to customButton and called from there via callback 
