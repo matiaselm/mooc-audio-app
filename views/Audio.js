@@ -3,7 +3,6 @@ import { StyleSheet } from 'react-native';
 import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, FooterTab, Button, View, Icon } from 'native-base';
 import { CustomButton } from '../components/CustomButton';
 import { Ionicons } from '@expo/vector-icons';
-import TrackPlayer from 'react-native-track-player';
 import service from '../services/audio';
 
 
@@ -38,9 +37,9 @@ const Audio = () => {
     
 
     useEffect(()=>{
-        TrackPlayer.setupPlayer().then(()=>{
+        /* TrackPlayer.setupPlayer().then(()=>{
             TrackPlayer.registerPlaybackService(service);
-        })
+        }) */
     },[])
 
     // TODO: UI for audio controls
