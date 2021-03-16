@@ -6,10 +6,12 @@ Application for school design course. Planned features:
  - Audio to text for taking notes
  
  ## TODO
- - Build the UI according to design plans
+ - Wit ai implementation
+ - Play and control audio from soundcloud
  
 ## Current status
- - The app is basically empty. On home-screen it has one button and a bottom navigation. None have any functionality.
+ - The app has two screen with audio screen having buttons ready for implementation
+ - Some npm packages already added that can enable soundcloud audio playing support
 
 ## How to install
  - Make sure you have [Node.js/npm](https://nodejs.org/en/) and [expo-cli](https://docs.expo.io/) installed to your machine
