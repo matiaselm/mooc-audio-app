@@ -6,6 +6,8 @@ import CustomFooter from './components/CustomFooter';
 import CustomHeader from './components/CustomHeader';
 import Main from './views/Main';
 import Audio from './views/Audio';
+import Axios from 'axios';
+import axios from 'axios';
 
 const Home = (props) => {
     const [view, setView] = useState('main');
@@ -41,7 +43,7 @@ const Home = (props) => {
                     {view == 'audio' && <Audio/>}
                 </Content>
             </Container>
-        <CustomFooter changeTab={changeTab}/> 
+        <CustomFooter view={view} changeTab={changeTab}/> 
     </>  
 }
 

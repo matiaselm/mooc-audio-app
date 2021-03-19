@@ -4,7 +4,7 @@ import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, Foo
 import { CustomButton } from '../components/CustomButton';
 import { Ionicons } from '@expo/vector-icons';
 import service from '../services/audio';
-
+import AudioControls from '../components/AudioControls';
 
 const Audio = () => {
     const [playing, setPlaying] = useState({
@@ -13,29 +13,7 @@ const Audio = () => {
         progress: 0,
         length: '37:45',
     });
-
-    // How the track object should look
-    /*
-    let track = {
-        id: 'unique track id', // Must be a string, required
-        
-        url: 'http://example.com/avaritia.mp3', // Load media from the network
-        url: require('./avaritia.ogg'), // Load media from the app bundle
-        url: 'file:///storage/sdcard0/Music/avaritia.wav', // Load media from the file system 
     
-        title: 'Avaritia',
-        artist: 'deadmau5',
-        album: 'while(1<2)',
-        genre: 'Progressive House, Electro House',
-        date: '2014-05-20T07:00:00+00:00', // RFC 3339
-        
-        artwork: 'http://example.com/avaritia.png', // Load artwork from the network
-        artwork: require('./avaritia.jpg'), // Load artwork from the app bundle
-        artwork: 'file:///storage/sdcard0/Downloads/artwork.png' // Load artwork from the file system
-    };
-    */
-    
-
     useEffect(()=>{
         /* TrackPlayer.setupPlayer().then(()=>{
             TrackPlayer.registerPlaybackService(service);
@@ -55,28 +33,9 @@ const Audio = () => {
         }));
     }
 
-    return  <View style={{marginTop: 100 }}>
-            <Text style={styles.name}>{playing.name}</Text>
-            <Text style={styles.progress}>{playing.progress}/{playing.length}</Text>
-                <View style={styles.buttonGroup}>
-                    <Button icon style={styles.audioButton}>
-                        <Icon name='play-back-sharp' />
-                    </Button>
-                    {playing.status == true && 
-                        <Button icon style={styles.audioButton} onPress={handlePress}>
-                            <Icon name='pause-sharp' /> 
-                        </Button>
-                    }{playing.status == false &&
-                        <Button icon style={styles.audioButton} onPress={handlePress}>
-                            <Icon name='play-sharp'/>
-                        </Button>
-                    }
-                
-                    <Button icon style={styles.audioButton}>
-                        <Icon name='play-forward-sharp' />    
-                    </Button>
-                </View>
-            </View>
+    return <View>
+        <AudioControls style={{marginTop:100}} playing={playing} handlePress={handlePress}/>
+    </View>
 }
 
 const styles = StyleSheet.create({
