@@ -39,6 +39,9 @@ const Main = (props) => {
             case 'backward': {
                 return "I'll skip backwards"
             } 
+            case 'resume': {
+                return "Okay let's resume"
+            }
             default: {
                 return "I didn't quite catch that"
             }
@@ -49,11 +52,11 @@ const Main = (props) => {
 
         {intent && <Text style={{alignSelf: 'center', margin: 16, padding: 16, backgroundColor: '#ddd', borderRadius: 16}}>{ intent && formatResponse(intent.name) }</Text>}
 
-        <Form style={{ marginTop: 100, display: 'flex', flexDirection: 'row', bottom: 0}}>
-            <Item style={{flex: 3}}>
+        <Form style={{ marginTop: 100, display: 'flex', flexDirection: 'row', bottom: 0, marginRight: 16}}>
+            <Item style={{flex: 3, marginRight: 16}}>
                 <Input placeholder='Message wit' value={input} onChangeText={text => setInput(text)}></Input>
             </Item>
-            <Button style={{flex: 1}} 
+            <Button style={{flex: 1, borderRadius: 8}} 
                     onPress={ () => {
                                     getWit(input)
                                     setInput('')}
