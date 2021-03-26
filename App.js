@@ -17,15 +17,13 @@ import { AppRegistry, AppState } from 'react-native';
 
 const App = (props) => {
   const [isReady, setIsReady] = useState(false)
-
-  /*
+  
   TrackPlayer.registerPlaybackService(audio);
   TrackPlayer.registerEventHandler(playerHandler);
   TrackPlayer.setupPlayer().then(() => {
     console.log('player set up')
-
   })
-*/
+
   const loadFont = async () => {
 
     await Font.loadAsync({

@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, FooterTab, Button, View, Icon } from 'native-base';
 
-const AudioControls = ({style, playing, handlePress}) => {
+const AudioControls = ({style, playing, handlePress, togglePlayback}) => {
     return <View style={style}>
             <Text style={styles.name}>{playing.name}</Text>
             <Text style={styles.progress}>{playing.progress}/{playing.length}</Text>
@@ -11,11 +11,12 @@ const AudioControls = ({style, playing, handlePress}) => {
                         <Icon name='play-back-sharp' />
                     </Button>
                     {playing.status == true && 
-                        <Button icon style={styles.audioButton} onPress={handlePress}>
+                        <Button icon style={styles.audioButton} onPress={togglePlayback}>
                             <Icon name='pause-sharp' /> 
                         </Button>
-                    }{playing.status == false &&
-                        <Button icon style={styles.audioButton} onPress={handlePress}>
+                    }
+                    {playing.status == false &&
+                        <Button icon style={styles.audioButton} onPress={togglePlayback}>
                             <Icon name='play-sharp'/>
                         </Button>
                     }
