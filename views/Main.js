@@ -1,15 +1,18 @@
 import React, {useState, useEffect} from 'react';
 import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, FooterTab, Button, View, Form, Item, Input } from 'native-base';
 import axios from 'axios';
+//import { WIT_BEARER } from "@env";
 
 const Main = (props) => {
     const [intent, setIntent] = useState(null);
     const [input, setInput] = useState(null);
+    const clientId = '4f083ae5f189a802a855a52cd24de5fe30ddea15'; // May be a working soundcloud clientID to pass to it
+    // console.log('Bearer token: ' + WIT_BEARER)
 
     const instance = axios.create({
         baseURL: 'https://api.wit.ai',
         timeout: 1000,
-        headers: { 'Authorization': 'Bearer V6BKRZJ7SNPNBKA6TXVQXZDQIHQHBEG2' }
+        headers: { 'Authorization': `Bearer V6BKRZJ7SNPNBKA6TXVQXZDQIHQHBEG2` }
       });
 
     const getWit = async(query) => {
