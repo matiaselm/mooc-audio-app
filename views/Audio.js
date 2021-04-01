@@ -11,7 +11,8 @@ const Audio = () => {
         name: 'Podcast name',
         status: true,
         progress: 0,
-        length: '37:45',
+        duration: 3745,
+        position: 0,
     });
 
     const track1 = {
@@ -28,27 +29,38 @@ const Audio = () => {
 
     const setupTrackPlayer = async () => {
         await TrackPlayer.add([track1]).then(() => {
-            setPlaying(prevState =>({
-               ...prevState,
-               name: track1.title,
-               status: true,
-               progress: 0,
-               length: track1.duration 
+            setPlaying(prevState => ({
+                ...prevState,
+                name: track1.title,
+                status: true,
+                progress: 0,
+                duration: track1.duration,
+                position: track1.position
             }))
         })
 
-        const trackObject = await TrackPlayer.getTrack(trackId);
+        const trackObject = await TrackPlayer.getTrack('podcast');
         console.log(`Title: ${trackObject.title}`);
-
-        const position = await TrackPlayer.getPosition();
-        const duration = await TrackPlayer.getDuration();
-        console.log(`${duration - position} seconds left.`);
     };
+
+    const updateTrackInfo = async () => {
+        await TrackPlayer.getPosition().then(position => {
+            setPlaying(prevState => ({
+                ...prevState,
+                position: position
+            }))
+        }).catch(e => {
+            console.error(e)
+        });
+    }
 
     useEffect(() => {
         setupTrackPlayer();
     }, [])
 
+    useEffect(() => {
+        updateTrackInfo();
+    })
 
     // TODO: UI for audio controls
     // A basic example function that is passed to customButton and called from there via callback 
@@ -78,7 +90,14 @@ const Audio = () => {
     }
 
     return <View>
-        <AudioControls style={{ marginTop: 100 }} playing={playing} togglePlayback={togglePlayback} handlePress={handlePress} />
+        <AudioControls
+            style={{ marginTop: 100 }}
+            title={playing.name}
+            duration={playing.duration}
+            position={playing.position}
+            status={playing.status}
+            togglePlayback={togglePlayback}
+            handlePress={handlePress} />
     </View>
 }
 
