@@ -4,7 +4,9 @@ import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, Foo
 import { CustomButton } from '../components/CustomButton';
 import { Ionicons } from '@expo/vector-icons';
 import AudioControls from '../components/AudioControls';
-import TrackPlayer from 'react-native-track-player';
+import TrackPlayer, { play } from 'react-native-track-player';
+import { TrackPlayerEvents } from 'react-native-track-player';
+
 
 const Audio = () => {
     const [playing, setPlaying] = useState({
@@ -28,6 +30,9 @@ const Audio = () => {
     };
 
     const setupTrackPlayer = async () => {
+        TrackPlayer.updateOptions({
+            jumpInterval: 10,       // 10 second skip interval
+        })
         await TrackPlayer.add([track1]).then(() => {
             setPlaying(prevState => ({
                 ...prevState,
@@ -82,6 +87,15 @@ const Audio = () => {
         }
     }
 
+    const skip = (way) => {
+        switch(way){
+            case 'backward': return TrackPlayer.seekTo(playing.position - 100)
+            case 'forward': return TrackPlayer.seekTo(playing.position + 100)
+            default: return
+        }
+        
+    }
+
     const handlePress = () => {
         setPlaying(prevState => ({
             ...prevState,
@@ -96,6 +110,7 @@ const Audio = () => {
             duration={playing.duration}
             position={playing.position}
             status={playing.status}
+            skip={skip}
             togglePlayback={togglePlayback}
             handlePress={handlePress} />
     </View>

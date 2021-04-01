@@ -1,8 +1,9 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, FooterTab, Button, View, Icon } from 'native-base';
+import { skip } from 'react-native-track-player';
 
-const AudioControls = ({ style, duration, position, handlePress, title, togglePlayback, progress, status }) => {
+const AudioControls = ({ style, duration, position, handlePress, title, togglePlayback, progress, status, skip }) => {
 
     const decimalAdjust = (type, value, exp) => {
         // If the exp is undefined or zero...
@@ -38,11 +39,29 @@ const AudioControls = ({ style, duration, position, handlePress, title, togglePl
     const elapsed = minutesAndSeconds(position);
     const remaining = minutesAndSeconds(duration - position);
 
+    const ProgressBar = ({ duration, position, style }) => {
+        if (position === NaN) {
+            position = 0
+        }
+        const progress = (_duration, _position) => {
+            if (!isNaN(_duration - _position)){
+                return _duration - _position
+            } else {
+                return 0
+            }
+        }
+
+        return <View style={[{ display: 'flex', flexDirection: 'row-reverse', width: '100%', height: 6 }, style]}>
+            <View style={{ flex: progress(duration, position), alignSelf: 'flex-start', height: 6, backgroundColor: '#dadada' }} />
+            <View style={{ flex: duration, height: 6, backgroundColor: '#39FF' }} />
+        </View>
+    }
+
     return <View style={style}>
         <Text style={styles.name}>{title}</Text>
         <Text style={styles.progress}>{elapsed[0] + ":" + Math.floor(elapsed[1])} / {floor10(duration / 60, -1)}min</Text>
         <View style={styles.buttonGroup}>
-            <Button icon style={styles.audioButton}>
+            <Button icon style={styles.audioButton} onPress={() => skip('backward')}>
                 <Icon name='play-back-sharp' />
             </Button>
             {status == true &&
@@ -56,13 +75,11 @@ const AudioControls = ({ style, duration, position, handlePress, title, togglePl
                 </Button>
             }
 
-            <Button icon style={styles.audioButton}>
+            <Button icon style={styles.audioButton} onPress={() => skip('forward')}>
                 <Icon name='play-forward-sharp' />
             </Button>
         </View>
-        <View style={{display: 'flex', flexDirection: 'row', width: '100%', height: 6, backgroundColor: '#dadada' }}>
-            <View style={{ width: position, alignSelf: 'flex-start', height: 6, backgroundColor: '#39FF' }}></View>
-        </View>
+        <ProgressBar duration={duration} position={position} style={{alignSelf: 'center', margin: 16}}></ProgressBar>
     </View>
 };
 
