@@ -88,12 +88,18 @@ const Audio = () => {
     }
 
     const skip = (way) => {
-        switch(way){
-            case 'backward': return TrackPlayer.seekTo(playing.position - 100)
-            case 'forward': return TrackPlayer.seekTo(playing.position + 100)
+        switch (way) {
+            case 'backward': {
+                TrackPlayer.seekTo(playing.position - 100)
+                return
+            }
+            case 'forward': {
+                TrackPlayer.seekTo(playing.position + 100)
+                return
+            }
             default: return
         }
-        
+
     }
 
     const handlePress = () => {
