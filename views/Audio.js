@@ -37,7 +37,7 @@ const Audio = () => {
             setPlaying(prevState => ({
                 ...prevState,
                 name: track1.title,
-                status: true,
+                status: false,
                 progress: 0,
                 duration: track1.duration,
                 position: track1.position
@@ -111,7 +111,6 @@ const Audio = () => {
 
     return <View>
         <AudioControls
-            style={{ marginTop: 100 }}
             title={playing.name}
             duration={playing.duration}
             position={playing.position}
