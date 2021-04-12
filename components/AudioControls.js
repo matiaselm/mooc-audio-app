@@ -1,9 +1,9 @@
 import React from 'react';
-import { RecyclerViewBackedScrollView, StyleSheet } from 'react-native';
+import { RecyclerViewBackedScrollView, StyleSheet, Image } from 'react-native';
 import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, FooterTab, Button, View, Icon } from 'native-base';
 import { skip } from 'react-native-track-player';
 
-const AudioControls = ({ style, duration, position, handlePress, title, togglePlayback, progress, status, skip }) => {
+const AudioControls = ({ style, duration, position, handlePress, title, togglePlayback, image, progress, status, skip }) => {
 
     const decimalAdjust = (type, value, exp) => {
         // If the exp is undefined or zero...
@@ -57,11 +57,18 @@ const AudioControls = ({ style, duration, position, handlePress, title, togglePl
         </View>
     }
 
-    return <View style={[{padding: 16},style]}>
+    return <View style={[{ padding: 16 }, style]}>
         <Text style={styles.name}>{title}</Text>
-        <View style={{height: 250, width: '100%', marginVertical: 8, backgroundColor: 'rgba(24,244,24, 0.4)'}}>
-            <Text style={{alignSelf: 'center', marginVertical: 100, fontSize: 26, color: '#808080'}}>Image here</Text>
-        </View>
+
+        <Image
+            style={{
+                height: 250,
+                width: '100%',
+                marginVertical: 8,
+                backgroundColor: image ? null : 'rgba(24,244,24, 0.4)'
+            }}
+            source={{ uri: image ?? 'https://www.muutoslehti.fi/wp-content/uploads/powerpress/muutos_podcast_logo.jpg' }}
+        />
         <View style={styles.buttonGroup}>
             <Button icon style={styles.audioButton} onPress={() => skip('backward')}>
                 <Icon name='play-back-sharp' />
@@ -81,7 +88,7 @@ const AudioControls = ({ style, duration, position, handlePress, title, togglePl
                 <Icon name='play-forward-sharp' />
             </Button>
         </View>
-        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text style={styles.numbers}>{elapsed[0] + ":" + Math.floor(elapsed[1])}</Text>
             <Text style={styles.numbers}>{floor10(duration / 60, -1)}min</Text>
         </View>
@@ -94,7 +101,7 @@ const styles = StyleSheet.create({
         fontSize: 28,
         alignSelf: 'center',
     },
-    numbers: { 
+    numbers: {
         fontSize: 18,
         marginHorizontal: 8
     },

@@ -15,6 +15,7 @@ const Audio = () => {
         progress: 0,
         duration: 3745,
         position: 0,
+        image: null
     });
 
     const track1 = {
@@ -40,7 +41,8 @@ const Audio = () => {
                 status: false,
                 progress: 0,
                 duration: track1.duration,
-                position: track1.position
+                position: track1.position,
+                image: track1.artwork
             }))
         })
 
@@ -114,6 +116,7 @@ const Audio = () => {
             title={playing.name}
             duration={playing.duration}
             position={playing.position}
+            image={playing.image}
             status={playing.status}
             skip={skip}
             togglePlayback={togglePlayback}
