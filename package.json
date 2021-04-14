@@ -4,7 +4,8 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "cc": "rm -rf node_modules/.cache/babel-loader/*"
   },
   "dependencies": {
     "expo": "~40.0.0",
@@ -34,6 +35,6 @@
     "metro-react-native-babel-preset": "^0.65.2"
   },
   "private": true,
-  "name": "MOOC-audio-app",
+  "name": "mooc-audio-app",
   "version": "1.0.0"
 }
