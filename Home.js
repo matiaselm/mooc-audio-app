@@ -19,8 +19,8 @@ const Home = (props) => {
         try {
             const url = `${API_URL}/audio`;
             console.log('API: ', url);
-            await axios.get(`${API_URL}/audio`).then(response => {
-                console.log('Audio response: ', response.data)
+            await axios.get(url).then(response => {
+                // console.log('Audio response: ', JSON.stringify(response.data,'','\t'))
                 setAudioArray(response.data)
             });
         } catch (e) {
@@ -31,6 +31,10 @@ const Home = (props) => {
     useEffect(() => {
         getAudio()
     }, [view])
+
+    useEffect(()=> {
+        // console.log(JSON.stringify(audioArray,'','\t'))
+    }, [audioArray])
 
     // Handles changing views
     const changeTab = (name) => {
@@ -60,7 +64,7 @@ const Home = (props) => {
         <Container>
             <Content>
                 {view == 'main' && <Main />}
-                {view == 'audio' && <Audio />}
+                {view == 'audio' && <Audio audioArray={audioArray} />}
             </Content>
         </Container>
         <CustomFooter view={view} changeTab={changeTab} />

@@ -8,46 +8,39 @@ import TrackPlayer, { play } from 'react-native-track-player';
 import { TrackPlayerEvents } from 'react-native-track-player';
 
 
-const Audio = () => {
-    const [playing, setPlaying] = useState({
-        name: 'Podcast name',
-        status: true,
-        progress: 0,
-        duration: 3745,
-        position: 0,
-        image: null
-    });
+const Audio = ({ audioArray }) => {
+    const [playing, setPlaying] = useState(null);
 
-    const track1 = {
-        id: 'podcast', // Must be a string, required
-        url: 'https://content.blubrry.com/muutos/Minna_Kosonen_muutos_podcast.mp3', // Load media from the network
-        title: 'Jakso 7: Viljelykasvien monimuotoisuus tukee luonnon monimuotoisuutta',
-        artist: 'Juha Kauppinen',
-        album: 'Podcast: Puhetta monimuotoisuudesta',
-        genre: 'Podcast',
-        date: '23.11.2019', // RFC 3339
-        artwork: 'https://www.muutoslehti.fi/wp-content/uploads/powerpress/muutos_podcast_logo.jpg', // Load artwork from the network
-        duration: 2247 // Duration in seconds
-    };
+    const [track, setTrack] = useState(null)
+
+    useEffect(() => {
+        if (audioArray) {
+            console.log('First track: ', JSON.stringify(audioArray[0]))
+            setTrack(audioArray[3])
+        }
+    }, [audioArray])
 
     const setupTrackPlayer = async () => {
         TrackPlayer.updateOptions({
             jumpInterval: 10,       // 10 second skip interval
         })
-        await TrackPlayer.add([track1]).then(() => {
-            setPlaying(prevState => ({
-                ...prevState,
-                name: track1.title,
-                status: false,
-                progress: 0,
-                duration: track1.duration,
-                position: track1.position,
-                image: track1.artwork
-            }))
-        })
 
-        const trackObject = await TrackPlayer.getTrack('podcast');
-        console.log(`Title: ${trackObject.title}`);
+        if (track) {
+            await TrackPlayer.add([track]).then(() => {
+                setPlaying(prevState => ({
+                    ...prevState,
+                    name: track.title,
+                    status: false,
+                    progress: 0,
+                    duration: Math.round(track.duration.$numberDecimal),
+                    position: track.position,
+                    image: track.artwork
+                }))
+            })
+        }
+
+        // const trackObject = await TrackPlayer.getTrack(track.id);
+        // console.log(`Title: ${trackObject.title}`);
     };
 
     const updateTrackInfo = async () => {
@@ -112,7 +105,7 @@ const Audio = () => {
     }
 
     return <View>
-        <AudioControls
+        {playing && <AudioControls
             title={playing.name}
             duration={playing.duration}
             position={playing.position}
@@ -120,7 +113,7 @@ const Audio = () => {
             status={playing.status}
             skip={skip}
             togglePlayback={togglePlayback}
-            handlePress={handlePress} />
+            handlePress={handlePress} /> }
     </View>
 }
 
@@ -147,5 +140,17 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     }
 })
+
+const track1 = {
+    id: 'podcast', // Must be a string, required
+    url: 'https://content.blubrry.com/muutos/Minna_Kosonen_muutos_podcast.mp3', // Load media from the network
+    title: 'Jakso 7: Viljelykasvien monimuotoisuus tukee luonnon monimuotoisuutta',
+    artist: 'Juha Kauppinen',
+    album: 'Podcast: Puhetta monimuotoisuudesta',
+    genre: 'Podcast',
+    date: '23.11.2019', // RFC 3339
+    artwork: 'https://www.muutoslehti.fi/wp-content/uploads/powerpress/muutos_podcast_logo.jpg', // Load artwork from the network
+    duration: 2247 // Duration in seconds
+};
 
 export default Audio;
