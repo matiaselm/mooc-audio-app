@@ -5,8 +5,6 @@ import { CustomButton } from '../components/CustomButton';
 import { Ionicons } from '@expo/vector-icons';
 import AudioControls from '../components/AudioControls';
 import TrackPlayer, { play } from 'react-native-track-player';
-import { TrackPlayerEvents } from 'react-native-track-player';
-
 
 const Audio = ({ audioArray }) => {
     const [playing, setPlaying] = useState(null);
@@ -91,7 +89,6 @@ const Audio = ({ audioArray }) => {
             }
             default: return
         }
-
     }
 
     const handlePress = () => {
