@@ -10,19 +10,19 @@ import { TrackPlayerEvents } from 'react-native-track-player';
 
 const Audio = ({ audioArray }) => {
     const [playing, setPlaying] = useState(null);
-
-    const [track, setTrack] = useState(null)
+    const [track, setTrack] = useState(null);
+    const jumpInterval = 30;
 
     useEffect(() => {
         if (audioArray) {
             console.log('First track: ', JSON.stringify(audioArray[0]))
-            setTrack(audioArray[3])
+            setTrack(audioArray[7])
         }
     }, [audioArray])
 
     const setupTrackPlayer = async () => {
         TrackPlayer.updateOptions({
-            jumpInterval: 10,       // 10 second skip interval
+            jumpInterval: jumpInterval,       // 10 second skip interval
         })
 
         if (track) {
@@ -38,9 +38,6 @@ const Audio = ({ audioArray }) => {
                 }))
             })
         }
-
-        // const trackObject = await TrackPlayer.getTrack(track.id);
-        // console.log(`Title: ${trackObject.title}`);
     };
 
     const updateTrackInfo = async () => {
@@ -85,11 +82,11 @@ const Audio = ({ audioArray }) => {
     const skip = (way) => {
         switch (way) {
             case 'backward': {
-                TrackPlayer.seekTo(playing.position - 100)
+                TrackPlayer.seekTo(playing.position - jumpInterval)
                 return
             }
             case 'forward': {
-                TrackPlayer.seekTo(playing.position + 100)
+                TrackPlayer.seekTo(playing.position + jumpInterval)
                 return
             }
             default: return
