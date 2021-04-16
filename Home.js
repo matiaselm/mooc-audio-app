@@ -55,7 +55,6 @@ const Home = (props) => {
     const initView = async () => {
         const trackId = await TrackPlayer.getCurrentTrack();
         const trackObject = await TrackPlayer.getTrack(trackId);
-        // console.log('Track obj:', trackObject)
 
         setAudio(trackObject);
     }
@@ -126,7 +125,7 @@ const Home = (props) => {
         <Container>
             <Content>
 
-                <PlayerInfo />
+                {/*<PlayerInfo />*/}
                 {audio && <AudioControls
                     title={audio.title}
                     duration={audio.duration}

@@ -7,8 +7,11 @@ import audio from './services/audio';
 import playerHandler from './services/playerHandler';
 import TrackPlayer from 'react-native-track-player';
 import { AppRegistry, AppState } from 'react-native';
+import { ls } from 'react-native-local-storage';
+import axios from 'axios';
 
 /* TODO:
+ - Localstorage user with backend
  - How to get soundCloud audio playing to work
  - Basic controls for soundCloud audio
  - Voice recognition API for React/JavaScript
@@ -17,12 +20,27 @@ import { AppRegistry, AppState } from 'react-native';
 
 const App = (props) => {
   const [isReady, setIsReady] = useState(false)
-  
+  const [user, setUser] = useState(null)
   TrackPlayer.registerPlaybackService(audio);
   TrackPlayer.registerEventHandler(playerHandler);
   TrackPlayer.setupPlayer().then(() => {
     console.log('player set up')
   })
+
+  const loadUser = async () => {
+    ls.get('user').then((user) => {
+      if (user) {
+        setUser(user)
+      } else {
+        /* await axios.post('user', ) ... TODO
+        .then((response) => {
+          setUser(response.data)
+          ls.set('user',response.data)
+        })
+        */
+      }
+    })
+  }
 
   const loadFont = async () => {
     await Font.loadAsync({

@@ -12,8 +12,8 @@ const PlayerInfo = ({ track }) => {
             const trackId = await TrackPlayer.getCurrentTrack();
             if (!mounted || !trackId) return;
             const track = await TrackPlayer.getTrack(trackId);
-            if (!mounted || !track.title) return;
-            setTrackTitle(track.title);
+            if (!mounted) return;
+            setTrackTitle(track.title ?? 'no title :(');
         })();
 
         // Set the track title whenever the track changes:
@@ -22,7 +22,7 @@ const PlayerInfo = ({ track }) => {
             async (data) => {
                 const track = await TrackPlayer.getTrack(data.nextTrack);
                 if (!mounted) return;
-                setTrackTitle(track.title);
+                setTrackTitle(track.title ?? 'no title :(');
             }
         );
         return () => {
