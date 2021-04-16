@@ -7,19 +7,21 @@ import CustomHeader from './components/CustomHeader';
 import Main from './views/Main';
 import Audio from './views/Audio';
 import AudioControls from './components/AudioControls';
+import PlayerInfo from './components/PlayerInfo';
+import ProgressBar from './components/ProgressBar';
 import axios from 'axios';
 import { API_URL } from '@env';
 import TrackPlayer, { play } from 'react-native-track-player';
-import { set } from 'react-native-reanimated';
 
 const Home = (props) => {
     const [view, setView] = useState('main');
     const [audioArray, setAudioArray] = useState([]);
+    const [position, setPosition] = useState(0)
     const [audio, setAudio] = useState(null);
     let playing = false;
+    const jumpInterval = 30;
 
     useEffect(() => {
-        setupTrackPlayer();
         getAudio();
     }, []);
 
@@ -34,7 +36,7 @@ const Home = (props) => {
                 artist: audioArray[i].artist,
                 duration: Math.round(audioArray[i].duration.$numberDecimal)
             }
-            addTrack(track)
+            addAudio(track);
         }
         getQueue();
     }, [audioArray])
@@ -44,10 +46,16 @@ const Home = (props) => {
         initView();
     }, [TrackPlayer.getCurrentTrack])
 
+    useEffect(() => {
+        if (TrackPlayer) {
+            updateTrackInfo();
+        }
+    });
+
     const initView = async () => {
         const trackId = await TrackPlayer.getCurrentTrack();
         const trackObject = await TrackPlayer.getTrack(trackId);
-        console.log('Track obj:', trackObject)
+        // console.log('Track obj:', trackObject)
 
         setAudio(trackObject);
     }
@@ -55,7 +63,7 @@ const Home = (props) => {
     const getAudio = async () => {
         try {
             const url = `${API_URL}/audio`;
-            console.log('API: ', url);
+            // console.log('API: ', url);
             await axios.get(url).then(response => {
                 // console.log('Audio response: ', JSON.stringify(response.data,'','\t'))
                 setAudioArray(response.data)
@@ -65,18 +73,26 @@ const Home = (props) => {
         }
     }
 
+    const updateTrackInfo = async () => {
+        await TrackPlayer.getPosition().then(position => {
+            setPosition(position)
+        }).catch(e => {
+            console.error(e)
+        });
+    }
+
+    const addAudio = async (audio) => {
+        await TrackPlayer.add(audio);
+    }
+
     const getCurrentAudio = async () => {
         await TrackPlayer.getCurrentTrack().then((res) => {
-            console.log('Current track id: ', res)
+            //console.log('Current track id: ', res)
         })
     }
 
     const setupTrackPlayer = async () => {
         await TrackPlayer.setupPlayer();
-    }
-
-    const addTrack = async (audio) => {
-        await TrackPlayer.add(audio)
     }
 
     const getQueue = async () => {
@@ -109,10 +125,12 @@ const Home = (props) => {
         <CustomHeader title={capitalize('home')} />
         <Container>
             <Content>
+
+                <PlayerInfo />
                 {audio && <AudioControls
                     title={audio.title}
                     duration={audio.duration}
-                    position={audio.position}
+                    position={position}
                     image={audio.image}
                     status={playing}
                     skip={skip}
