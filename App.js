@@ -6,9 +6,10 @@ import Home from './Home';
 import audio from './services/audio';
 import playerHandler from './services/playerHandler';
 import TrackPlayer from 'react-native-track-player';
-import { AppRegistry, AppState } from 'react-native';
+import { API_URL } from '@env';
 import { ls } from 'react-native-local-storage';
 import axios from 'axios';
+import useTrackPlayerHooks from './hooks/trackPlayerHooks';
 
 /* TODO:
  - Localstorage user with backend
@@ -21,11 +22,34 @@ import axios from 'axios';
 const App = (props) => {
   const [isReady, setIsReady] = useState(false)
   const [user, setUser] = useState(null)
-  TrackPlayer.registerPlaybackService(audio);
-  TrackPlayer.registerEventHandler(playerHandler);
-  TrackPlayer.setupPlayer().then(() => {
-    console.log('player set up')
-  })
+
+  const initTrackPlayer = async () => {
+    TrackPlayer.registerPlaybackService(audio);
+    TrackPlayer.registerEventHandler(playerHandler);
+    TrackPlayer.setupPlayer().then(() => {
+      console.log('player set up')
+      try {
+        const url = `${API_URL}/audio`;
+        // console.log('API: ', url);
+        axios.get(url).then(response => {
+          console.log('Queue: ', response.data.length)
+          for (let i in response.data) {
+            const responseAudio = {
+              ... response.data[i],
+              id: response.data[i]._id
+            }
+            TrackPlayer.add(responseAudio)
+          }
+        });
+      } catch (e) {
+        console.error(e.message)
+      }
+    })
+  }
+
+  useEffect(() => {
+    initTrackPlayer();
+  }, [])
 
   const loadUser = async () => {
     ls.get('user').then((user) => {

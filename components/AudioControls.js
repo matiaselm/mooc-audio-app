@@ -73,12 +73,10 @@ const AudioControls = ({ style, duration, position, handlePress, title, togglePl
             <Button icon style={styles.audioButton} onPress={() => skip('backward')}>
                 <Icon name='play-back-sharp' />
             </Button>
-            {status == true &&
+            {status === true ?
                 <Button icon style={styles.audioButton} onPress={togglePlayback}>
                     <Icon name='pause-sharp' />
-                </Button>
-            }
-            {status == false &&
+                </Button> :
                 <Button icon style={styles.audioButton} onPress={togglePlayback}>
                     <Icon name='play-sharp' />
                 </Button>
