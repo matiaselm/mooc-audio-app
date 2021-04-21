@@ -1,28 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Container, Text, Content, Picker, Spinner } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
-import CustomHeader from './components/CustomHeader';
-import AudioControls from './components/AudioControls';
+import CustomHeader from '../components/CustomHeader';
+import AudioControls from '../components/AudioControls';
 import TrackPlayer, { ProgressComponent } from 'react-native-track-player';
-import ProgressBar from './components/ProgressBar';
+import ProgressBar from '../components/ProgressBar';
+import AppContext from '../AppContext';
 
 const Home = (props) => {
-    const [audio, setAudio] = useState(null);
-    const [queue, setQueue] = useState(null);
+    const { 
+        audio, 
+        setAudio,
+        user, 
+        queue, 
+        setQueue } = useContext(AppContext);
     const [position, setPosition] = useState(0);
-    const [playing, setPlaying] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [playing, setPlaying] = useState(false);
     const jumpInterval = 30;
-
-    useEffect(() => {
-        getTrackPlayerQueue()
-    }, [])
 
     useEffect(() => {
         audio && setTrackPlayerAudio(audio.id)
     }, [audio])
 
-    useEffect(()=> {
+    useEffect(() => {
         const counter = setInterval(() => {
             getPosition()
         }, 500)
@@ -30,24 +30,15 @@ const Home = (props) => {
         return () => clearInterval(counter);
     })
 
-    const getPosition = () => {
-        TrackPlayer.getPosition().then(position => {
-            // console.log('Position ', position)
+    const getPosition = async() => {
+        await TrackPlayer.getPosition().then(position => {
             setPosition(position);
         }).catch(e => {
             console.error(e)
         });
     }
 
-    const getTrackPlayerQueue = async () => {
-        await TrackPlayer.getQueue().then(response => {
-            console.log('Response: ', JSON.stringify(response, '', '\t'))
-            setQueue(response)
-            setLoading(false)
-        });
-    }
-
-    const setTrackPlayerAudio = async (id) => {
+    const setTrackPlayerAudio = async(id) => {
         await TrackPlayer.skip(id).then((res) => {
             console.log('Changed to track ', id)
         }).catch((e) => {
@@ -55,17 +46,10 @@ const Home = (props) => {
         })
     }
 
-    const skip = (way) => {
-        if (way === 'backward') TrackPlayer.seekTo(position - jumpInterval)
-        if (way === 'forward') TrackPlayer.seekTo(position + jumpInterval)
+    const skip = async(way) => {
+        if (way === 'backward') await TrackPlayer.seekTo(position - jumpInterval)
+        if (way === 'forward') await TrackPlayer.seekTo(position + jumpInterval)
     }
-
-    const getCurrentAudio = async () => {
-        const trackId = await TrackPlayer.getCurrentTrack();
-        const trackObject = await TrackPlayer.getTrack(trackId);
-        return trackObject;
-    }
-
     // TODO: UI for audio controls
     // A basic example function that is passed to customButton and called from there via callback 
     const togglePlayback = async () => {

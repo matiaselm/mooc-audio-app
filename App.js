@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import AppLoading from 'expo-app-loading';
+import AppContext from './AppContext';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
-import Home from './Home';
-import audio from './services/audio';
+import Home from './views/Home';
 import playerHandler from './services/playerHandler';
 import TrackPlayer from 'react-native-track-player';
 import { API_URL } from '@env';
-import { ls } from 'react-native-local-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
 /* TODO:
@@ -21,11 +21,31 @@ import axios from 'axios';
 const App = (props) => {
   const [isReady, setIsReady] = useState(false)
   const [user, setUser] = useState(null)
+  const [audio, setAudio] = useState(null)
+  const [queue, setQueue] = useState([])
+
+  const storeData = async (key, _data) => {
+    const jsonData = JSON.stringify(data)
+    try {
+      await AsyncStorage.setItem(key, jsonData)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  const getData = async (key) => {
+    try {
+      const jsonValue = await AsyncStorage.getItem(key)
+      return JSON.parse(jsonValue) ?? null;
+    } catch (e) {
+      console.error(e)
+    }
+  }
 
   const initTrackPlayer = async () => {
     TrackPlayer.registerPlaybackService(audio);
     TrackPlayer.registerEventHandler(playerHandler);
-    TrackPlayer.setupPlayer().then(() => {
+    await TrackPlayer.setupPlayer().then(() => {
       console.log('player set up')
       try {
         const url = `${API_URL}/audio`;
@@ -34,36 +54,62 @@ const App = (props) => {
           console.log('Queue: ', response.data.length)
           for (let i in response.data) {
             const responseAudio = {
-              ... response.data[i],
+              ...response.data[i],
               id: response.data[i]._id
             }
             TrackPlayer.add(responseAudio)
           }
+          TrackPlayer.getQueue().then(queue => setQueue(queue));
         });
       } catch (e) {
         console.error(e.message)
       }
     })
-  }
+  };
 
-  useEffect(() => {
-    initTrackPlayer();
-  }, [])
-
-  const loadUser = async () => {
-    ls.get('user').then((user) => {
-      if (user) {
-        setUser(user)
-      } else {
-        /* await axios.post('user', ) ... TODO
-        .then((response) => {
-          setUser(response.data)
-          ls.set('user',response.data)
-        })
-        */
-      }
+  const createUser = async() => {
+    await axios.post(`${API_URL}/user`, {
+      name: ''
+    }).then((response) => {
+      let user = response.config.data
+      setUser(user)
+      storeData('user', user)
+      console.log('Made user', user)
     })
   }
+
+  const loadUser = async () => {
+    try {
+      console.log('Load user')
+      await getData('user').then((user) => {
+        if (user) {
+          setUser(user)
+          console.log('Got user: ', user)
+        } else {
+          console.log('No user in storage. Creating a new one...')
+          createUser();
+        }
+      })
+    } catch (e) {
+      console.error(e)
+    }
+  };
+
+  useEffect(() => {
+    loadUser();
+    initTrackPlayer();
+  }, []);
+
+  const appContextProvider = React.useMemo(() => {
+    return {
+      user: user,
+      setUser: setUser,
+      audio: audio,
+      setAudio: setAudio,
+      queue: queue,
+      setQueue: setQueue
+    };
+  }, [user, audio, queue]);
 
   const loadFont = async () => {
     await Font.loadAsync({
@@ -79,9 +125,10 @@ const App = (props) => {
     loadFont();
   }, []);
 
-  return (!isReady ?
-    <AppLoading /> : <Home />
-  );
+  return !isReady ? <AppLoading /> :
+    <AppContext.Provider value={appContextProvider}>
+      <Home />
+    </AppContext.Provider>
 }
 
 export default App;
