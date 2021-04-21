@@ -2,6 +2,7 @@ import React from 'react';
 import { RecyclerViewBackedScrollView, StyleSheet, Image } from 'react-native';
 import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, FooterTab, Button, View, Icon } from 'native-base';
 import { skip } from 'react-native-track-player';
+import ProgressBar from './ProgressBar';
 
 const AudioControls = ({ style, duration, position, handlePress, title, togglePlayback, image, progress, status, skip }) => {
 
@@ -39,24 +40,6 @@ const AudioControls = ({ style, duration, position, handlePress, title, togglePl
     const elapsed = minutesAndSeconds(position);
     const remaining = minutesAndSeconds(duration - position);
 
-    const ProgressBar = ({ duration, position, style }) => {
-        if (position === NaN) {
-            position = 0
-        }
-        const progress = (_duration, _position) => {
-            if (!isNaN(_duration - _position)) {
-                return _duration - _position
-            } else {
-                return 0
-            }
-        }
-
-        return <View style={[{ display: 'flex', flexDirection: 'row-reverse', width: '100%', height: 6 }, style]}>
-            <View style={{ flex: progress(duration, position), alignSelf: 'flex-start', height: 6, backgroundColor: '#dadada' }} />
-            <View style={{ flex: position, height: 6, backgroundColor: '#39FF' }} />
-        </View>
-    }
-
     return <View style={[{ padding: 16 }, style]}>
         <Text style={styles.name}>{title}</Text>
 
@@ -90,7 +73,7 @@ const AudioControls = ({ style, duration, position, handlePress, title, togglePl
             <Text style={styles.numbers}>{elapsed[0] + ":" + Math.floor(elapsed[1])}</Text>
             <Text style={styles.numbers}>{floor10(duration / 60, -1)}min</Text>
         </View>
-        <ProgressBar duration={duration} position={position} style={{ alignSelf: 'center', margin: 10 }}></ProgressBar>
+        <ProgressBar duration={duration} position={position} style={{ alignSelf: 'center', margin: 10 }} />
     </View>
 };
 

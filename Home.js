@@ -3,8 +3,8 @@ import { Container, Text, Content, Picker, Spinner } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
 import CustomHeader from './components/CustomHeader';
 import AudioControls from './components/AudioControls';
-import useTrackPlayerHooks from './hooks/trackPlayerHooks';
-import TrackPlayer from 'react-native-track-player';
+import TrackPlayer, { ProgressComponent } from 'react-native-track-player';
+import ProgressBar from './components/ProgressBar';
 
 const Home = (props) => {
     const [audio, setAudio] = useState(null);
@@ -12,10 +12,7 @@ const Home = (props) => {
     const [position, setPosition] = useState(0);
     const [playing, setPlaying] = useState(null);
     const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        getPosition()
-    })
+    const jumpInterval = 30;
 
     useEffect(() => {
         getTrackPlayerQueue()
@@ -25,9 +22,26 @@ const Home = (props) => {
         audio && setTrackPlayerAudio(audio.id)
     }, [audio])
 
+    useEffect(()=> {
+        const counter = setInterval(() => {
+            getPosition()
+        }, 500)
+
+        return () => clearInterval(counter);
+    })
+
+    const getPosition = () => {
+        TrackPlayer.getPosition().then(position => {
+            // console.log('Position ', position)
+            setPosition(position);
+        }).catch(e => {
+            console.error(e)
+        });
+    }
+
     const getTrackPlayerQueue = async () => {
         await TrackPlayer.getQueue().then(response => {
-            console.log('Response: ', JSON.stringify(response,'','\t'))
+            console.log('Response: ', JSON.stringify(response, '', '\t'))
             setQueue(response)
             setLoading(false)
         });
@@ -42,23 +56,14 @@ const Home = (props) => {
     }
 
     const skip = (way) => {
-        if (way === 'brackward') TrackPlayer.seekTo(playing.position - jumpInterval)
-        if (way === 'forward') TrackPlayer.seekTo(playing.position + jumpInterval)
+        if (way === 'backward') TrackPlayer.seekTo(position - jumpInterval)
+        if (way === 'forward') TrackPlayer.seekTo(position + jumpInterval)
     }
 
     const getCurrentAudio = async () => {
         const trackId = await TrackPlayer.getCurrentTrack();
         const trackObject = await TrackPlayer.getTrack(trackId);
         return trackObject;
-    }
-
-    const getPosition = async () => {
-        await TrackPlayer.getPosition().then(position => {
-            console.log('Position ', position)
-            setPosition(position);
-        }).catch(e => {
-            console.error(e)
-        });
     }
 
     // TODO: UI for audio controls
@@ -81,34 +86,30 @@ const Home = (props) => {
     return <>
         <CustomHeader title={capitalize('home')} />
         <Container>
-            {!loading ?
-                <Content>
+            <Content>
 
-                    <Picker
-                        selectedValue={audio}
-                        onValueChange={(itemValue, itemIndex) =>
-                            setAudio(itemValue)
-                        }>
-                        {queue && queue.map((audio, key) => {
-                            return <Picker.Item key={key} label={audio.title} value={audio} />
-                        })}
+                <Picker
+                    selectedValue={audio}
+                    onValueChange={(itemValue, itemIndex) =>
+                        setAudio(itemValue)
+                    }>
+                    {queue && queue.map((audio, key) => {
+                        return <Picker.Item key={key} label={audio.title} value={audio} />
+                    })}
 
-                    </Picker>
-                    {/*<PlayerInfo />*/}
-                    {audio ? <AudioControls
-                        title={audio.title}
-                        duration={audio.duration && Math.round(audio.duration.$numberDecimal)}
-                        position={position}
-                        image={audio.image}
-                        status={playing}
-                        skip={skip}
-                        togglePlayback={togglePlayback} />
-                        : <Text> No audio, no controls </Text>
-                    }
-                </Content>
-                : <Content>
-                    <Spinner />
-                </Content>}
+                </Picker>
+                {/*<PlayerInfo />*/}
+                {audio ? <AudioControls
+                    title={audio.title}
+                    duration={audio.duration && Math.round(audio.duration.$numberDecimal)}
+                    position={position}
+                    image={audio.image}
+                    status={playing}
+                    skip={skip}
+                    togglePlayback={togglePlayback} />
+                    : <Text> No audio, no controls </Text>
+                }
+            </Content>
         </Container>
     </>
 }

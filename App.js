@@ -9,7 +9,6 @@ import TrackPlayer from 'react-native-track-player';
 import { API_URL } from '@env';
 import { ls } from 'react-native-local-storage';
 import axios from 'axios';
-import useTrackPlayerHooks from './hooks/trackPlayerHooks';
 
 /* TODO:
  - Localstorage user with backend
