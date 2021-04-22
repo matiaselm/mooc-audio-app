@@ -1,14 +1,20 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { Button, Text, Icon, View } from 'native-base';
 import AppLoading from 'expo-app-loading';
 import AppContext from './AppContext';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import Home from './views/Home';
+import Main from './views/Main';
+import Notes from './views/Notes';
 import playerHandler from './services/playerHandler';
 import TrackPlayer from 'react-native-track-player';
 import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import 'react-native-gesture-handler';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 /* TODO:
  - Localstorage user with backend
@@ -23,9 +29,13 @@ const App = (props) => {
   const [user, setUser] = useState(null)
   const [audio, setAudio] = useState(null)
   const [queue, setQueue] = useState([])
+  const [notes, setNotes] = useState([])
+  const [position, setPosition] = useState(0);
+
+  const Stack = createStackNavigator();
 
   const storeData = async (key, _data) => {
-    const jsonData = JSON.stringify(data)
+    const jsonData = JSON.stringify(_data)
     try {
       await AsyncStorage.setItem(key, jsonData)
     } catch (e) {
@@ -67,14 +77,14 @@ const App = (props) => {
     })
   };
 
-  const createUser = async() => {
+  const createUser = async () => {
     await axios.post(`${API_URL}/user`, {
       name: ''
     }).then((response) => {
-      let user = response.config.data
+      let user = response.data
       setUser(user)
       storeData('user', user)
-      console.log('Made user', user)
+      console.log('Made user', user._id)
     })
   }
 
@@ -84,7 +94,7 @@ const App = (props) => {
       await getData('user').then((user) => {
         if (user) {
           setUser(user)
-          console.log('Got user: ', user)
+          console.log('Got user: ', JSON.stringify(user,'','\t'))
         } else {
           console.log('No user in storage. Creating a new one...')
           createUser();
@@ -95,10 +105,34 @@ const App = (props) => {
     }
   };
 
+  const getNotes = async () => {
+    if (user && user._id !== null) {
+      try {
+        console.log('Getting notes for user: ', user._id);
+        await axios.get(`${API_URL}/user/note`, {
+          params: { userID: user._id }
+        }).then((response, err) => {
+          if (err) {
+            console.error(err)
+          } else {
+            // console.log('Got notes: ', JSON.stringify(response.data))
+            setNotes(response.data)
+          }
+        })
+      } catch (e) {
+        console.error(e)
+      }
+    }
+  }
+
   useEffect(() => {
     loadUser();
     initTrackPlayer();
   }, []);
+
+  useEffect(() => {
+    getNotes();
+  }, [user])
 
   const appContextProvider = React.useMemo(() => {
     return {
@@ -106,10 +140,15 @@ const App = (props) => {
       setUser: setUser,
       audio: audio,
       setAudio: setAudio,
+      position: position,
+      setPosition: setPosition,
       queue: queue,
-      setQueue: setQueue
+      setQueue: setQueue,
+      notes: notes,
+      setNotes: setNotes,
+      getNotes: getNotes,
     };
-  }, [user, audio, queue]);
+  }, [user, audio, queue, notes, position]);
 
   const loadFont = async () => {
     await Font.loadAsync({
@@ -127,7 +166,15 @@ const App = (props) => {
 
   return !isReady ? <AppLoading /> :
     <AppContext.Provider value={appContextProvider}>
-      <Home />
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false
+          }}>
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Notes" component={Notes} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </AppContext.Provider>
 }
 

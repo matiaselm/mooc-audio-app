@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, FooterTab, Button, View, Form, Item, Input } from 'native-base';
 import axios from 'axios';
 import { WIT_BEARER } from "@env";
+import CustomHeader from '../components/CustomHeader';
 
-const Main = (props) => {
+const Main = ({ navigation, userName }) => {
     const [intent, setIntent] = useState(null);
     const [input, setInput] = useState(null);
     const clientId = '4f083ae5f189a802a855a52cd24de5fe30ddea15'; // May be a working soundcloud clientID to pass to it
@@ -51,27 +52,31 @@ const Main = (props) => {
         }
     }
 
-    return <View>
+    return <>
+        <CustomHeader title={'Main'} onPressNavigation={() => navigation.goBack()} userName={userName}/>
+        <Container>
+            <Content>
+                {intent && <Text style={{ alignSelf: 'center', margin: 16, padding: 16, backgroundColor: '#ddd', borderRadius: 16 }}>{intent && formatResponse(intent.name)}</Text>}
 
-        {intent && <Text style={{ alignSelf: 'center', margin: 16, padding: 16, backgroundColor: '#ddd', borderRadius: 16 }}>{intent && formatResponse(intent.name)}</Text>}
-
-        <Form style={{ marginTop: 100, display: 'flex', flexDirection: 'row', bottom: 0, marginRight: 16 }}>
-            <Item style={{ flex: 3, marginRight: 16 }}>
-                <Input
-                    placeholder='Message wit'
-                    value={input}
-                    onChangeText={text => setInput(text)}>
-                </Input>
-            </Item>
-            <Button style={{ flex: 1, borderRadius: 8 }}
-                onPress={() => {
-                    getWit(input)
-                    setInput('')
-                }}>
-                <Text>Send</Text>
-            </Button>
-        </Form>
-    </View>
+                <Form style={{ marginTop: 100, display: 'flex', flexDirection: 'row', bottom: 0, marginRight: 16 }}>
+                    <Item style={{ flex: 3, marginRight: 16 }}>
+                        <Input
+                            placeholder='Message wit'
+                            value={input}
+                            onChangeText={text => setInput(text)}>
+                        </Input>
+                    </Item>
+                    <Button style={{ flex: 1, borderRadius: 8 }}
+                        onPress={() => {
+                            getWit(input)
+                            setInput('')
+                        }}>
+                        <Text>Send</Text>
+                    </Button>
+                </Form>
+            </Content>
+        </Container>
+    </>
 }
 
 export default Main;

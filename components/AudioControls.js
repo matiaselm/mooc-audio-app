@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { RecyclerViewBackedScrollView, StyleSheet, Image } from 'react-native';
-import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, FooterTab, Button, View, Icon } from 'native-base';
+import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, FooterTab, Button, View, Icon, Picker } from 'native-base';
 import { skip } from 'react-native-track-player';
 import ProgressBar from './ProgressBar';
+import AppContext from '../AppContext';
 
 const AudioControls = ({ style, duration, position, handlePress, title, togglePlayback, image, progress, status, skip }) => {
+    const {
+        audio,
+        setAudio,
+        queue } = useContext(AppContext);
 
     const decimalAdjust = (type, value, exp) => {
         // If the exp is undefined or zero...
@@ -43,6 +48,17 @@ const AudioControls = ({ style, duration, position, handlePress, title, togglePl
     return <View style={[{ padding: 16 }, style]}>
         <Text style={styles.name}>{title}</Text>
 
+        <Picker
+            style={{ position: 'absolute', top: 16, right: 8, zIndex: 1, width: 30 }}
+            selectedValue={audio}
+            onValueChange={(itemValue, itemIndex) =>
+                setAudio(itemValue)
+            }>
+            {queue && queue.map((audio, key) => {
+                return <Picker.Item key={key} label={audio.title} value={audio} />
+            })}
+        </Picker>
+
         <Image
             style={{
                 height: 250,
@@ -53,6 +69,7 @@ const AudioControls = ({ style, duration, position, handlePress, title, togglePl
             source={{ uri: image ?? 'https://www.muutoslehti.fi/wp-content/uploads/powerpress/muutos_podcast_logo.jpg' }}
         />
         <View style={styles.buttonGroup}>
+
             <Button icon style={styles.audioButton} onPress={() => skip('backward')}>
                 <Icon name='play-back-sharp' />
             </Button>
@@ -68,6 +85,7 @@ const AudioControls = ({ style, duration, position, handlePress, title, togglePl
             <Button icon style={styles.audioButton} onPress={() => skip('forward')}>
                 <Icon name='play-forward-sharp' />
             </Button>
+
         </View>
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text style={styles.numbers}>{elapsed[0] + ":" + Math.floor(elapsed[1])}</Text>

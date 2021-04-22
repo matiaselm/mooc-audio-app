@@ -7,14 +7,16 @@ import TrackPlayer, { ProgressComponent } from 'react-native-track-player';
 import ProgressBar from '../components/ProgressBar';
 import AppContext from '../AppContext';
 
-const Home = (props) => {
-    const { 
-        audio, 
+const Home = ({ navigation }) => {
+    const {
+        audio,
         setAudio,
-        user, 
-        queue, 
-        setQueue } = useContext(AppContext);
-    const [position, setPosition] = useState(0);
+        user,
+        queue,
+        setQueue,
+        position,
+        setPosition
+    } = useContext(AppContext);
     const [playing, setPlaying] = useState(false);
     const jumpInterval = 30;
 
@@ -30,7 +32,7 @@ const Home = (props) => {
         return () => clearInterval(counter);
     })
 
-    const getPosition = async() => {
+    const getPosition = async () => {
         await TrackPlayer.getPosition().then(position => {
             setPosition(position);
         }).catch(e => {
@@ -38,7 +40,7 @@ const Home = (props) => {
         });
     }
 
-    const setTrackPlayerAudio = async(id) => {
+    const setTrackPlayerAudio = async (id) => {
         await TrackPlayer.skip(id).then((res) => {
             console.log('Changed to track ', id)
         }).catch((e) => {
@@ -46,7 +48,7 @@ const Home = (props) => {
         })
     }
 
-    const skip = async(way) => {
+    const skip = async (way) => {
         if (way === 'backward') await TrackPlayer.seekTo(position - jumpInterval)
         if (way === 'forward') await TrackPlayer.seekTo(position + jumpInterval)
     }
@@ -68,20 +70,9 @@ const Home = (props) => {
     const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
 
     return <>
-        <CustomHeader title={capitalize('home')} />
+        <CustomHeader title={'Home'} onPressNavigation={() => navigation.push('Notes')} userName={user && user.name} />
         <Container>
             <Content>
-
-                <Picker
-                    selectedValue={audio}
-                    onValueChange={(itemValue, itemIndex) =>
-                        setAudio(itemValue)
-                    }>
-                    {queue && queue.map((audio, key) => {
-                        return <Picker.Item key={key} label={audio.title} value={audio} />
-                    })}
-
-                </Picker>
                 {/*<PlayerInfo />*/}
                 {audio ? <AudioControls
                     title={audio.title}
@@ -91,7 +82,15 @@ const Home = (props) => {
                     status={playing}
                     skip={skip}
                     togglePlayback={togglePlayback} />
-                    : <Text> No audio, no controls </Text>
+                    : <Picker
+                        selectedValue={audio ?? 'Valitse jakso'}
+                        onValueChange={(itemValue, itemIndex) =>
+                            setAudio(itemValue)
+                        }>
+                        {queue && queue.map((audio, key) => {
+                            return <Picker.Item key={key} label={audio.title} value={audio} />
+                        })}
+                    </Picker>
                 }
             </Content>
         </Container>
