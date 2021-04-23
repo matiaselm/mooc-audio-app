@@ -73,9 +73,9 @@ const Home = ({ navigation }) => {
                     </Picker>
                 }
             </Content>
-            <Button block style={{ margin: 16, elevation: 10 }} onPress={() => navigation.push('Notes')}>
-                <Icon name={'book-open'} size={26} color={'#FFF'} />
-                <Text>Muistiinpanot</Text>
+            <Button block style={{ margin: 16, elevation: 10, borderWidth: 3, borderColor: '#006064', backgroundColor: '#d4fafc', borderRadius: 16 }} onPress={() => navigation.push('Notes')}>
+                <Icon name={'book-open'} size={26} color={'#006064'} />
+                <Text style={{color: '#006064'}}>Muistiinpanot</Text>
             </Button>
         </Container>
     </>

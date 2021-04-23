@@ -64,7 +64,9 @@ const AudioControls = ({ style, duration, position, handlePress, title, togglePl
                 height: 250,
                 width: '100%',
                 marginVertical: 8,
-                backgroundColor: image ? null : 'rgba(24,244,24, 0.4)'
+                borderWidth: 3, 
+                borderColor: '#006064', 
+                backgroundColor: image ? null : '#d4fafc'
             }}
             source={{ uri: image ?? 'https://www.muutoslehti.fi/wp-content/uploads/powerpress/muutos_podcast_logo.jpg' }}
         />
@@ -113,6 +115,8 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     audioButton: {
+        borderColor: '#d4fafc', 
+        backgroundColor: '#006064',
         width: 70,
         height: 70,
         margin: 8,
