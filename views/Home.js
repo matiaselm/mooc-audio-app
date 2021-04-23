@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Container, Text, Content, Picker, Spinner } from 'native-base';
-import { Ionicons } from '@expo/vector-icons';
+import { Container, Text, Content, Picker, Spinner, Button } from 'native-base';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import CustomHeader from '../components/CustomHeader';
 import AudioControls from '../components/AudioControls';
 import TrackPlayer, { ProgressComponent } from 'react-native-track-player';
@@ -51,8 +51,7 @@ const Home = ({ navigation }) => {
     const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
 
     return <>
-        <CustomHeader title={'Home'} onPressNavigation={() => navigation.push('Notes')} userName={user && user.name} />
-        <Container>
+        <Container style={{ backgroundColor: 'rgba(240,240,240,1)' }}>
             <Content>
                 {/*<PlayerInfo />*/}
                 {audio ? <AudioControls
@@ -74,6 +73,10 @@ const Home = ({ navigation }) => {
                     </Picker>
                 }
             </Content>
+            <Button block style={{ margin: 16, elevation: 10 }} onPress={() => navigation.push('Notes')}>
+                <Icon name={'book-open'} size={26} color={'#FFF'} />
+                <Text>Muistiinpanot</Text>
+            </Button>
         </Container>
     </>
 }

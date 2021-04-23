@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Button, Text, Icon, View } from 'native-base';
+import { Button, Text, Icon, View, Root } from 'native-base';
 import AppLoading from 'expo-app-loading';
 import AppContext from './AppContext';
 import * as Font from 'expo-font';
@@ -15,6 +15,7 @@ import axios from 'axios';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { fromRight } from 'react-navigation-transitions';
 
 /* TODO:
  - Localstorage user with backend
@@ -149,7 +150,9 @@ const App = (props) => {
   }, [user])
 
   useEffect(() => {
-    audio && setTrackPlayerAudio(audio.id)
+    if (audio !== null) {
+      setTrackPlayerAudio(audio.id)
+    }
   }, [audio])
 
   const setTrackPlayerAudio = async (id) => {
@@ -197,17 +200,20 @@ const App = (props) => {
   }, []);
 
   return !isReady ? <AppLoading /> :
-    <AppContext.Provider value={appContextProvider}>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false
-          }}>
-          <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="Notes" component={Notes} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </AppContext.Provider>
+    <Root>
+      <AppContext.Provider value={appContextProvider}>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerMode: 'screen',
+              transitionConfig: fromRight()
+            }}>
+            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Notes" component={Notes} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </AppContext.Provider>
+    </Root>
 }
 
 export default App;

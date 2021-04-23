@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { FlatList } from 'react-native';
-import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, FooterTab, Button, View, Form, Item, Input, ScrollView } from 'native-base';
+import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, FooterTab, Button, View, Form, Item, Input, ScrollView, Toast } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import axios from 'axios';
 import { API_URL } from '@env';
@@ -9,7 +9,7 @@ import AppContext from '../AppContext';
 import TrackPlayer from 'react-native-track-player';
 
 const Notes = ({ navigation, userName }) => {
-    const [input, setInput] = useState(null);
+    const [input, setInput] = useState('');
     const { user, notes, getNotes, audio, setAudio, position, setTrackPlayerPosition } = useContext(AppContext);
 
     const postNote = async (data) => {
@@ -75,7 +75,7 @@ const Notes = ({ navigation, userName }) => {
             ...item.audioID,
             id: item.audioID._id
         }
-        console.log('ITEM: ', JSON.stringify(item, '', '\t'))
+        // console.log('ITEM: ', JSON.stringify(item, '', '\t'))
         return <View style={{ minHeight: 30, borderBottomWidth: 1, borderColor: '#dadada', padding: 8, display: 'flex', flexDirection: 'row' }}>
             <View style={{ flex: 5 }}>
                 <Text numberOfLines={1} style={{ color: '#adadad', marginBottom: 8, fontSize: 14 }}>{itemAudio.title}</Text>
@@ -84,16 +84,14 @@ const Notes = ({ navigation, userName }) => {
                     <Icon name='clock' size={18} color={'#adadad'} style={{ marginEnd: 8, alignSelf: 'center' }} /><Text style={{ alignSelf: 'center', color: '#0f0f0f', fontSize: 14 }}>{timeStamp[0] + ":" + Math.floor(timeStamp[1])}min</Text>
                 </View>
             </View>
-            <Button icon transparent style={{ flex: 1, alignSelf: 'flex-start' }} onPress={() => changeAudioToNote(itemAudio, item.timestamp)}>
-                <Icon color={'#000'} name='headphones' size={24} style={{ marginStart: 8, alignSelf: 'center' }} />
+            <Button icon light style={{ flex: 1, alignSelf: 'flex-end', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,1)', borderRadius: 16, marginStart: 8, elevation: 10 }} onPress={() => changeAudioToNote(itemAudio, item.timestamp)}>
+                <Icon color={'rgba(66, 142, 146, 1)'} name='headphones-alt' size={26} style={{ margin: 8, alignSelf: 'center' }} />
             </Button>
         </View>
     };
 
     return <View>
-        <CustomHeader title={'Notes'} onPressNavigation={() => navigation.goBack()} userName={userName} />
-
-        <View style={{ height: '100%', padding: 8, paddingBottom: 200 }}>
+        <View style={{ height: '100%', padding: 8 }}>
             <FlatList
                 keyExtractor={item => item._id}
                 data={notes ?? []}
@@ -101,7 +99,7 @@ const Notes = ({ navigation, userName }) => {
             >
             </FlatList>
 
-            <Form style={{ position: 'absolute', bottom: 130, display: 'flex', flexDirection: 'row', backgroundColor: '#fff', width: '100%' }}>
+            <Form style={{ position: 'absolute', bottom: 0, display: 'flex', flexDirection: 'row', backgroundColor: '#fff', width: '105%', padding: 8 }}>
                 <Item style={{ flex: 4 }}>
                     <Input
                         placeholder='Create note'
@@ -109,15 +107,18 @@ const Notes = ({ navigation, userName }) => {
                         onChangeText={text => setInput(text)}>
                     </Input>
                 </Item>
-                <Button icon transparent style={{ flex: 1, borderRadius: 8, maxWidth: 60 }}
+                <Button icon style={{ flex: 1, borderRadius: 16, maxWidth: 60, alignSelf: 'center', borderWidth: 3, borderColor: '#006064', backgroundColor: '#d4fafc', elevation: 10 }}
                     onPress={() => {
-                        postNote(input)
-                        setInput('')
+                        if (input.length > 0) {
+                            postNote(input)
+                            setInput('')
+                        } else {
+                            Toast.show({ text: `Maybe you'd want to write something before saving it?`, duration: 2000, position: 'bottom', buttonText: 'Okay' });
+                        }
                     }}>
-                    <Icon name='pen' size={20} color={'#000'} style={{ marginStart: 16 }} />
+                    <Icon name='pen-fancy' light size={26} color={'#006064'} style={{ marginStart: 16 }} />
                 </Button>
             </Form>
-
         </View>
     </View>
 }

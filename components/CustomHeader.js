@@ -5,7 +5,7 @@ const CustomHeader = ({ title, onPressNavigation, userName }) => {
   return <Header>
     <Left>
       <Button transparent onPress={onPressNavigation}>
-        <Icon name={title === 'Home' ? 'book' : 'arrow-back'} />
+        <Icon name={'book'} />
       </Button>
     </Left>
     <Body>

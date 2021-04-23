@@ -46,7 +46,7 @@ const AudioControls = ({ style, duration, position, handlePress, title, togglePl
     const remaining = minutesAndSeconds(duration - position);
 
     return <View style={[{ padding: 16 }, style]}>
-        <Text style={styles.name}>{title}</Text>
+        <Text numberOfLines={3} style={styles.name}>{title}</Text>
 
         <Picker
             style={{ position: 'absolute', top: 16, right: 8, zIndex: 1, width: 30 }}
@@ -97,8 +97,10 @@ const AudioControls = ({ style, duration, position, handlePress, title, togglePl
 
 const styles = StyleSheet.create({
     name: {
-        fontSize: 28,
+        fontSize: 26,
         alignSelf: 'center',
+        marginBottom: 8,
+        marginEnd: 16
     },
     numbers: {
         fontSize: 18,
@@ -115,7 +117,8 @@ const styles = StyleSheet.create({
         height: 70,
         margin: 8,
         borderRadius: 70,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        elevation: 10
     }
 })
 
