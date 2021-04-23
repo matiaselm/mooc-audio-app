@@ -15,14 +15,11 @@ const Home = ({ navigation }) => {
         queue,
         setQueue,
         position,
-        setPosition
+        setPosition,
+        getPosition,
     } = useContext(AppContext);
     const [playing, setPlaying] = useState(false);
     const jumpInterval = 30;
-
-    useEffect(() => {
-        audio && setTrackPlayerAudio(audio.id)
-    }, [audio])
 
     useEffect(() => {
         const counter = setInterval(() => {
@@ -31,22 +28,6 @@ const Home = ({ navigation }) => {
 
         return () => clearInterval(counter);
     })
-
-    const getPosition = async () => {
-        await TrackPlayer.getPosition().then(position => {
-            setPosition(position);
-        }).catch(e => {
-            console.error(e)
-        });
-    }
-
-    const setTrackPlayerAudio = async (id) => {
-        await TrackPlayer.skip(id).then((res) => {
-            console.log('Changed to track ', id)
-        }).catch((e) => {
-            console.error(e.message)
-        })
-    }
 
     const skip = async (way) => {
         if (way === 'backward') await TrackPlayer.seekTo(position - jumpInterval)

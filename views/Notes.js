@@ -6,10 +6,11 @@ import axios from 'axios';
 import { API_URL } from '@env';
 import CustomHeader from '../components/CustomHeader';
 import AppContext from '../AppContext';
+import TrackPlayer from 'react-native-track-player';
 
 const Notes = ({ navigation, userName }) => {
     const [input, setInput] = useState(null);
-    const { user, notes, getNotes, audio, position } = useContext(AppContext);
+    const { user, notes, getNotes, audio, setAudio, position, setTrackPlayerPosition } = useContext(AppContext);
 
     const postNote = async (data) => {
         await axios.post(`${API_URL}/user/note`, {
@@ -53,25 +54,38 @@ const Notes = ({ navigation, userName }) => {
         return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
     }
 
+    const changeAudioToNote = (audio, position) => {
+        try {
+            setAudio(audio)
+            setTrackPlayerPosition(position)
+            navigation.goBack();
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
     const minutesAndSeconds = (position) => ([
         pad(Math.floor(position / 60), 2),
         pad(position % 60, 2)
     ]);
 
-    
-
     const noteItem = ({ item }) => {
         const timeStamp = minutesAndSeconds(item.timestamp)
+        const itemAudio = {
+            ...item.audioID,
+            id: item.audioID._id
+        }
+        console.log('ITEM: ', JSON.stringify(item, '', '\t'))
         return <View style={{ minHeight: 30, borderBottomWidth: 1, borderColor: '#dadada', padding: 8, display: 'flex', flexDirection: 'row' }}>
             <View style={{ flex: 5 }}>
-                <Text numberOfLines={1} style={{ color: '#adadad', marginBottom: 8, fontSize: 14 }}>{item.audioID.title}</Text>
+                <Text numberOfLines={1} style={{ color: '#adadad', marginBottom: 8, fontSize: 14 }}>{itemAudio.title}</Text>
                 <Text style={{ fontSize: 18 }}>{item.data}</Text>
-                <View style={{display: 'flex', flexDirection: 'row', marginTop: 8}}>
-                    <Icon name='clock' size={18} color={'#adadad'} style={{marginEnd: 8, alignSelf: 'center'}}/><Text style={{alignSelf:'center', color: '#0f0f0f', fontSize: 14}}>{timeStamp[0] + ":" + Math.floor(timeStamp[1])}min</Text>
+                <View style={{ display: 'flex', flexDirection: 'row', marginTop: 8 }}>
+                    <Icon name='clock' size={18} color={'#adadad'} style={{ marginEnd: 8, alignSelf: 'center' }} /><Text style={{ alignSelf: 'center', color: '#0f0f0f', fontSize: 14 }}>{timeStamp[0] + ":" + Math.floor(timeStamp[1])}min</Text>
                 </View>
             </View>
-            <Button icon transparent style={{ flex: 1, alignSelf: 'flex-start' }}>
-                <Icon color={'#000'} name='headphones' size={24} style={{marginStart: 8, alignSelf:'center'}}/>
+            <Button icon transparent style={{ flex: 1, alignSelf: 'flex-start' }} onPress={() => changeAudioToNote(itemAudio, item.timestamp)}>
+                <Icon color={'#000'} name='headphones' size={24} style={{ marginStart: 8, alignSelf: 'center' }} />
             </Button>
         </View>
     };
@@ -87,7 +101,7 @@ const Notes = ({ navigation, userName }) => {
             >
             </FlatList>
 
-            <Form style={{ position: 'absolute', bottom: 130, display: 'flex', flexDirection: 'row', backgroundColor:'#fff', width: '100%' }}>
+            <Form style={{ position: 'absolute', bottom: 130, display: 'flex', flexDirection: 'row', backgroundColor: '#fff', width: '100%' }}>
                 <Item style={{ flex: 4 }}>
                     <Input
                         placeholder='Create note'
@@ -100,7 +114,7 @@ const Notes = ({ navigation, userName }) => {
                         postNote(input)
                         setInput('')
                     }}>
-                    <Icon name='pen' size={20} color={'#000'} style={{marginStart: 16}} />
+                    <Icon name='pen' size={20} color={'#000'} style={{ marginStart: 16 }} />
                 </Button>
             </Form>
 

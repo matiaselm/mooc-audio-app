@@ -94,7 +94,7 @@ const App = (props) => {
       await getData('user').then((user) => {
         if (user) {
           setUser(user)
-          console.log('Got user: ', JSON.stringify(user,'','\t'))
+          console.log('Got user: ', JSON.stringify(user, '', '\t'))
         } else {
           console.log('No user in storage. Creating a new one...')
           createUser();
@@ -125,6 +125,20 @@ const App = (props) => {
     }
   }
 
+  const getPosition = async () => {
+    await TrackPlayer.getPosition().then(position => {
+      setPosition(position);
+    }).catch(e => {
+      console.error(e)
+    });
+  }
+
+  const setTrackPlayerPosition = async (_position) => {
+    await TrackPlayer.getCurrentTrack().then(() => {
+      TrackPlayer.seekTo(_position)
+    })
+  }
+
   useEffect(() => {
     loadUser();
     initTrackPlayer();
@@ -134,16 +148,34 @@ const App = (props) => {
     getNotes();
   }, [user])
 
+  useEffect(() => {
+    audio && setTrackPlayerAudio(audio.id)
+  }, [audio])
+
+  const setTrackPlayerAudio = async (id) => {
+    await TrackPlayer.skip(id).then((res) => {
+      console.log('Changed to track ', id)
+    }).catch((e) => {
+      console.error(e.message)
+    })
+  }
+
   const appContextProvider = React.useMemo(() => {
     return {
       user: user,
       setUser: setUser,
+
       audio: audio,
       setAudio: setAudio,
+
       position: position,
       setPosition: setPosition,
+      getPosition: getPosition,
+      setTrackPlayerPosition: setTrackPlayerPosition,
+
       queue: queue,
       setQueue: setQueue,
+
       notes: notes,
       setNotes: setNotes,
       getNotes: getNotes,
