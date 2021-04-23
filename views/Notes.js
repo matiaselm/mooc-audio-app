@@ -91,7 +91,7 @@ const Notes = ({ navigation, userName }) => {
     };
 
     return <View>
-        <View style={{ height: '100%', padding: 8 }}>
+        <View style={{ height: '100%', padding: 8, paddingBottom: 76 }}>
             <FlatList
                 keyExtractor={item => item._id}
                 data={notes ?? []}
