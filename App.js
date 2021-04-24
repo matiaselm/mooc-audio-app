@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Home from './views/Home';
 import Main from './views/Main';
 import Notes from './views/Notes';
+import playbackService from './services/playbackService';
 import playerHandler from './services/playerHandler';
 import TrackPlayer from 'react-native-track-player';
 import { API_URL } from '@env';
@@ -54,7 +55,7 @@ const App = (props) => {
   }
 
   const initTrackPlayer = async () => {
-    TrackPlayer.registerPlaybackService(audio);
+    TrackPlayer.registerPlaybackService(playbackService);
     TrackPlayer.registerEventHandler(playerHandler);
     await TrackPlayer.setupPlayer().then(() => {
       console.log('player set up')
@@ -210,6 +211,7 @@ const App = (props) => {
             }}>
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Notes" component={Notes} />
+            <Stack.Screen name="Main" component={Main} />
           </Stack.Navigator>
         </NavigationContainer>
       </AppContext.Provider>

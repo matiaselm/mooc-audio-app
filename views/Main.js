@@ -1,82 +1,234 @@
 import React, { useState, useEffect } from 'react';
+import { StyleSheet } from 'react-native';
 import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, FooterTab, Button, View, Form, Item, Input } from 'native-base';
 import axios from 'axios';
 import { WIT_BEARER } from "@env";
 import CustomHeader from '../components/CustomHeader';
+import SpeechToText from 'react-native-google-speech-to-text';
+import Voice, { SpeechRecognizedEvent, SpeechResultsEvent, SpeechErrorEvent, } from '@react-native-voice/voice';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
-const Main = ({ navigation, userName }) => {
-    const [intent, setIntent] = useState(null);
-    const [input, setInput] = useState(null);
-    const clientId = '4f083ae5f189a802a855a52cd24de5fe30ddea15'; // May be a working soundcloud clientID to pass to it
-    console.log('Bearer token: ' + WIT_BEARER)
+const Main = ({ navigation }) => {
 
-    const instance = axios.create({
-        baseURL: 'https://api.wit.ai',
-        timeout: 1000,
-        headers: { 'Authorization': `Bearer ${WIT_BEARER}` }
-    });
+    const [voiceState, setVoiceState] = useState({
+        recognized: '',
+        pitch: '',
+        error: '',
+        end: '',
+        started: '',
+        results: [],
+        partialResults: [],
+    })
 
-    const getWit = async (query) => {
-        instance.get('/message', {
-            params: {
-                q: query
-            }
-        }).then((response) => {
-            if (response.data.intents) {
-                setIntent(response.data.intents[0])
-            }
-        })
-    }
+    useEffect(() => {
+        Voice.onSpeechStart = onSpeechStart;
+        Voice.onSpeechRecognized = onSpeechRecognized;
+        Voice.onSpeechEnd = onSpeechEnd;
+        Voice.onSpeechError = onSpeechError;
+        Voice.onSpeechResults = onSpeechResults;
+        Voice.onSpeechPartialResults = onSpeechPartialResults;
+        Voice.onSpeechVolumeChanged = onSpeechVolumeChanged;
 
-    const formatResponse = (response) => {
-        switch (response) {
-            case 'listening': {
-                return 'What would you want to listen to?'
-            }
-            case 'next': {
-                return "I'll skip that for you"
-
-            }
-            case 'pause': {
-                return "I'll pause that for you"
-            }
-            case 'backward': {
-                return "I'll skip backwards"
-            }
-            case 'resume': {
-                return "Okay let's resume"
-            }
-            default: {
-                return "I didn't quite catch that"
-            }
+        return () => {
+            Voice.destroy().then(Voice.removeAllListeners);
         }
-    }
+    }, [])
+
+    const onSpeechStart = (e) => {
+        console.log('onSpeechStart: ', e);
+        setVoiceState(prev => ({
+            ...prev,
+            started: '√',
+        }));
+    };
+
+    const onSpeechRecognized = (e) => {
+        console.log('onSpeechRecognized: ', e);
+        setVoiceState(prev => ({
+            ...prev,
+            recognized: '√',
+        }));
+    };
+
+    const onSpeechEnd = (e) => {
+        console.log('onSpeechEnd: ', e);
+        setVoiceState(prev => ({
+            ...prev,
+            end: '√',
+        }));
+    };
+
+    const onSpeechError = (e) => {
+        console.log('onSpeechError: ', e);
+        setVoiceState(prev => ({
+            ...prev,
+            error: JSON.stringify(e.error),
+        }));
+    };
+
+    const onSpeechResults = (e) => {
+        console.log('onSpeechResults: ', e);
+        setVoiceState(prev => ({
+            ...prev,
+            results: e.value,
+        }));
+    };
+
+    const onSpeechPartialResults = (e) => {
+        console.log('onSpeechPartialResults: ', e);
+        setVoiceState(prev => ({
+            ...prev,
+            partialResults: e.value,
+        }));
+    };
+
+    const onSpeechVolumeChanged = (e) => {
+        console.log('onSpeechVolumeChanged: ', e);
+        setVoiceState(prev => ({
+            ...prev,
+            pitch: e.value,
+        }));
+    };
+
+    const _startRecognizing = async () => {
+        setVoiceState({
+            recognized: '',
+            pitch: '',
+            error: '',
+            started: '',
+            results: [],
+            partialResults: [],
+            end: '',
+        });
+
+        try {
+            await Voice.start('fi-FI');
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const _stopRecognizing = async () => {
+        try {
+            await Voice.stop();
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const _cancelRecognizing = async () => {
+        try {
+            await Voice.cancel();
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const _destroyRecognizer = async () => {
+        try {
+            await Voice.destroy();
+        } catch (e) {
+            console.error(e);
+        }
+        setVoiceState({
+            recognized: '',
+            pitch: '',
+            error: '',
+            started: '',
+            results: [],
+            partialResults: [],
+            end: '',
+        });
+    };
 
     return <>
-        <CustomHeader title={'Main'} onPressNavigation={() => navigation.goBack()} userName={userName}/>
         <Container>
-            <Content>
-                {intent && <Text style={{ alignSelf: 'center', margin: 16, padding: 16, backgroundColor: '#ddd', borderRadius: 16 }}>{intent && formatResponse(intent.name)}</Text>}
 
-                <Form style={{ marginTop: 100, display: 'flex', flexDirection: 'row', bottom: 0, marginRight: 16 }}>
-                    <Item style={{ flex: 3, marginRight: 16 }}>
-                        <Input
-                            placeholder='Message wit'
-                            value={input}
-                            onChangeText={text => setInput(text)}>
-                        </Input>
-                    </Item>
-                    <Button style={{ flex: 1, borderRadius: 8 }}
-                        onPress={() => {
-                            getWit(input)
-                            setInput('')
-                        }}>
-                        <Text>Send</Text>
-                    </Button>
-                </Form>
-            </Content>
+            <Text style={styles.instructions}>
+                Press the button and start speaking.
+        </Text>
+            <Text style={styles.stat}>{`Started: ${voiceState.started}`}</Text>
+            <Text style={styles.stat}>{`Recognized: ${voiceState.recognized
+                }`}</Text>
+            <Text style={styles.stat}>{`Pitch: ${voiceState.pitch}`}</Text>
+            <Text style={styles.stat}>{`Error: ${voiceState.error}`}</Text>
+            <Text style={styles.stat}>Results</Text>
+            {voiceState.results.map((result, index) => {
+                return (
+                    <Text key={`result-${index}`} style={styles.stat}>
+                        {result}
+                    </Text>
+                );
+            })}
+            <Text style={styles.stat}>Partial Results</Text>
+            {voiceState.partialResults.map((result, index) => {
+                return (
+                    <Text key={`partial-result-${index}`} style={styles.stat}>
+                        {result}
+                    </Text>
+                );
+            })}
+            <Text style={styles.stat}>{`End: ${voiceState.end}`}</Text>
+            <Button onPress={_startRecognizing}>
+                <Icon name={'microphone'} size={26} color={'#FFF'} style={{ alignSelf: 'center', marginStart: 30 }} />
+            </Button>
+            <Button onPress={_stopRecognizing}>
+                <Text style={styles.action}>Stop Recognizing</Text>
+            </Button>
+            <Button onPress={_cancelRecognizing}>
+                <Text style={styles.action}>Cancel</Text>
+            </Button>
+            <Button onPress={_destroyRecognizer}>
+                <Text style={styles.action}>Destroy</Text>
+            </Button>
+
+            <View style={{ height: '100%', padding: 8, backgroundColor: '#fafafa' }}>
+                <Text style={{ alignSelf: 'center', margin: 16 }}>Recorded audio here</Text>
+
+                <Button style={{ position: 'absolute', elevation: 10, backgroundColor: '#fff', borderRadius: 30, margin: 8, bottom: 16, right: 16, height: 60, width: 60, justifyContent: 'center' }} onPress={() => console.log('Start recording')}>
+                    <Icon name={'microphone'} size={26} color={'#006064'} style={{ alignSelf: 'center', marginStart: 30 }} />
+                    <Text style={{ color: '#006064' }}></Text>
+                </Button>
+
+            </View>
         </Container>
     </>
 }
+
+const styles = StyleSheet.create({
+    button: {
+        width: 50,
+        height: 50,
+    },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#F5FCFF',
+    },
+    welcome: {
+        fontSize: 20,
+        textAlign: 'center',
+        margin: 10,
+    },
+    action: {
+        textAlign: 'center',
+        margin: 8,
+        alignSelf: 'center',
+        color: '#ddd',
+        marginVertical: 5,
+        fontWeight: 'bold',
+    },
+    instructions: {
+        textAlign: 'center',
+        color: '#333333',
+        marginBottom: 5,
+    },
+    stat: {
+        textAlign: 'center',
+        color: '#B0171F',
+        marginBottom: 1,
+    },
+});
 
 export default Main;

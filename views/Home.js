@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Container, Text, Content, Picker, Spinner, Button } from 'native-base';
+import { Container, Text, Content, Picker, Spinner, Button, View } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import CustomHeader from '../components/CustomHeader';
 import AudioControls from '../components/AudioControls';
@@ -73,10 +73,17 @@ const Home = ({ navigation }) => {
                     </Picker>
                 }
             </Content>
-            <Button block style={{ margin: 16, elevation: 10, borderWidth: 3, borderColor: '#006064', backgroundColor: '#d4fafc', borderRadius: 16 }} onPress={() => navigation.push('Notes')}>
-                <Icon name={'book-open'} size={26} color={'#006064'} />
-                <Text style={{color: '#006064'}}>Muistiinpanot</Text>
-            </Button>
+            <View style={{position: 'absolute', display: 'flex', bottom: 16, width: '100%', flexDirection: 'row', height: 60, paddingBottom: 16}}>
+                <Button block style={{ flex: 2, elevation: 10, borderWidth: 3, borderColor: '#006064', backgroundColor: '#d4fafc', borderRadius: 16, margin: 8 }} onPress={() => navigation.push('Notes')}>
+                    <Icon name={'book-open'} size={26} color={'#006064'} />
+                    <Text style={{ color: '#006064' }}>Muistiinpanot</Text>
+                </Button>
+                <Button style={{ elevation: 10, backgroundColor: '#fff', borderRadius: 16, margin: 8 }} onPress={() => navigation.push('Main')}>
+                    <Icon name={'microphone'} size={26} color={'#006064'} style={{ alignSelf: 'center', marginStart: 30 }} />
+                    <Text style={{ color: '#006064' }}></Text>
+                </Button>
+            </View>
+
         </Container>
     </>
 }
