@@ -169,27 +169,25 @@ const Main = ({ navigation }) => {
                 );
             })}
             <Text style={styles.stat}>{`End: ${voiceState.end}`}</Text>
-            <Button onPress={_startRecognizing}>
-                <Icon name={'microphone'} size={26} color={'#FFF'} style={{ alignSelf: 'center', marginStart: 30 }} />
-            </Button>
-            <Button onPress={_stopRecognizing}>
-                <Text style={styles.action}>Stop Recognizing</Text>
-            </Button>
-            <Button onPress={_cancelRecognizing}>
-                <Text style={styles.action}>Cancel</Text>
-            </Button>
-            <Button onPress={_destroyRecognizer}>
-                <Text style={styles.action}>Destroy</Text>
-            </Button>
 
-            <View style={{ height: '100%', padding: 8, backgroundColor: '#fafafa' }}>
-                <Text style={{ alignSelf: 'center', margin: 16 }}>Recorded audio here</Text>
-
-                <Button style={{ position: 'absolute', elevation: 10, backgroundColor: '#fff', borderRadius: 30, margin: 8, bottom: 16, right: 16, height: 60, width: 60, justifyContent: 'center' }} onPress={() => console.log('Start recording')}>
-                    <Icon name={'microphone'} size={26} color={'#006064'} style={{ alignSelf: 'center', marginStart: 30 }} />
-                    <Text style={{ color: '#006064' }}></Text>
+            <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
+                <Button style={[styles.action, {}]} onPress={_startRecognizing}>
+                    <Icon name={'microphone'} size={26} color={'#fff'} style={{ margin: 8, alignSelf: 'center' }} />
+                    <Text>Start Recognizing</Text>
                 </Button>
 
+                <Button warning style={styles.action} onPress={_cancelRecognizing}>
+                    <Text>Cancel</Text>
+                </Button>
+
+                <Button style={styles.action} onPress={_stopRecognizing}>
+                    <Icon name={'stop'} size={26} color={'#fff'} style={{ margin: 8, alignSelf: 'center' }} />
+                    <Text>Stop Recognizing</Text>
+                </Button>
+
+                <Button danger style={styles.action} onPress={_destroyRecognizer}>
+                    <Text>Destroy</Text>
+                </Button>
             </View>
         </Container>
     </>
