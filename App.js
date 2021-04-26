@@ -17,6 +17,7 @@ import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { fromRight } from 'react-navigation-transitions';
+import Tts from 'react-native-tts';
 
 /* TODO:
  - Localstorage user with backend
@@ -33,6 +34,9 @@ const App = (props) => {
   const [queue, setQueue] = useState([])
   const [notes, setNotes] = useState([])
   const [position, setPosition] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const jumpInterval = 30;
+
 
   const Stack = createStackNavigator();
 
@@ -78,6 +82,13 @@ const App = (props) => {
       }
     })
   };
+
+  const initTts = async () => {
+    Tts.setDefaultLanguage('fi-FI');
+    Tts.getInitStatus().then(() => {
+      Tts.speak('Hei!')
+    });
+  }
 
   const createUser = async () => {
     await axios.post(`${API_URL}/user`, {
@@ -135,15 +146,29 @@ const App = (props) => {
     });
   }
 
-  const setTrackPlayerPosition = async (_position) => {
+  const togglePlayback = async (status) => {
+    if (status) {
+      console.log('Play')
+      setPlaying(true);
+      await TrackPlayer.play()
+    } else {
+      console.log('Pause')
+      setPlaying(false);
+      await TrackPlayer.pause()
+    }
+  }
+
+  const skip = async (way) => {
     await TrackPlayer.getCurrentTrack().then(() => {
-      TrackPlayer.seekTo(_position)
+      if (way === 'backward') TrackPlayer.seekTo(position - jumpInterval)
+      if (way === 'forward') TrackPlayer.seekTo(position + jumpInterval)
     })
   }
 
   useEffect(() => {
     loadUser();
     initTrackPlayer();
+    initTts();
   }, []);
 
   useEffect(() => {
@@ -172,10 +197,14 @@ const App = (props) => {
       audio: audio,
       setAudio: setAudio,
 
+      playing: playing,
+      togglePlayback: togglePlayback,
+
+      skip: skip,
+
       position: position,
       setPosition: setPosition,
       getPosition: getPosition,
-      setTrackPlayerPosition: setTrackPlayerPosition,
 
       queue: queue,
       setQueue: setQueue,

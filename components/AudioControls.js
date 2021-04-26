@@ -5,12 +5,18 @@ import { skip } from 'react-native-track-player';
 import ProgressBar from './ProgressBar';
 import AppContext from '../AppContext';
 
-const AudioControls = ({ style, duration, position, handlePress, title, togglePlayback, image, progress, status, skip }) => {
+const AudioControls = ({ style }) => {
     const {
         audio,
         setAudio,
-        queue } = useContext(AppContext);
+        position,
+        playing,
+        queue,
+        skip,
+        togglePlayback } = useContext(AppContext);
 
+    const duration = audio.duration && Math.round(audio.duration.$numberDecimal)
+    
     const decimalAdjust = (type, value, exp) => {
         // If the exp is undefined or zero...
         if (typeof exp === 'undefined' || +exp === 0) {
@@ -46,7 +52,7 @@ const AudioControls = ({ style, duration, position, handlePress, title, togglePl
     const remaining = minutesAndSeconds(duration - position);
 
     return <View style={[{ padding: 16 }, style]}>
-        <Text numberOfLines={3} style={styles.name}>{title}</Text>
+        <Text numberOfLines={3} style={styles.name}>{audio.title}</Text>
 
         <Picker
             style={{ position: 'absolute', top: 16, right: 8, zIndex: 1, width: 30 }}
@@ -64,22 +70,22 @@ const AudioControls = ({ style, duration, position, handlePress, title, togglePl
                 height: 250,
                 width: '100%',
                 marginVertical: 8,
-                borderWidth: 3, 
-                borderColor: '#006064', 
-                backgroundColor: image ? null : '#d4fafc'
+                borderWidth: 3,
+                borderColor: '#006064',
+                backgroundColor: audio.image ? null : '#d4fafc'
             }}
-            source={{ uri: image ?? 'https://www.muutoslehti.fi/wp-content/uploads/powerpress/muutos_podcast_logo.jpg' }}
+            source={{ uri: audio.image ?? 'https://www.muutoslehti.fi/wp-content/uploads/powerpress/muutos_podcast_logo.jpg' }}
         />
         <View style={styles.buttonGroup}>
 
             <Button icon style={styles.audioButton} onPress={() => skip('backward')}>
                 <Icon name='play-back-sharp' />
             </Button>
-            {status === true ?
-                <Button icon style={styles.audioButton} onPress={togglePlayback}>
+            {playing === true ?
+                <Button icon style={styles.audioButton} onPress={() => togglePlayback(false)}>
                     <Icon name='pause-sharp' />
                 </Button> :
-                <Button icon style={styles.audioButton} onPress={togglePlayback}>
+                <Button icon style={styles.audioButton} onPress={() => togglePlayback(true)}>
                     <Icon name='play-sharp' />
                 </Button>
             }
@@ -115,7 +121,7 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     audioButton: {
-        borderColor: '#d4fafc', 
+        borderColor: '#d4fafc',
         backgroundColor: '#006064',
         width: 70,
         height: 70,

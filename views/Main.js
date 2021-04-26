@@ -7,18 +7,26 @@ import CustomHeader from '../components/CustomHeader';
 import SpeechToText from 'react-native-google-speech-to-text';
 import Voice, { SpeechRecognizedEvent, SpeechResultsEvent, SpeechErrorEvent, } from '@react-native-voice/voice';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import useVoiceInputHooks from '../services/voiceInputHooks';
 
 const Main = ({ navigation }) => {
 
-    const [voiceState, setVoiceState] = useState({
-        recognized: '',
-        pitch: '',
-        error: '',
-        end: '',
-        started: '',
-        results: [],
-        partialResults: [],
-    })
+    const {
+        onSpeechStart,
+        onSpeechRecognized,
+        onSpeechEnd,
+        onSpeechError,
+        onSpeechResults,
+        onSpeechPartialResults,
+        onSpeechVolumeChanged,
+
+        _startRecognizing,
+        _stopRecognizing,
+        _cancelRecognizing,
+        _destroyRecognizer,
+        
+        voiceState
+    } = useVoiceInputHooks();
 
     useEffect(() => {
         Voice.onSpeechStart = onSpeechStart;
@@ -34,119 +42,10 @@ const Main = ({ navigation }) => {
         }
     }, [])
 
-    const onSpeechStart = (e) => {
-        console.log('onSpeechStart: ', e);
-        setVoiceState(prev => ({
-            ...prev,
-            started: '√',
-        }));
-    };
-
-    const onSpeechRecognized = (e) => {
-        console.log('onSpeechRecognized: ', e);
-        setVoiceState(prev => ({
-            ...prev,
-            recognized: '√',
-        }));
-    };
-
-    const onSpeechEnd = (e) => {
-        console.log('onSpeechEnd: ', e);
-        setVoiceState(prev => ({
-            ...prev,
-            end: '√',
-        }));
-    };
-
-    const onSpeechError = (e) => {
-        console.log('onSpeechError: ', e);
-        setVoiceState(prev => ({
-            ...prev,
-            error: JSON.stringify(e.error),
-        }));
-    };
-
-    const onSpeechResults = (e) => {
-        console.log('onSpeechResults: ', e);
-        setVoiceState(prev => ({
-            ...prev,
-            results: e.value,
-        }));
-    };
-
-    const onSpeechPartialResults = (e) => {
-        console.log('onSpeechPartialResults: ', e);
-        setVoiceState(prev => ({
-            ...prev,
-            partialResults: e.value,
-        }));
-    };
-
-    const onSpeechVolumeChanged = (e) => {
-        console.log('onSpeechVolumeChanged: ', e);
-        setVoiceState(prev => ({
-            ...prev,
-            pitch: e.value,
-        }));
-    };
-
-    const _startRecognizing = async () => {
-        setVoiceState({
-            recognized: '',
-            pitch: '',
-            error: '',
-            started: '',
-            results: [],
-            partialResults: [],
-            end: '',
-        });
-
-        try {
-            await Voice.start('fi-FI');
-        } catch (e) {
-            console.error(e);
-        }
-    };
-
-    const _stopRecognizing = async () => {
-        try {
-            await Voice.stop();
-        } catch (e) {
-            console.error(e);
-        }
-    };
-
-    const _cancelRecognizing = async () => {
-        try {
-            await Voice.cancel();
-        } catch (e) {
-            console.error(e);
-        }
-    };
-
-    const _destroyRecognizer = async () => {
-        try {
-            await Voice.destroy();
-        } catch (e) {
-            console.error(e);
-        }
-        setVoiceState({
-            recognized: '',
-            pitch: '',
-            error: '',
-            started: '',
-            results: [],
-            partialResults: [],
-            end: '',
-        });
-    };
-
     return <>
         <Container>
 
-            <Text style={styles.instructions}>
-                Press the button and start speaking.
-        </Text>
+            <Text style={styles.instructions}>Press the button and start speaking</Text>
             <Text style={styles.stat}>{`Started: ${voiceState.started}`}</Text>
             <Text style={styles.stat}>{`Recognized: ${voiceState.recognized
                 }`}</Text>
@@ -219,8 +118,8 @@ const styles = StyleSheet.create({
     },
     instructions: {
         textAlign: 'center',
+        margin: 4,
         color: '#333333',
-        marginBottom: 5,
     },
     stat: {
         textAlign: 'center',
