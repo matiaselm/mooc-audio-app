@@ -28,14 +28,15 @@ import Tts from 'react-native-tts';
 */
 
 const App = (props) => {
+  const [isConnected, setIsConnected] = useState(false)
   const [isReady, setIsReady] = useState(false)
   const [user, setUser] = useState(null)
   const [audio, setAudio] = useState(null)
   const [queue, setQueue] = useState([])
   const [notes, setNotes] = useState([])
-  const [position, setPosition] = useState(0);
-  const [playing, setPlaying] = useState(false);
-  const jumpInterval = 30;
+  const [position, setPosition] = useState(0)
+  const [playing, setPlaying] = useState(false)
+  const jumpInterval = 30
 
 
   const Stack = createStackNavigator();
@@ -77,6 +78,7 @@ const App = (props) => {
             TrackPlayer.add(responseAudio)
           }
           TrackPlayer.getQueue().then(queue => setQueue(queue));
+          setIsConnected(true);
         });
       } catch (e) {
         console.error(e.message)
@@ -87,7 +89,7 @@ const App = (props) => {
   const initTts = async () => {
     Tts.setDefaultLanguage('fi-FI');
     Tts.getInitStatus().then(() => {
-      Tts.speak('Hei!')
+      console.log('TTS initialized');
     });
   }
 
@@ -184,7 +186,7 @@ const App = (props) => {
     await TrackPlayer.skip(id).then((res) => {
       console.log('Changed to track ', id)
     }).catch((e) => {
-      console.log('setTrackPlayerAudio', e.message)
+      console.log('setTrackPlayerAudio error: ', e.message)
     })
   }
 
@@ -229,21 +231,25 @@ const App = (props) => {
   }, []);
 
   return !isReady ? <AppLoading /> :
-    <Root>
-      <AppContext.Provider value={appContextProvider}>
-        <NavigationContainer>
-          <Stack.Navigator
-            screenOptions={{
-              headerMode: 'screen',
-              transitionConfig: fromRight()
-            }}>
-            <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="Notes" component={Notes} />
-            <Stack.Screen name="Main" component={Main} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </AppContext.Provider>
-    </Root>
+    !isConnected ? <View style={{ padding: 16, alignContent: 'center' }}>
+      <Text style={{ textAlign: 'center' }}>Ei voi yhdistää palveluun :( </Text>
+      <Text style={{ textAlign: 'center' }}>Kokeile myöhemmin uudestaan</Text>
+    </View> :
+      <Root>
+        <AppContext.Provider value={appContextProvider}>
+          <NavigationContainer>
+            <Stack.Navigator
+              screenOptions={{
+                headerMode: 'screen',
+                transitionConfig: fromRight()
+              }}>
+              <Stack.Screen name="Home" component={Home} />
+              <Stack.Screen name="Notes" component={Notes} />
+              <Stack.Screen name="Main" component={Main} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </AppContext.Provider>
+      </Root>
 }
 
 export default App;

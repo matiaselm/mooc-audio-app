@@ -59,7 +59,7 @@ const Home = ({ navigation }) => {
     useEffect(() => {
         const counter = setInterval(() => {
             getPosition()
-        }, 500)
+        }, 100)
 
         return () => clearInterval(counter);
     })
@@ -86,7 +86,7 @@ const Home = ({ navigation }) => {
                     <Icon name={'book-open'} size={26} color={'#006064'} />
                     <Text style={{ color: '#006064' }}>Muistiinpanot</Text>
                 </Button>
-                <Button style={{ elevation: 10, backgroundColor: '#fff', borderRadius: 16, margin: 8 }} onPress={_startRecognizing}>
+                <Button style={{ elevation: 10, backgroundColor: '#fff', borderRadius: 16, margin: 8 }} onPressIn={_startRecognizing} onPressOut={_stopRecognizing}>
                     <Icon name={'microphone'} size={26} color={'#006064'} style={{ alignSelf: 'center', marginStart: 30 }} />
                     <Text style={{ color: '#006064' }}></Text>
                 </Button>
