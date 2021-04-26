@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import AppContext from '../AppContext';
 import Tts from 'react-native-tts';
-import TrackPlayer from 'react-native-track-player';
+import TrackPlayer, { skip } from 'react-native-track-player';
 
 const useVoiceFeedbackHooks = () => {
     const {
@@ -13,7 +13,6 @@ const useVoiceFeedbackHooks = () => {
         position,
         setPosition,
         getPosition,
-
         togglePlayback,
     } = useContext(AppContext);
 
@@ -32,7 +31,7 @@ const useVoiceFeedbackHooks = () => {
             }
 
             if (input.includes('moi') || input.includes('hei')) {
-                Tts.speak('Hei! Mitä haluaisit kuunnella?')
+                Tts.speak(`Hei ${user.name ?? ''}! Mitä haluaisit kuunnella?`)
                 return
             }
             if (input.includes('pysäytä') || input.includes('paussi') || input.includes('tauko') || input.includes('stop')) {
@@ -56,6 +55,16 @@ const useVoiceFeedbackHooks = () => {
             }
             if (input.includes('vaihda') && /\d/.test(input)) {
                 Tts.speak(`Vaihdan jaksoon ${parseNumber(input)}`)
+                return
+            }
+            if(input.includes('eteen')) {
+                console.log('Going forward')
+                skip('forward')
+                return
+            }
+            if(input.includes('taakse')){
+                console.log('Going backwards')
+                skip('backward')
                 return
             }
             if (input.includes('skip' && 'seuraava')) {

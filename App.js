@@ -67,12 +67,13 @@ const App = (props) => {
         const url = `${API_URL}/audio`;
         // console.log('API: ', url);
         axios.get(url).then(response => {
-          console.log('Queue: ', response.data.length)
+          console.log('Queue: ', JSON.stringify(response.data.length))
           for (let i in response.data) {
             const responseAudio = {
               ...response.data[i],
               id: response.data[i]._id
             }
+            // console.log('Audio: ', JSON.stringify(responseAudio,'','\t'));
             TrackPlayer.add(responseAudio)
           }
           TrackPlayer.getQueue().then(queue => setQueue(queue));
@@ -159,10 +160,8 @@ const App = (props) => {
   }
 
   const skip = async (way) => {
-    await TrackPlayer.getCurrentTrack().then(() => {
-      if (way === 'backward') TrackPlayer.seekTo(position - jumpInterval)
-      if (way === 'forward') TrackPlayer.seekTo(position + jumpInterval)
-    })
+    if (way === 'backward') await TrackPlayer.seekTo(position - jumpInterval)
+    if (way === 'forward') await TrackPlayer.seekTo(position + jumpInterval)
   }
 
   useEffect(() => {
@@ -185,7 +184,7 @@ const App = (props) => {
     await TrackPlayer.skip(id).then((res) => {
       console.log('Changed to track ', id)
     }).catch((e) => {
-      console.error(e.message)
+      console.log('setTrackPlayerAudio', e.message)
     })
   }
 
