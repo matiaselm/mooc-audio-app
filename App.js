@@ -28,16 +28,19 @@ import Tts from 'react-native-tts';
 */
 
 const App = (props) => {
-  const [isConnected, setIsConnected] = useState(false)
   const [isReady, setIsReady] = useState(false)
-  const [user, setUser] = useState(null)
   const [audio, setAudio] = useState(null)
   const [queue, setQueue] = useState([])
   const [notes, setNotes] = useState([])
   const [position, setPosition] = useState(0)
   const [playing, setPlaying] = useState(false)
-  const jumpInterval = 30
-
+  const [user, setUser] = useState({
+    notes: null,
+    _id: null,
+    name: null,
+    progress: null,
+    audio: null,
+  })
 
   const Stack = createStackNavigator();
 
@@ -60,7 +63,6 @@ const App = (props) => {
   }
 
   const initTrackPlayer = async () => {
-    TrackPlayer.registerPlaybackService(playbackService);
     TrackPlayer.registerEventHandler(playerHandler);
     await TrackPlayer.setupPlayer().then(() => {
       console.log('player set up')
@@ -78,7 +80,6 @@ const App = (props) => {
             TrackPlayer.add(responseAudio)
           }
           TrackPlayer.getQueue().then(queue => setQueue(queue));
-          setIsConnected(true);
         });
       } catch (e) {
         console.error(e.message)
@@ -108,7 +109,7 @@ const App = (props) => {
     try {
       console.log('Load user')
       await getData('user').then((user) => {
-        if (user) {
+        if (user._id !== null) {
           setUser(user)
           console.log('Got user: ', JSON.stringify(user, '', '\t'))
         } else {
@@ -162,6 +163,7 @@ const App = (props) => {
   }
 
   const skip = async (way) => {
+    const jumpInterval = 30
     if (way === 'backward') await TrackPlayer.seekTo(position - jumpInterval)
     if (way === 'forward') await TrackPlayer.seekTo(position + jumpInterval)
   }
@@ -214,7 +216,7 @@ const App = (props) => {
       setNotes: setNotes,
       getNotes: getNotes,
     };
-  }, [user, audio, queue, notes, position]);
+  }, [user, audio, queue, notes, position, playing]);
 
   const loadFont = async () => {
     await Font.loadAsync({
@@ -231,25 +233,21 @@ const App = (props) => {
   }, []);
 
   return !isReady ? <AppLoading /> :
-    !isConnected ? <View style={{ padding: 16, alignContent: 'center' }}>
-      <Text style={{ textAlign: 'center' }}>Ei voi yhdistää palveluun :( </Text>
-      <Text style={{ textAlign: 'center' }}>Kokeile myöhemmin uudestaan</Text>
-    </View> :
-      <Root>
-        <AppContext.Provider value={appContextProvider}>
-          <NavigationContainer>
-            <Stack.Navigator
-              screenOptions={{
-                headerMode: 'screen',
-                transitionConfig: fromRight()
-              }}>
-              <Stack.Screen name="Home" component={Home} />
-              <Stack.Screen name="Notes" component={Notes} />
-              <Stack.Screen name="Main" component={Main} />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </AppContext.Provider>
-      </Root>
+    <Root>
+      <AppContext.Provider value={appContextProvider}>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerMode: 'screen',
+              transitionConfig: fromRight()
+            }}>
+            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Notes" component={Notes} />
+            <Stack.Screen name="Main" component={Main} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </AppContext.Provider>
+    </Root>
 }
 
 export default App;
