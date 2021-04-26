@@ -75,11 +75,13 @@ const useVoiceFeedbackHooks = () => {
                 return
             }
             if (input.includes('lista') || input.includes('jaksot')) {
+                // TODO listen to a number and change the ep to that
                 if (playing === true) { togglePlayback(false) }
                 Tts.speak(queue ? `Valittavia jaksoja on ${queue.length}. Sano jakson numero, niin vaihdan siihen` : 'En löydä kuunneltavaa')
                 return
             }
             if (input.includes('vaihda') && /\d/.test(input)) {
+                // TODO change to specific episode
                 if (playing === true) { togglePlayback(false) }
                 Tts.speak(`Vaihdan jaksoon ${parseNumber(input)}`)
                 return
@@ -104,10 +106,6 @@ const useVoiceFeedbackHooks = () => {
                 //console.log('TrackPlayer audio', JSON.stringify(currentAudio,'','\t'))
                 //console.log('audio', JSON.stringify(audio,'','\t'))
                 setAudio(currentAudio)
-                return
-            }
-            if (input.includes('skip')) {
-                Tts.speak('Vaihdanko seuraavaan jaksoon?')
                 return
             }
             else {

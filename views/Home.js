@@ -14,15 +14,8 @@ const Home = ({ navigation }) => {
     const {
         audio,
         setAudio,
-        user,
         queue,
-        setQueue,
-        position,
-        setPosition,
         getPosition,
-        playing,
-        skip,
-        togglePlayback,
     } = useContext(AppContext);
 
     const {

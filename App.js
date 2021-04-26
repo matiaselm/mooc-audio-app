@@ -79,7 +79,7 @@ const App = (props) => {
             // console.log('Audio: ', JSON.stringify(responseAudio, '', '\t'));
             TrackPlayer.add(responseAudio)
           }
-          TrackPlayer.getQueue().then(queue => setQueue(queue));
+          TrackPlayer.getQueue().then(_queue => setQueue(_queue));
         });
       } catch (e) {
         console.error(e.message)
@@ -164,17 +164,11 @@ const App = (props) => {
 
   const skip = async (way) => {
     const jumpInterval = 30
-    if (way === 'backward') await TrackPlayer.seekTo(position - jumpInterval)
-    if (way === 'forward') await TrackPlayer.seekTo(position + jumpInterval)
-  }
-
-  const jump = async (way) => {
     if (way === 'backward') {
-      console.log('backward')
-      
+      await TrackPlayer.seekTo(position - jumpInterval)
     }
     if (way === 'forward') {
-      console.log('forward')
+      await TrackPlayer.seekTo(position + jumpInterval)
     }
   }
 
@@ -193,8 +187,12 @@ const App = (props) => {
   }, [queue])
 
   useEffect(() => {
-    if (audio !== null) {
-      setTrackPlayerAudio(audio.id)
+    try {
+      if (audio !== null) {
+        setTrackPlayerAudio(audio.id)
+      }
+    } catch (e) {
+      console.log(e)
     }
   }, [audio])
 
@@ -219,7 +217,6 @@ const App = (props) => {
       togglePlayback: togglePlayback,
 
       skip: skip,
-      jump: jump,
 
       position: position,
       setPosition: setPosition,
