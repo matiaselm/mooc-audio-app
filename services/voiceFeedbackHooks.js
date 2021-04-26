@@ -15,6 +15,7 @@ const useVoiceFeedbackHooks = () => {
         setPosition,
         getPosition,
         togglePlayback,
+        jump,
     } = useContext(AppContext);
 
     const handleInput = async (_input) => {
@@ -83,22 +84,26 @@ const useVoiceFeedbackHooks = () => {
                 Tts.speak(`Vaihdan jaksoon ${parseNumber(input)}`)
                 return
             }
-            if (input.includes('eteen')) {
-                console.log('Going forward')
-                skip('forward')
-                return
-            }
-            if (input.includes('taakse')) {
-                console.log('Going backwards')
-                skip('backward')
-                return
-            }
             if (input.includes('skip' && 'seuraava') || input.includes('hyppää' && 'seuraava')) {
                 Tts.speak('Vaihdan seuraavaan jaksoon')
+                await TrackPlayer.skipToNext();
+                const currentID = await TrackPlayer.getCurrentTrack();
+                //console.log('id', currentID)
+                const currentAudio = await TrackPlayer.getTrack(currentID)
+                //console.log('TrackPlayer audio', JSON.stringify(currentAudio,'','\t'))
+                //console.log('audio', JSON.stringify(audio,'','\t'))
+                setAudio(currentAudio)
                 return
             }
             if (input.includes('skip' && 'taakse' || input.includes('hyppää' && 'taakse'))) {
                 Tts.speak('Vaihdan edelliseen jaksoon')
+                await TrackPlayer.skipToPrevious();
+                const currentID = await TrackPlayer.getCurrentTrack();
+                //console.log('id', currentID)
+                const currentAudio = await TrackPlayer.getTrack(currentID)
+                //console.log('TrackPlayer audio', JSON.stringify(currentAudio,'','\t'))
+                //console.log('audio', JSON.stringify(audio,'','\t'))
+                setAudio(currentAudio)
                 return
             }
             if (input.includes('skip')) {

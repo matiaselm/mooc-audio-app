@@ -70,13 +70,13 @@ const App = (props) => {
         const url = `${API_URL}/audio`;
         // console.log('API: ', url);
         axios.get(url).then(response => {
-          console.log('Queue: ', JSON.stringify(response.data.length))
+          // console.log('Queue: ', JSON.stringify(response.data.length))
           for (let i in response.data) {
             const responseAudio = {
               ...response.data[i],
-              id: response.data[i]._id
+              id: response.data[i]._id,
             }
-            // console.log('Audio: ', JSON.stringify(responseAudio,'','\t'));
+            // console.log('Audio: ', JSON.stringify(responseAudio, '', '\t'));
             TrackPlayer.add(responseAudio)
           }
           TrackPlayer.getQueue().then(queue => setQueue(queue));
@@ -168,6 +168,16 @@ const App = (props) => {
     if (way === 'forward') await TrackPlayer.seekTo(position + jumpInterval)
   }
 
+  const jump = async (way) => {
+    if (way === 'backward') {
+      console.log('backward')
+      
+    }
+    if (way === 'forward') {
+      console.log('forward')
+    }
+  }
+
   useEffect(() => {
     loadUser();
     initTrackPlayer();
@@ -179,17 +189,22 @@ const App = (props) => {
   }, [user])
 
   useEffect(() => {
+    // console.log('Queue: ', JSON.stringify(queue, '', '\t'))
+  }, [queue])
+
+  useEffect(() => {
     if (audio !== null) {
       setTrackPlayerAudio(audio.id)
     }
   }, [audio])
 
   const setTrackPlayerAudio = async (id) => {
-    await TrackPlayer.skip(id).then((res) => {
+    try {
+      TrackPlayer.skip(id)
       console.log('Changed to track ', id)
-    }).catch((e) => {
+    } catch (e) {
       console.log('setTrackPlayerAudio error: ', e.message)
-    })
+    }
   }
 
   const appContextProvider = React.useMemo(() => {
@@ -204,6 +219,7 @@ const App = (props) => {
       togglePlayback: togglePlayback,
 
       skip: skip,
+      jump: jump,
 
       position: position,
       setPosition: setPosition,
