@@ -18,6 +18,11 @@ const useVoiceFeedbackHooks = () => {
         jump,
     } = useContext(AppContext);
 
+    /*TODO listen to nested inputs I.E:
+        create note => listen to the note body
+        skip to next episode => confirm
+    }*/
+    
     const handleInput = async (_input) => {
         if (_input) {
             const input = _input.toLowerCase();
@@ -90,10 +95,7 @@ const useVoiceFeedbackHooks = () => {
                 Tts.speak('Vaihdan seuraavaan jaksoon')
                 await TrackPlayer.skipToNext();
                 const currentID = await TrackPlayer.getCurrentTrack();
-                //console.log('id', currentID)
                 const currentAudio = await TrackPlayer.getTrack(currentID)
-                //console.log('TrackPlayer audio', JSON.stringify(currentAudio,'','\t'))
-                //console.log('audio', JSON.stringify(audio,'','\t'))
                 setAudio(currentAudio)
                 return
             }
@@ -101,10 +103,7 @@ const useVoiceFeedbackHooks = () => {
                 Tts.speak('Vaihdan edelliseen jaksoon')
                 await TrackPlayer.skipToPrevious();
                 const currentID = await TrackPlayer.getCurrentTrack();
-                //console.log('id', currentID)
                 const currentAudio = await TrackPlayer.getTrack(currentID)
-                //console.log('TrackPlayer audio', JSON.stringify(currentAudio,'','\t'))
-                //console.log('audio', JSON.stringify(audio,'','\t'))
                 setAudio(currentAudio)
                 return
             }
