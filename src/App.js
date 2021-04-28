@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Button, Text, Icon, View, Root } from 'native-base';
 import AppLoading from 'expo-app-loading';
-import AppContext from './AppContext';
+import AppContext from '../AppContext';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
-import Home from './views/Home';
-import Main from './views/Main';
-import Notes from './views/Notes';
-import playbackService from './services/playbackService';
+import Home from '../views/Home';
+import Main from '../views/Main';
+import Notes from '../views/Notes';
 import playerHandler from './services/playerHandler';
 import TrackPlayer from 'react-native-track-player';
 import { API_URL } from '@env';
@@ -27,7 +26,7 @@ import Tts from 'react-native-tts';
  - Sound input to text
 */
 
-const App = (props) => {
+export default (props) => {
   const [isReady, setIsReady] = useState(false)
   const [audio, setAudio] = useState(null)
   const [queue, setQueue] = useState([])
@@ -262,5 +261,3 @@ const App = (props) => {
       </AppContext.Provider>
     </Root>
 }
-
-export default App;

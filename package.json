@@ -3,8 +3,8 @@
     "start": "react-native start",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "web": "expo start --web",
-    "eject": "expo eject",
+    "web:start": "react-scripts start",
+    "web:build": "react-scripts build",
     "cc": "rm -rf node_modules/.cache/babel-loader/*"
   },
   "dependencies": {
@@ -23,7 +23,7 @@
     "expo-updates": "~0.4.0",
     "native-base": "^2.15.2",
     "react": "16.13.1",
-    "react-dom": "16.13.1",
+    "react-dom": "^16.13.1",
     "react-native": "~0.63.4",
     "react-native-dotenv": "^2.5.3",
     "react-native-gesture-handler": "^1.8.0",
@@ -36,8 +36,9 @@
     "react-native-tts": "^4.1.0",
     "react-native-unimodules": "~0.12.0",
     "react-native-vector-icons": "^8.1.0",
-    "react-native-web": "~0.13.12",
-    "react-navigation-transitions": "^1.0.12"
+    "react-native-web": "^0.13.18",
+    "react-navigation-transitions": "^1.0.12",
+    "react-scripts": "^4.0.3"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
@@ -48,5 +49,17 @@
   },
   "private": true,
   "name": "mooc-audio-app",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }
