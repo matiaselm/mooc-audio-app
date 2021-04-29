@@ -55,7 +55,7 @@ const AudioControls = ({ style }) => {
         <Text numberOfLines={3} style={styles.name}>{audio.title}</Text>
 
         <Picker
-            style={{ position: 'absolute', top: 16, right: 8, zIndex: 1, width: 30 }}
+            style={{ position: 'absolute', top: 8, right: 8, zIndex: 1, width: 40, height: 40 }}
             selectedValue={audio}
             onValueChange={(itemValue, itemIndex) =>
                 setAudio(itemValue)

@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Home from './views/Home';
 import Main from './views/Main';
 import Notes from './views/Notes';
-import playbackService from './services/playbackService';
+import Settings from './views/Settings';
 import playerHandler from './services/playerHandler';
 import TrackPlayer from 'react-native-track-player';
 import { API_URL } from '@env';
@@ -18,6 +18,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { fromRight } from 'react-navigation-transitions';
 import Tts from 'react-native-tts';
+import i18n from './services/i18n';
+import { useTranslation } from 'react-i18next';
 
 /* TODO:
  - Localstorage user with backend
@@ -34,15 +36,50 @@ const App = (props) => {
   const [notes, setNotes] = useState([])
   const [position, setPosition] = useState(0)
   const [playing, setPlaying] = useState(false)
-  const [user, setUser] = useState({
-    notes: null,
-    _id: null,
-    name: null,
-    progress: null,
-    audio: null,
-  })
+  const [user, setUser] = useState(null)
+  const [language, setLanguage] = useState('en_EN');
+  const { t } = useTranslation();
 
   const Stack = createStackNavigator();
+
+  useEffect(() => {
+    loadFont();
+    loadUser();
+    initTrackPlayer();
+    initTts();
+  }, []);
+
+  useEffect(() => {
+    getNotes();
+  }, [user])
+
+  useEffect(() => {
+    console.log('lang: ', language)
+    setUser((prev => ({
+      ...prev,
+      language: language
+    })))
+  }, [language])
+
+  useEffect(() => {
+    try {
+      if (audio !== null) {
+        setTrackPlayerAudio(audio.id)
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }, [audio])
+
+  const loadFont = async () => {
+    await Font.loadAsync({
+      Roboto: require('native-base/Fonts/Roboto.ttf'),
+      Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
+      ...Ionicons.font,
+    }).then(() => {
+      setIsReady(true)
+    });
+  }
 
   const storeData = async (key, _data) => {
     const jsonData = JSON.stringify(_data)
@@ -96,10 +133,12 @@ const App = (props) => {
 
   const createUser = async () => {
     await axios.post(`${API_URL}/user`, {
-      name: ''
+      name: '',
+      language: 'en_EN'
     }).then((response) => {
       let user = response.data
       setUser(user)
+      setLanguage(user.language)
       storeData('user', user)
       console.log('Made user', user._id)
     })
@@ -111,6 +150,7 @@ const App = (props) => {
       await getData('user').then((user) => {
         if (user._id !== null) {
           setUser(user)
+          setLanguage(user.language ?? 'en_EN')
           console.log('Got user: ', JSON.stringify(user, '', '\t'))
         } else {
           console.log('No user in storage. Creating a new one...')
@@ -172,30 +212,6 @@ const App = (props) => {
     }
   }
 
-  useEffect(() => {
-    loadUser();
-    initTrackPlayer();
-    initTts();
-  }, []);
-
-  useEffect(() => {
-    getNotes();
-  }, [user])
-
-  useEffect(() => {
-    // console.log('Queue: ', JSON.stringify(queue, '', '\t'))
-  }, [queue])
-
-  useEffect(() => {
-    try {
-      if (audio !== null) {
-        setTrackPlayerAudio(audio.id)
-      }
-    } catch (e) {
-      console.log(e)
-    }
-  }, [audio])
-
   const setTrackPlayerAudio = async (id) => {
     try {
       TrackPlayer.skip(id)
@@ -228,27 +244,17 @@ const App = (props) => {
       notes: notes,
       setNotes: setNotes,
       getNotes: getNotes,
+
+      language: language,
+      setLanguage: setLanguage
     };
-  }, [user, audio, queue, notes, position, playing]);
-
-  const loadFont = async () => {
-    await Font.loadAsync({
-      Roboto: require('native-base/Fonts/Roboto.ttf'),
-      Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
-      ...Ionicons.font,
-    }).then(() => {
-      setIsReady(true)
-    });
-  }
-
-  useEffect(() => {
-    loadFont();
-  }, []);
+  }, [user, audio, queue, notes, position, playing, language]);
 
   return !isReady ? <AppLoading /> :
     <Root>
       <AppContext.Provider value={appContextProvider}>
-        <NavigationContainer>
+        <NavigationContainer
+          headerMode={'float'}>
           <Stack.Navigator
             screenOptions={{
               headerMode: 'screen',
@@ -257,6 +263,7 @@ const App = (props) => {
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Notes" component={Notes} />
             <Stack.Screen name="Main" component={Main} />
+            <Stack.Screen name="Settings" component={Settings} />
           </Stack.Navigator>
         </NavigationContainer>
       </AppContext.Provider>
