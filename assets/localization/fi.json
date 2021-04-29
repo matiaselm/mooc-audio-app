@@ -1,4 +1,52 @@
 {
     "notes": "muistiinpanot",
-    "language": "Vaihda kieli"
+    "language": "Vaihda kieli",
+    "settings": "Settings",
+    "username": "Username",
+    "save": "Save",
+    "commands": {
+        "hi": "moi",
+        "hello": "moi",
+        "help": "apua",
+        
+        "stop0": "pysäytä",
+        "stop1": "tauko",
+        "stop2": "odota",
+        "stop3": "hiljaa",
+
+        "resume": "jatka",
+
+        "info0": "jakso",
+        "info1": "info",
+        "info2": "lisätiedot",
+
+        "play": "toista",
+
+        "list0": "lista",
+        "list1": "jaksot",
+
+        "change": "vaihda",
+        "changeToNumber": "vaihda numeroon",
+
+        "forward": "seuraava",
+        "backward": "edellinen",
+
+        "skip": "skip",
+        "jump": "hyppää",
+        "jumpToNext": "hyppää seuraavaan",
+        "jumpToPrevious": "hyppäää edelliseen",
+
+        "dontKnow": "en tiedä"
+    },
+    "feedback": {
+        "greetings": "Hei {{name}}! Mitä haluaisit kuunnella?",
+        "help": "Toimivia komentoja on muunmuassa:",
+        "continue": "Jatketaan",
+        "info": "Kuuntelet tällä hetkellä: {{title}}",
+        "infoEpisodes": "Valittavia jaksoja on {{length}}. Sano numero niin vaihdan siihen",
+        "changingTo": "Vaihdan jaksoon {{number}}",
+        "changingToNext": "Vaihdan seuraavaan jaksoon",
+        "changingToPrevious": "Vaihdan edelliseen jaksoon",
+        "confused": "En ymmärtänyt. Voitko toistaa?"
+    }
 }

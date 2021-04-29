@@ -2,5 +2,51 @@
     "notes": "notes",
     "language": "Change language",
     "settings": "Settings",
-    "username": "Username"
+    "username": "Username",
+    "save": "Save",
+    "commands": {
+        "hi": "hi",
+        "hello": "hello",
+        "help": "help",
+
+        "stop0": "stop",
+        "stop1": "pause",
+        "stop2": "wait",
+        "stop3": "hold up",
+
+        "resume": "resume",
+
+        "info0": "what",
+        "info1": "about",
+        "info2": "current",
+
+        "play": "play",
+
+        "list0": "list",
+        "list1": "episodes",
+
+        "change": "change",
+        "changeToNumber": "change to number",
+
+        "forward": "next",
+        "backward": "previous",
+
+        "skip": "skip",
+        "jump": "jump",
+        "jumpToNext": "jump to next",
+        "jumpToPrevious": "jump to previous",
+
+        "dontKnow": "don't know"
+    },
+    "feedback": {
+        "greetings": "Hello {{name}}! What would you like to listen to?",
+        "help": "Current commands include, but are not limited to:",
+        "continue": "Resuming",
+        "info": "You're listening to {{title}}",
+        "infoEpisodes": "There's {{length}} episodes. Say a number and I'll switch to that",
+        "changingTo": "I'll change to episode {{number}}",
+        "changingToNext": "Changing to next episode",
+        "changingToPrevious": "Changing to previous episode",
+        "confused": "I didn't get that. Could you repeat?"
+    }
 }

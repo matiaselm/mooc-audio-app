@@ -6,9 +6,10 @@ import axios from 'axios';
 import { API_URL } from '@env';
 import AppContext from '../AppContext';
 import { useTranslation } from 'react-i18next';
+import COLORS from '../assets/colors';
 
 export default ({ navigation, userName }) => {
-    const { user, notes, getNotes, audio, setAudio, queue, position, setTrackPlayerPosition, language, setLanguage, languages } = useContext(AppContext);
+    const { user, setUser, notes, getNotes, audio, setAudio, queue, position, setTrackPlayerPosition, language, setLanguage, languages } = useContext(AppContext);
     const { t, i18n } = useTranslation();
 
     const [input, setInput] = useState();
@@ -19,6 +20,13 @@ export default ({ navigation, userName }) => {
             case 'en_EN': return 'English'
             default: return null
         }
+    }
+
+    const save = () => {
+        setUser(prev => ({
+            ...prev,
+            name: input
+        }))
     }
 
     return <View style={{ padding: 8 }}>
@@ -42,5 +50,12 @@ export default ({ navigation, userName }) => {
             <Text style={{ flex: 1, alignSelf: 'center' }}>{t('username')}</Text>
             <Input style={{ flex: 2, backgroundColor: '#FFF', alignSelf: 'center', height: '90%', borderRadius: 8 }} value={input} onChangeText={(text) => setInput(text)} />
         </View>
+
+        <Button transparent icon onPress={save} style={{ alignSelf: 'flex-end' }} >
+            <Icon name='cloud' size={34} color={COLORS.PRIMARY} style={{alignSelf: 'center'}} />
+            <Text>
+                {t('save')}
+            </Text>
+        </Button>
     </View>
 }

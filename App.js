@@ -20,6 +20,7 @@ import { fromRight } from 'react-navigation-transitions';
 import Tts from 'react-native-tts';
 import i18n from './services/i18n';
 import { useTranslation } from 'react-i18next';
+import useAsyncStorageHooks from './services/asyncStorageHooks';
 
 /* TODO:
  - Localstorage user with backend
@@ -39,10 +40,8 @@ const App = (props) => {
   const [user, setUser] = useState(null)
   const [language, setLanguage] = useState('en_EN');
   const { t, i18n } = useTranslation();
-  const languages = [
-    'en_EN',
-    'fi_FI'
-]
+  const { storeData, getData } = useAsyncStorageHooks();
+  const languages = ['en_EN', 'fi_FI']
 
   const Stack = createStackNavigator();
 
@@ -63,6 +62,7 @@ const App = (props) => {
       ...prev,
       language: language
     })))
+    Tts.setDefaultLanguage(language)
   }, [language])
 
   useEffect(() => {
@@ -85,24 +85,6 @@ const App = (props) => {
     });
   }
 
-  const storeData = async (key, _data) => {
-    const jsonData = JSON.stringify(_data)
-    try {
-      await AsyncStorage.setItem(key, jsonData)
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
-  const getData = async (key) => {
-    try {
-      const jsonValue = await AsyncStorage.getItem(key)
-      return JSON.parse(jsonValue) ?? null;
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
   const initTrackPlayer = async () => {
     TrackPlayer.registerEventHandler(playerHandler);
     await TrackPlayer.setupPlayer().then(() => {
@@ -123,13 +105,13 @@ const App = (props) => {
           TrackPlayer.getQueue().then(_queue => setQueue(_queue));
         });
       } catch (e) {
-        console.error(e.message)
+        console.error('initTrackPlayer error', e.message)
       }
     })
   };
 
   const initTts = async () => {
-    Tts.setDefaultLanguage('fi-FI');
+    Tts.setDefaultLanguage(language);
     Tts.getInitStatus().then(() => {
       console.log('TTS initialized');
     });
