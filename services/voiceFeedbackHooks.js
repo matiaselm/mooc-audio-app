@@ -17,6 +17,7 @@ const useVoiceFeedbackHooks = () => {
         getPosition,
         togglePlayback,
         jump,
+        skip,
     } = useContext(AppContext);
 
     const { t } = useTranslation();
@@ -44,6 +45,7 @@ const useVoiceFeedbackHooks = () => {
                 t('commands.stop0'),
                 t('commands.resume'),
                 t('commands.list0'),
+                t('commands.info0'),
                 t('commands.changeToNumber'),
                 t('commands.forward'),
                 t('commands.backward'),
