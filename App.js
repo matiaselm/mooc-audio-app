@@ -38,7 +38,11 @@ const App = (props) => {
   const [playing, setPlaying] = useState(false)
   const [user, setUser] = useState(null)
   const [language, setLanguage] = useState('en_EN');
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const languages = [
+    'en_EN',
+    'fi_FI'
+]
 
   const Stack = createStackNavigator();
 
@@ -150,7 +154,6 @@ const App = (props) => {
       await getData('user').then((user) => {
         if (user._id !== null) {
           setUser(user)
-          setLanguage(user.language ?? 'en_EN')
           console.log('Got user: ', JSON.stringify(user, '', '\t'))
         } else {
           console.log('No user in storage. Creating a new one...')
@@ -246,7 +249,8 @@ const App = (props) => {
       getNotes: getNotes,
 
       language: language,
-      setLanguage: setLanguage
+      setLanguage: setLanguage,
+      languages: languages
     };
   }, [user, audio, queue, notes, position, playing, language]);
 

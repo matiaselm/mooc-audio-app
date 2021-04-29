@@ -89,7 +89,7 @@ const Home = ({ navigation }) => {
             <View style={{ position: 'absolute', display: 'flex', bottom: 16, width: '100%', flexDirection: 'row', height: 60, paddingBottom: 16 }}>
                 <Button block style={{ flex: 2, elevation: 10, borderWidth: 3, borderColor: '#006064', backgroundColor: '#d4fafc', borderRadius: 16, margin: 8 }} onPress={() => navigation.push('Notes')}>
                     <Icon name={'book-open'} size={26} color={'#006064'} />
-                    <Text style={{ color: '#006064' }}>{t('notes')}Muistiinpanot</Text>
+                    <Text style={{ color: '#006064' }}>{t('notes')}</Text>
                 </Button>
                 <Button style={{ elevation: 10, backgroundColor: '#fff', borderRadius: 16, margin: 8 }} onPressIn={_startRecognizing} onPressOut={_stopRecognizing}>
                     <Icon name={'microphone'} size={26} color={'#006064'} style={{ alignSelf: 'center', marginStart: 30 }} />
