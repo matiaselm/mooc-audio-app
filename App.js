@@ -11,15 +11,11 @@ import Settings from './views/Settings';
 import playerHandler from './services/playerHandler';
 import playbackService from './services/playbackService';
 import TrackPlayer from 'react-native-track-player';
-import { API_URL } from '@env';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { fromRight } from 'react-navigation-transitions';
 import Tts from 'react-native-tts';
-import i18n from './services/i18n';
 import { useTranslation } from 'react-i18next';
 import useAsyncStorageHooks from './services/asyncStorageHooks';
 import useAxiosHooks from './services/axiosHooks';
@@ -51,9 +47,9 @@ const App = (props) => {
   const Stack = createStackNavigator();
 
   useEffect(() => {
+    TrackPlayer.setupPlayer()
     loadFont();
     loadUser();
-    initTrackPlayer();
     populateQueue();
     initTts();
   }, []);
@@ -105,12 +101,6 @@ const App = (props) => {
     // console.log('notes', _notes)
     setNotes(_notes)
   }
-
-  const initTrackPlayer = async () => {
-    TrackPlayer.registerEventHandler(playerHandler);
-    TrackPlayer.registerPlaybackService(playbackService);
-    await TrackPlayer.setupPlayer()
-  };
 
   const populateQueue = async () => {
     try {
