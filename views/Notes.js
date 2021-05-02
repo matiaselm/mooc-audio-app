@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useLayoutEffect } from 'react';
 import { FlatList } from 'react-native';
 import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, FooterTab, Button, View, Form, Item, Input, ScrollView, Toast } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -8,11 +8,18 @@ import CustomHeader from '../components/CustomHeader';
 import AppContext from '../AppContext';
 import TrackPlayer from 'react-native-track-player';
 import useAxiosHooks from '../services/axiosHooks';
+import COLORS from '../assets/colors';
 
 const Notes = ({ navigation, userName }) => {
     const [input, setInput] = useState('');
     const { user, notes, audio, setAudio, position, setTrackPlayerPosition } = useContext(AppContext);
     const { postNote } = useAxiosHooks();
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerTitle: t('views.notes')
+        })
+    }, [navigation])
 
     const decimalAdjust = (type, value, exp) => {
         // If the exp is undefined or zero...
@@ -61,9 +68,9 @@ const Notes = ({ navigation, userName }) => {
 
         console.log('ITEM: ', JSON.stringify(item, '', '\t'))
         return <View
-            style={{ minHeight: 30, borderBottomWidth: 1, borderColor: '#dadada', padding: 8, display: 'flex', flexDirection: 'row' }}>
+            style={{ minHeight: 30, borderBottomWidth: 1, borderColor: COLORS.GREY2, padding: 8, display: 'flex', flexDirection: 'row' }}>
             <View style={{ flex: 5 }}>
-                <Text numberOfLines={1} style={{ color: '#adadad', marginBottom: 8, fontSize: 14 }}>
+                <Text numberOfLines={1} style={{ color: COLORS.GREY2, marginBottom: 8, fontSize: 14 }}>
                     {itemAudio}</Text>
                     
                 <Text style={{ fontSize: 18 }}>{item?.data}</Text>
@@ -72,19 +79,19 @@ const Notes = ({ navigation, userName }) => {
                     <Icon
                         name='clock'
                         size={18}
-                        color={'#adadad'}
+                        color={COLORS.GREY2}
                         style={{ marginEnd: 8, alignSelf: 'center' }} />
 
-                    <Text style={{ alignSelf: 'center', color: '#0f0f0f', fontSize: 14 }}>
+                    <Text style={{ alignSelf: 'center', color: COLORS.BLACK, fontSize: 14 }}>
                         {timeStamp[0] + ":" + Math.floor(timeStamp[1])}min</Text>
 
                 </View>
             </View>
 
             <Button icon light
-                style={{ flex: 1, alignSelf: 'flex-end', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,1)', borderRadius: 16, marginStart: 8, elevation: 10 }}
+                style={{ flex: 1, alignSelf: 'flex-end', justifyContent: 'center', backgroundColor: COLORS.WHITE, borderRadius: 16, marginStart: 8, elevation: 10 }}
                 onPress={() => changeAudioToNote(itemAudio, item.timestamp)}>
-                <Icon color={'rgba(66, 142, 146, 1)'} name='headphones-alt' size={26} style={{ margin: 8, alignSelf: 'center' }} />
+                <Icon color={COLORS.PRIMARY} name='headphones-alt' size={26} style={{ margin: 8, alignSelf: 'center' }} />
             </Button>
         </View>
     };
@@ -98,7 +105,7 @@ const Notes = ({ navigation, userName }) => {
             >
             </FlatList>
 
-            <Form style={{ position: 'absolute', bottom: 0, display: 'flex', flexDirection: 'row', backgroundColor: '#fff', width: '105%', padding: 8 }}>
+            <Form style={{ position: 'absolute', bottom: 0, display: 'flex', flexDirection: 'row', backgroundColor: COLORS.WHITE, width: '105%', padding: 8 }}>
                 <Item style={{ flex: 4 }}>
                     <Input
                         placeholder='Create note'
@@ -106,7 +113,7 @@ const Notes = ({ navigation, userName }) => {
                         onChangeText={text => setInput(text)}>
                     </Input>
                 </Item>
-                <Button icon style={{ flex: 1, borderRadius: 16, maxWidth: 60, alignSelf: 'center', borderWidth: 3, borderColor: '#006064', backgroundColor: '#d4fafc', elevation: 10 }}
+                <Button icon style={{ flex: 1, borderRadius: 16, maxWidth: 60, alignSelf: 'center', borderWidth: 3, borderColor: COLORS.PRIMARY, backgroundColor: COLORS.SECONDARY, elevation: 10 }}
                     onPress={() => {
                         if (input.length > 0) {
                             postNote(0.0, input, "6076d956ee8dc441dc6291c1", user.id)
@@ -115,7 +122,7 @@ const Notes = ({ navigation, userName }) => {
                             Toast.show({ text: `Maybe you'd want to write something before saving it?`, duration: 2000, position: 'bottom', buttonText: 'Okay' });
                         }
                     }}>
-                    <Icon name='pen-fancy' light size={26} color={'#006064'} style={{ marginStart: 16 }} />
+                    <Icon name='pen-fancy' light size={26} color={COLORS.PRIMARY} style={{ marginStart: 16 }} />
                 </Button>
             </Form>
         </View>

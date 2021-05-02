@@ -7,6 +7,7 @@ import AppContext from '../AppContext';
 import useVoiceInputHooks from '../services/voiceInputHooks';
 import Voice, { SpeechRecognizedEvent, SpeechResultsEvent, SpeechErrorEvent, } from '@react-native-voice/voice';
 import { useTranslation } from "react-i18next";
+import COLORS from '../assets/colors';
 
 const Home = ({ navigation }) => {
     const {
@@ -20,12 +21,13 @@ const Home = ({ navigation }) => {
 
     useLayoutEffect(() => {
         navigation.setOptions({
+            headerTitle: t('views.home'),
             headerRight: () => (
                 <Button
                     icon
                     transparent
-                    onPress={() => navigation.push('Settings')}>
-                    <Icon name='cog' size={26} color={'#006064'} style={{marginEnd: 16}}></Icon>
+                    onPress={() => navigation.push("Settings")}>
+                    <Icon name='cog' size={26} color={COLORS.PRIMARY} style={{marginEnd: 16}}></Icon>
                 </Button>
             )
         })
@@ -71,7 +73,7 @@ const Home = ({ navigation }) => {
     })
 
     return <>
-        <Container style={{ backgroundColor: 'rgba(240,240,240,1)' }}>
+        <Container style={{ backgroundColor: COLORS.GREY1 }}>
             <Content>
                 {audio ? <AudioControls />
                     : <Picker
@@ -86,13 +88,13 @@ const Home = ({ navigation }) => {
                 }
             </Content>
             <View style={{ position: 'absolute', display: 'flex', bottom: 16, width: '100%', flexDirection: 'row', height: 60, paddingBottom: 16 }}>
-                <Button block style={{ flex: 2, elevation: 10, borderWidth: 3, borderColor: '#006064', backgroundColor: '#d4fafc', borderRadius: 16, margin: 8 }} onPress={() => navigation.push('Notes')}>
-                    <Icon name={'book-open'} size={26} color={'#006064'} />
-                    <Text style={{ color: '#006064' }}>{t('notes')}</Text>
+                <Button block style={{ flex: 2, elevation: 10, borderWidth: 3, borderColor: COLORS.PRIMARY, backgroundColor: COLORS.SECONDARY, borderRadius: 16, margin: 8 }} onPress={() => navigation.push("Notes")}>
+                    <Icon name={'book-open'} size={26} color={COLORS.PRIMARY} />
+                    <Text style={{ color: COLORS.PRIMARY }}>{t('notes')}</Text>
                 </Button>
-                <Button style={{ elevation: 10, backgroundColor: '#fff', borderRadius: 16, margin: 8 }} onPressIn={_startRecognizing} onPressOut={_stopRecognizing}>
-                    <Icon name={'microphone'} size={26} color={'#006064'} style={{ alignSelf: 'center', marginStart: 30 }} />
-                    <Text style={{ color: '#006064' }}></Text>
+                <Button style={{ elevation: 10, backgroundColor: COLORS.SECONDARY, borderRadius: 16, margin: 8 }} onPressIn={_startRecognizing} onPressOut={_stopRecognizing}>
+                    <Icon name={'microphone'} size={26} color={COLORS.PRIMARY} style={{ alignSelf: 'center', marginStart: 30 }} />
+                    <Text style={{ color: COLORS.PRIMARY }}></Text>
                 </Button>
             </View>
 

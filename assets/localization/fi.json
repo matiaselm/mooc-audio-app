@@ -1,10 +1,11 @@
 {
     "notes": "muistiinpanot",
     "language": "Vaihda kieli",
-    "settings": "Settings",
-    "username": "Username",
+    "settings": "Asetukset",
+    "username": "Käyttäjänimi",
     "save": "Tallenna",
     "toggle": "Vaihda",
+    "createNote": "Kirjoita muistiinpano",
     "commands": {
         "hi": "moi",
         "hello": "moi",
@@ -49,5 +50,10 @@
         "changingToNext": "Vaihdan seuraavaan jaksoon",
         "changingToPrevious": "Vaihdan edelliseen jaksoon",
         "confused": "En ymmärtänyt. Voitko toistaa?"
+    },
+    "views": {
+        "home": "Koti",
+        "notes": "Muistiinpanot",
+        "settings": "Asetukset"
     }
 }

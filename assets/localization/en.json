@@ -5,6 +5,7 @@
     "username": "Username",
     "save": "Save",
     "toggle": "Toggle",
+    "createNote": "Create note",
     "commands": {
         "hi": "hi",
         "hello": "hello",
@@ -49,5 +50,10 @@
         "changingToNext": "Changing to next episode",
         "changingToPrevious": "Changing to previous episode",
         "confused": "I didn't get that. Could you repeat?"
+    },
+    "views": {
+        "home": "Home",
+        "notes": "Notes",
+        "settings": "Settings"
     }
 }

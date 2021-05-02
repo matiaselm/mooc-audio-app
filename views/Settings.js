@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useLayoutEffect } from 'react';
 import { FlatList } from 'react-native';
 import { Text, Button, View, Picker, Form, Item, Input, Label } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -15,6 +15,12 @@ export default ({ navigation, userName }) => {
     const { removeUser } = useAsyncStorageHooks();
 
     const [input, setInput] = useState(user.name);
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerTitle: t('views.settings')
+        })
+    }, [navigation, language])
 
     const prettify = (str) => {
         switch (str) {

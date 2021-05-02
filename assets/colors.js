@@ -5,7 +5,7 @@ export default {
     SECONDARY_VARIANT: '#718c72',
     BLACK: '#000',
     WHITE: '#fff',
-    GREY1: '#d8d8d8',
+    GREY1: '#efefef',
     GREY2: '#a8a8a8',
     GREY3: '#6d6d6d'
 }
