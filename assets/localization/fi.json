@@ -5,7 +5,9 @@
     "username": "Käyttäjänimi",
     "save": "Tallenna",
     "toggle": "Vaihda",
-    "createNote": "Kirjoita muistiinpano",
+    "createNote": "Luo muistiinpano",
+    "pleaseWrite": "Kirjoitathan jotain ennen tallennusta",
+    "ok": "Selvä",
     "commands": {
         "hi": "moi",
         "hello": "moi",

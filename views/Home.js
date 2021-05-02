@@ -15,6 +15,7 @@ const Home = ({ navigation }) => {
         setAudio,
         queue,
         getPosition,
+        language
     } = useContext(AppContext);
 
     const { t } = useTranslation();
@@ -31,7 +32,7 @@ const Home = ({ navigation }) => {
                 </Button>
             )
         })
-    }, [navigation])
+    }, [navigation, language])
 
     const {
         onSpeechStart,

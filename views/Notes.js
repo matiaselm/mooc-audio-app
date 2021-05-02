@@ -9,17 +9,19 @@ import AppContext from '../AppContext';
 import TrackPlayer from 'react-native-track-player';
 import useAxiosHooks from '../services/axiosHooks';
 import COLORS from '../assets/colors';
+import { useTranslation } from 'react-i18next';
 
 const Notes = ({ navigation, userName }) => {
     const [input, setInput] = useState('');
-    const { user, notes, audio, setAudio, position, setTrackPlayerPosition } = useContext(AppContext);
+    const { user, notes, audio, setAudio, position, setTrackPlayerPosition, language } = useContext(AppContext);
     const { postNote } = useAxiosHooks();
+    const { t } = useTranslation();
 
     useLayoutEffect(() => {
         navigation.setOptions({
             headerTitle: t('views.notes')
         })
-    }, [navigation])
+    }, [navigation, language])
 
     const decimalAdjust = (type, value, exp) => {
         // If the exp is undefined or zero...
@@ -72,7 +74,7 @@ const Notes = ({ navigation, userName }) => {
             <View style={{ flex: 5 }}>
                 <Text numberOfLines={1} style={{ color: COLORS.GREY2, marginBottom: 8, fontSize: 14 }}>
                     {itemAudio}</Text>
-                    
+
                 <Text style={{ fontSize: 18 }}>{item?.data}</Text>
                 <View style={{ display: 'flex', flexDirection: 'row', marginTop: 8 }}>
 
@@ -108,7 +110,7 @@ const Notes = ({ navigation, userName }) => {
             <Form style={{ position: 'absolute', bottom: 0, display: 'flex', flexDirection: 'row', backgroundColor: COLORS.WHITE, width: '105%', padding: 8 }}>
                 <Item style={{ flex: 4 }}>
                     <Input
-                        placeholder='Create note'
+                        placeholder={t('createNote')}
                         value={input}
                         onChangeText={text => setInput(text)}>
                     </Input>
@@ -116,10 +118,10 @@ const Notes = ({ navigation, userName }) => {
                 <Button icon style={{ flex: 1, borderRadius: 16, maxWidth: 60, alignSelf: 'center', borderWidth: 3, borderColor: COLORS.PRIMARY, backgroundColor: COLORS.SECONDARY, elevation: 10 }}
                     onPress={() => {
                         if (input.length > 0) {
-                            postNote(0.0, input, "6076d956ee8dc441dc6291c1", user.id)
+                            postNote(0.0, input, audio.id, user.id)
                             setInput('')
                         } else {
-                            Toast.show({ text: `Maybe you'd want to write something before saving it?`, duration: 2000, position: 'bottom', buttonText: 'Okay' });
+                            Toast.show({ text: t('pleaseWrite'), duration: 2000, position: 'bottom', buttonText: t('ok') });
                         }
                     }}>
                     <Icon name='pen-fancy' light size={26} color={COLORS.PRIMARY} style={{ marginStart: 16 }} />

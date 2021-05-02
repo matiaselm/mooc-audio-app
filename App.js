@@ -50,9 +50,11 @@ const App = () => {
     console.log('USER', JSON.stringify(user))
     try {
       if (user !== null) {
+        storeData('user', user)
+        // postUser(user)
         updateNotes();
       } else {
-        console.log(`Waiting for user before getting notes`)
+        console.log(`User shouldn't be null`)
       }
     } catch (e) {
       console.log(`note update error`, e.message)
@@ -133,8 +135,8 @@ const App = () => {
           console.log('Saving user', JSON.stringify(_user, '', '\t'))
           setUser(_user)
           setLanguage(_user.language)
-          storeData('user', user)
-          console.log('Made user', user.id)
+          storeData('user', _user)
+          console.log('Made user', _user.id)
         } else {
           console.log(`Didn't make user`)
         }

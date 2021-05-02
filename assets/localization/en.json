@@ -6,6 +6,8 @@
     "save": "Save",
     "toggle": "Toggle",
     "createNote": "Create note",
+    "pleaseWrite": "Please write something before trying to save",
+    "ok": "Okay",
     "commands": {
         "hi": "hi",
         "hello": "hello",
