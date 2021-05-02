@@ -12,9 +12,9 @@ import useAsyncStorageHooks from '../services/asyncStorageHooks';
 export default ({ navigation, userName }) => {
     const { user, setUser, notes, audio, setAudio, queue, position, setTrackPlayerPosition, language, setLanguage, languages } = useContext(AppContext);
     const { t, i18n } = useTranslation();
-    const { removeUser} = useAsyncStorageHooks();
+    const { removeUser } = useAsyncStorageHooks();
 
-    const [input, setInput] = useState();
+    const [input, setInput] = useState(user.name);
 
     const prettify = (str) => {
         switch (str) {
@@ -31,21 +31,31 @@ export default ({ navigation, userName }) => {
         }))
     }
 
+    const changeLang = (lang) => {
+        if (lang === 'fi_FI') {
+            i18n.changeLanguage('en_EN')
+            setLanguage('en_EN')
+        }
+        if (lang === 'en_EN') {
+            i18n.changeLanguage('fi_FI')
+            setLanguage('fi_FI')
+        }
+        else {
+            i18n.changeLanguage('en_EN')
+            setLanguage('en_EN')
+        }
+    }
+
     return <View style={{ padding: 8 }}>
 
         <View style={{ display: 'flex', flexDirection: 'row', height: 60, justifyContent: 'flex-start', borderBottomColor: '#dadada', borderBottomWidth: 1 }}>
-            <Text style={{ flex: 2, alignSelf: 'center' }}>{t('language')}</Text>
-            <Picker
-                style={{ flex: 1 }}
-                selectedValue={prettify(language)}
-                onValueChange={(value, index) => {
-                    i18n.changeLanguage(value)
-                    setLanguage(value)
-                }}>
-                {languages.map((lang, key) => {
-                    return <Picker.Item key={key} label={prettify(lang)} value={lang} />
-                })}
-            </Picker>
+            <Text style={{ flex: 2, alignSelf: 'center' }}>{t('language')}: {prettify(language)}</Text>
+            <Button transparent icon onPress={() => changeLang(language)}>
+                <Icon name='globe' color={COLORS.PRIMARY} size={34}/>
+                <Text>
+                    {t('language')}
+                </Text>
+            </Button>
         </View>
 
         <View style={{ paddingVertical: 4, display: 'flex', flexDirection: 'row', height: 60, justifyContent: 'flex-start', borderBottomColor: '#dadada', borderBottomWidth: 1 }}>
@@ -53,17 +63,11 @@ export default ({ navigation, userName }) => {
             <Input style={{ flex: 2, backgroundColor: '#FFF', alignSelf: 'center', height: '90%', borderRadius: 8 }} value={input} onChangeText={(text) => setInput(text)} />
         </View>
 
+
         <Button transparent icon onPress={save} style={{ alignSelf: 'flex-end' }} >
-            <Icon name='cloud' size={34} color={COLORS.PRIMARY} style={{alignSelf: 'center'}} />
+            <Icon name='cloud' size={34} color={COLORS.PRIMARY} style={{ alignSelf: 'center' }} />
             <Text>
                 {t('save')}
-            </Text>
-        </Button>
-
-        <Button transparent icon onPress={removeUser} style={{ alignSelf: 'flex-end' }} >
-            <Icon name='trashbin' size={34} color={COLORS.PRIMARY} style={{alignSelf: 'center'}} />
-            <Text>
-                remove user
             </Text>
         </Button>
     </View>

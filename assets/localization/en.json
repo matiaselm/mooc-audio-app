@@ -4,6 +4,7 @@
     "settings": "Settings",
     "username": "Username",
     "save": "Save",
+    "toggle": "Toggle",
     "commands": {
         "hi": "hi",
         "hello": "hello",

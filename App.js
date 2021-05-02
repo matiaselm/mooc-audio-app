@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Button, Text, Icon, View, Root } from 'native-base';
+import React, { useState, useEffect } from 'react';
+import { Root } from 'native-base';
 import AppLoading from 'expo-app-loading';
 import AppContext from './AppContext';
 import * as Font from 'expo-font';
@@ -8,8 +8,6 @@ import Home from './views/Home';
 import Main from './views/Main';
 import Notes from './views/Notes';
 import Settings from './views/Settings';
-import playerHandler from './services/playerHandler';
-import playbackService from './services/playbackService';
 import TrackPlayer from 'react-native-track-player';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
@@ -19,16 +17,9 @@ import Tts from 'react-native-tts';
 import { useTranslation } from 'react-i18next';
 import useAsyncStorageHooks from './services/asyncStorageHooks';
 import useAxiosHooks from './services/axiosHooks';
+import i18n from './services/i18n';
 
-/* TODO:
- - Localstorage user with backend
- - How to get soundCloud audio playing to work
- - Basic controls for soundCloud audio
- - Voice recognition API for React/JavaScript
- - Sound input to text
-*/
-
-const App = (props) => {
+const App = () => {
   const [isReady, setIsReady] = useState(false)
   const [audio, setAudio] = useState(null)
   const [queue, setQueue] = useState([])

@@ -3,7 +3,8 @@
     "language": "Vaihda kieli",
     "settings": "Settings",
     "username": "Username",
-    "save": "Save",
+    "save": "Tallenna",
+    "toggle": "Vaihda",
     "commands": {
         "hi": "moi",
         "hello": "moi",
