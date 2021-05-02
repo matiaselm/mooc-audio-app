@@ -20,9 +20,18 @@ const useAsyncStorageHooks = () => {
         }
     }
 
+    const removeUser = async () => {
+        try {
+            await storeData('user', null)
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
     return {
         storeData,
-        getData
+        getData,
+        removeUser
     }
 }
 

@@ -7,26 +7,12 @@ import { API_URL } from '@env';
 import CustomHeader from '../components/CustomHeader';
 import AppContext from '../AppContext';
 import TrackPlayer from 'react-native-track-player';
+import useAxiosHooks from '../services/axiosHooks';
 
 const Notes = ({ navigation, userName }) => {
     const [input, setInput] = useState('');
-    const { user, notes, getNotes, audio, setAudio, position, setTrackPlayerPosition } = useContext(AppContext);
-
-    const postNote = async (data) => {
-        await axios.post(`${API_URL}/user/note`, {
-            timestamp: position,
-            data: data,
-            audioID: audio.id,
-            userID: user._id
-        }).then((response, err) => {
-            if (err) {
-                console.error(err)
-            } else {
-                console.log(JSON.stringify(response.data))
-                getNotes();
-            }
-        })
-    }
+    const { user, notes, audio, setAudio, position, setTrackPlayerPosition } = useContext(AppContext);
+    const { postNote } = useAxiosHooks();
 
     const decimalAdjust = (type, value, exp) => {
         // If the exp is undefined or zero...
@@ -110,7 +96,7 @@ const Notes = ({ navigation, userName }) => {
                 <Button icon style={{ flex: 1, borderRadius: 16, maxWidth: 60, alignSelf: 'center', borderWidth: 3, borderColor: '#006064', backgroundColor: '#d4fafc', elevation: 10 }}
                     onPress={() => {
                         if (input.length > 0) {
-                            postNote(input)
+                            postNote(0.0, input, "6076dd5b0de13f1ebc13328d", "6081382ffc44d10f48f5197c")
                             setInput('')
                         } else {
                             Toast.show({ text: `Maybe you'd want to write something before saving it?`, duration: 2000, position: 'bottom', buttonText: 'Okay' });

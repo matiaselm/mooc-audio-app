@@ -21,6 +21,7 @@ import Tts from 'react-native-tts';
 import i18n from './services/i18n';
 import { useTranslation } from 'react-i18next';
 import useAsyncStorageHooks from './services/asyncStorageHooks';
+import useAxiosHooks from './services/axiosHooks';
 
 /* TODO:
  - Localstorage user with backend
@@ -37,31 +38,51 @@ const App = (props) => {
   const [notes, setNotes] = useState([])
   const [position, setPosition] = useState(0)
   const [playing, setPlaying] = useState(false)
-  const [user, setUser] = useState(null)
   const [language, setLanguage] = useState('en_EN');
   const { t, i18n } = useTranslation();
-  const { storeData, getData } = useAsyncStorageHooks();
   const languages = ['en_EN', 'fi_FI']
+
+  const [user, setUser] = useState({
+    id: null,
+    name: null,
+    language: null,
+    audio: null,
+    notes: null
+  })
+
+  const { postUser, getUser, getNotes, getAudio, postNote } = useAxiosHooks();
+  const { storeData, getData, removeUser } = useAsyncStorageHooks();
 
   const Stack = createStackNavigator();
 
   useEffect(() => {
+    removeUser();
     loadFont();
     loadUser();
-    initTrackPlayer();
-    initTts();
+    if (user !== null) {
+      initTrackPlayer();
+      initTts();
+    }
   }, []);
 
   useEffect(() => {
-    getNotes();
+    console.log('USER', JSON.stringify(user))
+    try {
+      if (user.id !== null) {
+        let _notes = getNotes(user.id)
+        setNotes(_notes)
+      }
+    } catch (e) {
+      console.log(`note update error`, e.message)
+    }
   }, [user])
 
   useEffect(() => {
     console.log('lang: ', language)
-    setUser((prev => ({
+    /*setUser((prev => ({
       ...prev,
       language: language
-    })))
+    })))*/
     Tts.setDefaultLanguage(language)
   }, [language])
 
@@ -90,14 +111,11 @@ const App = (props) => {
     await TrackPlayer.setupPlayer().then(() => {
       console.log('player set up')
       try {
-        const url = `${API_URL}/audio`;
-        // console.log('API: ', url);
-        axios.get(url).then(response => {
+        getAudio().then(response => {
           // console.log('Queue: ', JSON.stringify(response.data.length))
-          for (let i in response.data) {
+          for (let i in response) {
             const responseAudio = {
-              ...response.data[i],
-              id: response.data[i]._id,
+              ...response[i],
             }
             // console.log('Audio: ', JSON.stringify(responseAudio, '', '\t'));
             TrackPlayer.add(responseAudio)
@@ -117,55 +135,33 @@ const App = (props) => {
     });
   }
 
-  const createUser = async () => {
-    await axios.post(`${API_URL}/user`, {
-      name: '',
-      language: 'en_EN'
-    }).then((response) => {
-      let user = response.data
-      setUser(user)
-      setLanguage(user.language)
-      storeData('user', user)
-      console.log('Made user', user._id)
-    })
-  }
-
   const loadUser = async () => {
     try {
       console.log('Load user')
-      await getData('user').then((user) => {
-        if (user._id !== null) {
-          setUser(user)
-          console.log('Got user: ', JSON.stringify(user, '', '\t'))
+      const asyncStorageUser = await getData('user')
+
+      if (asyncStorageUser !== null) {
+        console.log('asyncStorageUser', asyncStorageUser)
+        setUser(asyncStorageUser)
+        console.log('Got user: ', JSON.stringify(user, '', '\t'))
+      } else {
+        console.log('No user in storage. Creating a new one...')
+        const _user = await postUser()
+
+        if (_user) {
+          console.log('Saving user', JSON.stringify(_user, '', '\t'))
+          setUser(_user)
+          setLanguage(_user.language)
+          storeData('user', user)
+          console.log('Made user', user.id)
         } else {
-          console.log('No user in storage. Creating a new one...')
-          createUser();
+          console.log(`Didn't make user`)
         }
-      })
+      }
     } catch (e) {
       console.error(e)
     }
   };
-
-  const getNotes = async () => {
-    if (user && user._id !== null) {
-      try {
-        console.log('Getting notes for user: ', user._id);
-        await axios.get(`${API_URL}/user/note`, {
-          params: { userID: user._id }
-        }).then((response, err) => {
-          if (err) {
-            console.error(err)
-          } else {
-            // console.log('Got notes: ', JSON.stringify(response.data))
-            setNotes(response.data)
-          }
-        })
-      } catch (e) {
-        console.error(e)
-      }
-    }
-  }
 
   const getPosition = async () => {
     await TrackPlayer.getPosition().then(position => {
@@ -228,7 +224,6 @@ const App = (props) => {
 
       notes: notes,
       setNotes: setNotes,
-      getNotes: getNotes,
 
       language: language,
       setLanguage: setLanguage,
