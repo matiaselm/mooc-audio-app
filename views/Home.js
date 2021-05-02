@@ -73,7 +73,6 @@ const Home = ({ navigation }) => {
     return <>
         <Container style={{ backgroundColor: 'rgba(240,240,240,1)' }}>
             <Content>
-                {/*<PlayerInfo />*/}
                 {audio ? <AudioControls />
                     : <Picker
                         selectedValue={audio ?? 'Valitse jakso'}

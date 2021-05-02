@@ -57,18 +57,33 @@ const Notes = ({ navigation, userName }) => {
 
     const noteItem = ({ item }) => {
         const timeStamp = minutesAndSeconds(item.timestamp)
-        const itemAudio = item.audioID
+        const itemAudio = item.audioID.title
 
-        // console.log('ITEM: ', JSON.stringify(item, '', '\t'))
-        return <View style={{ minHeight: 30, borderBottomWidth: 1, borderColor: '#dadada', padding: 8, display: 'flex', flexDirection: 'row' }}>
+        console.log('ITEM: ', JSON.stringify(item, '', '\t'))
+        return <View
+            style={{ minHeight: 30, borderBottomWidth: 1, borderColor: '#dadada', padding: 8, display: 'flex', flexDirection: 'row' }}>
             <View style={{ flex: 5 }}>
-                <Text numberOfLines={1} style={{ color: '#adadad', marginBottom: 8, fontSize: 14 }}>{itemAudio.title}</Text>
-                <Text style={{ fontSize: 18 }}>{item.data}</Text>
+                <Text numberOfLines={1} style={{ color: '#adadad', marginBottom: 8, fontSize: 14 }}>
+                    {itemAudio}</Text>
+                    
+                <Text style={{ fontSize: 18 }}>{item?.data}</Text>
                 <View style={{ display: 'flex', flexDirection: 'row', marginTop: 8 }}>
-                    <Icon name='clock' size={18} color={'#adadad'} style={{ marginEnd: 8, alignSelf: 'center' }} /><Text style={{ alignSelf: 'center', color: '#0f0f0f', fontSize: 14 }}>{timeStamp[0] + ":" + Math.floor(timeStamp[1])}min</Text>
+
+                    <Icon
+                        name='clock'
+                        size={18}
+                        color={'#adadad'}
+                        style={{ marginEnd: 8, alignSelf: 'center' }} />
+
+                    <Text style={{ alignSelf: 'center', color: '#0f0f0f', fontSize: 14 }}>
+                        {timeStamp[0] + ":" + Math.floor(timeStamp[1])}min</Text>
+
                 </View>
             </View>
-            <Button icon light style={{ flex: 1, alignSelf: 'flex-end', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,1)', borderRadius: 16, marginStart: 8, elevation: 10 }} onPress={() => changeAudioToNote(itemAudio, item.timestamp)}>
+
+            <Button icon light
+                style={{ flex: 1, alignSelf: 'flex-end', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,1)', borderRadius: 16, marginStart: 8, elevation: 10 }}
+                onPress={() => changeAudioToNote(itemAudio, item.timestamp)}>
                 <Icon color={'rgba(66, 142, 146, 1)'} name='headphones-alt' size={26} style={{ margin: 8, alignSelf: 'center' }} />
             </Button>
         </View>
@@ -82,7 +97,7 @@ const Notes = ({ navigation, userName }) => {
                 renderItem={noteItem}
             >
             </FlatList>
-r
+
             <Form style={{ position: 'absolute', bottom: 0, display: 'flex', flexDirection: 'row', backgroundColor: '#fff', width: '105%', padding: 8 }}>
                 <Item style={{ flex: 4 }}>
                     <Input
@@ -94,7 +109,7 @@ r
                 <Button icon style={{ flex: 1, borderRadius: 16, maxWidth: 60, alignSelf: 'center', borderWidth: 3, borderColor: '#006064', backgroundColor: '#d4fafc', elevation: 10 }}
                     onPress={() => {
                         if (input.length > 0) {
-                            postNote(0.0, input, "6076dd5b0de13f1ebc13328d", user.id)
+                            postNote(0.0, input, "6076d956ee8dc441dc6291c1", user.id)
                             setInput('')
                         } else {
                             Toast.show({ text: `Maybe you'd want to write something before saving it?`, duration: 2000, position: 'bottom', buttonText: 'Okay' });
