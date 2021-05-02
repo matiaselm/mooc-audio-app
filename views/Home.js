@@ -27,7 +27,7 @@ const Home = ({ navigation }) => {
                     icon
                     transparent
                     onPress={() => navigation.push("Settings")}>
-                    <Icon name='cog' size={26} color={COLORS.PRIMARY} style={{marginEnd: 16}}></Icon>
+                    <Icon name='cog' size={26} color={COLORS.PRIMARY} style={{ marginEnd: 16 }}></Icon>
                 </Button>
             )
         })
@@ -73,20 +73,20 @@ const Home = ({ navigation }) => {
     })
 
     return <>
-        <Container style={{ backgroundColor: COLORS.GREY1 }}>
-            <Content>
-                {audio ? <AudioControls />
-                    : <Picker
-                        selectedValue={audio ?? 'Valitse jakso'}
-                        onValueChange={(itemValue, itemIndex) =>
-                            setAudio(itemValue)
-                        }>
-                        {queue && queue.map((audio, key) => {
-                            return <Picker.Item key={key} label={audio.title} value={audio} />
-                        })}
-                    </Picker>
-                }
-            </Content>
+        <View style={{ backgroundColor: COLORS.GREY1, height: '100%' }}>
+
+            {audio ? <AudioControls style={{paddingBottom: 0, height: '88%'}} />
+                : <Picker
+                    selectedValue={audio ?? 'Valitse jakso'}
+                    onValueChange={(itemValue, itemIndex) =>
+                        setAudio(itemValue)
+                    }>
+                    {queue && queue.map((audio, key) => {
+                        return <Picker.Item key={key} label={audio.title} value={audio} />
+                    })}
+                </Picker>
+            }
+
             <View style={{ position: 'absolute', display: 'flex', bottom: 16, width: '100%', flexDirection: 'row', height: 60, paddingBottom: 16 }}>
                 <Button block style={{ flex: 2, elevation: 10, borderWidth: 3, borderColor: COLORS.PRIMARY, backgroundColor: COLORS.SECONDARY, borderRadius: 16, margin: 8 }} onPress={() => navigation.push("Notes")}>
                     <Icon name={'book-open'} size={26} color={COLORS.PRIMARY} />
@@ -98,8 +98,7 @@ const Home = ({ navigation }) => {
                 </Button>
             </View>
 
-
-        </Container>
+        </View>
     </>
 }
 

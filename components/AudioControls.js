@@ -4,6 +4,7 @@ import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, Foo
 import { skip } from 'react-native-track-player';
 import ProgressBar from './ProgressBar';
 import AppContext from '../AppContext';
+import COLORS from '../assets/colors';
 
 const AudioControls = ({ style }) => {
     const {
@@ -16,7 +17,7 @@ const AudioControls = ({ style }) => {
         togglePlayback } = useContext(AppContext);
 
     const duration = audio.duration && Math.round(audio.duration)
-    
+
     const decimalAdjust = (type, value, exp) => {
         // If the exp is undefined or zero...
         if (typeof exp === 'undefined' || +exp === 0) {
@@ -51,55 +52,59 @@ const AudioControls = ({ style }) => {
     const elapsed = minutesAndSeconds(position);
     const remaining = minutesAndSeconds(duration - position);
 
-    return <View style={[{ padding: 16 }, style]}>
-        <Text numberOfLines={3} style={styles.name}>{audio.title}</Text>
+    return <View style={[{ padding: 8, display: 'flex', flexDirection: 'column' }, style]}>
+        <View style={{flex: 3}}>
+            <Text numberOfLines={3} style={[styles.name, {flex: 1}]}>{audio.title}</Text>
 
-        <Picker
-            style={{ position: 'absolute', top: 8, right: 8, zIndex: 1, width: 40, height: 40 }}
-            selectedValue={audio}
-            onValueChange={(itemValue, itemIndex) =>
-                setAudio(itemValue)
-            }>
-            {queue && queue.map((audio, key) => {
-                return <Picker.Item key={key} label={audio.title} value={audio} />
-            })}
-        </Picker>
+            <Picker
+                style={{ position: 'absolute', top: 8, right: 8, zIndex: 1, width: 40, height: 40 }}
+                selectedValue={audio}
+                onValueChange={(itemValue, itemIndex) =>
+                    setAudio(itemValue)
+                }>
+                {queue && queue.map((audio, key) => {
+                    return <Picker.Item key={key} label={audio.title} value={audio} />
+                })}
+            </Picker>
 
-        <Image
-            style={{
-                height: 250,
-                width: '100%',
-                marginVertical: 8,
-                borderWidth: 3,
-                borderColor: '#006064',
-                backgroundColor: audio.image ? null : '#d4fafc'
-            }}
-            source={{ uri: audio.image ?? 'https://www.muutoslehti.fi/wp-content/uploads/powerpress/muutos_podcast_logo.jpg' }}
-        />
-        <View style={styles.buttonGroup}>
-
-            <Button icon style={styles.audioButton} onPress={() => skip('backward')}>
-                <Icon name='play-back-sharp' />
-            </Button>
-            {playing === true ?
-                <Button icon style={styles.audioButton} onPress={() => togglePlayback(false)}>
-                    <Icon name='pause-sharp' />
-                </Button> :
-                <Button icon style={styles.audioButton} onPress={() => togglePlayback(true)}>
-                    <Icon name='play-sharp' />
+            <Image
+                style={{
+                    flex: 2,
+                    width: '100%',
+                    marginVertical: 8,
+                    borderWidth: 3,
+                    borderColor: COLORS.PRIMARY,
+                    backgroundColor: audio.image ? null : COLORS.SECONDARY
+                }}
+                source={{ uri: audio.image ?? 'https://www.muutoslehti.fi/wp-content/uploads/powerpress/muutos_podcast_logo.jpg' }}
+            />
+        </View>
+        <View style={{flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingVertical: 30 }}>
+            <View style={[styles.buttonGroup, {flex: 2}]}>
+                <Button icon style={styles.audioButton} onPress={() => skip('backward')}>
+                    <Icon name='play-back-sharp' />
                 </Button>
-            }
+                {playing === true ?
+                    <Button icon style={styles.audioButton} onPress={() => togglePlayback(false)}>
+                        <Icon name='pause-sharp' />
+                    </Button> :
+                    <Button icon style={styles.audioButton} onPress={() => togglePlayback(true)}>
+                        <Icon name='play-sharp' />
+                    </Button>
+                }
 
-            <Button icon style={styles.audioButton} onPress={() => skip('forward')}>
-                <Icon name='play-forward-sharp' />
-            </Button>
+                <Button icon style={styles.audioButton} onPress={() => skip('forward')}>
+                    <Icon name='play-forward-sharp' />
+                </Button>
 
+            </View>
+
+            <View style={{ flex: 1, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Text style={styles.numbers}>{elapsed[0] + ":" + Math.floor(elapsed[1])}</Text>
+                <Text style={styles.numbers}>{floor10(duration / 60, -1)}min</Text>
+            </View>
+            <ProgressBar duration={duration} position={position} style={{ alignSelf: 'center', margin: 10 }} />
         </View>
-        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text style={styles.numbers}>{elapsed[0] + ":" + Math.floor(elapsed[1])}</Text>
-            <Text style={styles.numbers}>{floor10(duration / 60, -1)}min</Text>
-        </View>
-        <ProgressBar duration={duration} position={position} style={{ alignSelf: 'center', margin: 10 }} />
     </View>
 };
 
