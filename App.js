@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { PermissionsAndroid } from 'react-native';
 import { Root } from 'native-base';
 import AppLoading from 'expo-app-loading';
 import AppContext from './AppContext';

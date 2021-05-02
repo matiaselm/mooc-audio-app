@@ -99,11 +99,11 @@ const AudioControls = ({ style }) => {
 
             </View>
 
-            <View style={{ flex: 1, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View style={{ flex: 1, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: 16 }}>
                 <Text style={styles.numbers}>{elapsed[0] + ":" + Math.floor(elapsed[1])}</Text>
                 <Text style={styles.numbers}>{floor10(duration / 60, -1)}min</Text>
             </View>
-            <ProgressBar duration={duration} position={position} style={{ alignSelf: 'center', margin: 10 }} />
+            <ProgressBar duration={duration} position={position} style={{ alignSelf: 'center' }} />
         </View>
     </View>
 };

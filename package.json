@@ -25,7 +25,7 @@
     "native-base": "^2.15.2",
     "react": "16.13.1",
     "react-i18next": "^11.8.15",
-    "react-native": "~0.63.4",
+    "react-native": "^0.64.0",
     "react-native-dotenv": "^2.5.3",
     "react-native-gesture-handler": "^1.8.0",
     "react-native-google-speech-to-text": "^1.0.4",
@@ -35,7 +35,7 @@
     "react-native-screens": "^2.15.2",
     "react-native-track-player": "^1.2.3",
     "react-native-tts": "^4.1.0",
-    "react-native-unimodules": "~0.12.0",
+    "react-native-unimodules": "^0.12.0",
     "react-native-vector-icons": "^8.1.0",
     "react-navigation-transitions": "^1.0.12"
   },
