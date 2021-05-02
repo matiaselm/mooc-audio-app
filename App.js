@@ -53,10 +53,9 @@ const App = (props) => {
   useEffect(() => {
     loadFont();
     loadUser();
-    if (user !== null) {
-      initTrackPlayer();
-      initTts();
-    }
+    initTrackPlayer();
+    populateQueue();
+    initTts();
   }, []);
 
   useEffect(() => {
@@ -103,14 +102,17 @@ const App = (props) => {
 
   const updateNotes = async () => {
     let _notes = await getNotes(user.id)
-    console.log('notes', _notes)
+    // console.log('notes', _notes)
     setNotes(_notes)
   }
 
   const initTrackPlayer = async () => {
-    await TrackPlayer.registerEventHandler(playerHandler);
-    await TrackPlayer.registerPlaybackService(playbackService);
-    await TrackPlayer.setupPlayer();
+    TrackPlayer.registerEventHandler(playerHandler);
+    TrackPlayer.registerPlaybackService(playbackService);
+    await TrackPlayer.setupPlayer()
+  };
+
+  const populateQueue = async () => {
     try {
       console.log('AudioList')
       const audioList = await getAudio();
@@ -119,11 +121,11 @@ const App = (props) => {
         TrackPlayer.add(audioList[i])
       }
 
-      await TrackPlayer.getQueue().then(_queue => setQueue(_queue))
+      TrackPlayer.getQueue().then(_queue => setQueue(_queue))
     } catch (e) {
       console.error('initTrackPlayer error', e.message)
     }
-  };
+  }
 
   const initTts = async () => {
     Tts.setDefaultLanguage(language);

@@ -33,8 +33,38 @@ export default () => {
         // axios method to modify user
     }
 
-    const getUser = async () => {
-        // axios method to get user with id from server
+    const getUser = async (userID) => {
+        if (userID !== null) {
+            // console.log('Getting notes for user: ', userID);
+            try {
+                const query = {
+                    query:`{
+                    User(id: "${userID}"){
+                        id
+                        name
+                        position
+                        language
+                        notes{
+                            id
+                            data
+                            audioID{
+                                title
+                            }
+                      }
+                    }
+                  }`
+                }
+
+                console.log('Getting notes for user: ', userID);
+                const response = await axios.post(`${API_URL}/graphql`, query)
+
+                // console.log('Notes response', JSON.stringify(response.data.data.User.notes, '', '\t'))
+                return response.data.data.User.notes
+            } catch (e) {
+                console.error('note fetch error', e.message)
+                return null
+            }
+        }
     };
 
     const postNote = async (position, note, audioID, userID) => {
@@ -68,16 +98,13 @@ export default () => {
             try {
                 const query = {
                     query:`{
-                    User(id: "${userID}"){
+                    Notes(userID: "${userID}"){
                         id
-                        name
-                        notes{
-                            id
-                            data
-                            audioID{
-                                title
-                            }
-                      }
+                        data
+                        timestamp
+                        audioID{
+                            title
+                        }
                     }
                   }`
                 }
@@ -85,8 +112,8 @@ export default () => {
                 console.log('Getting notes for user: ', userID);
                 const response = await axios.post(`${API_URL}/graphql`, query)
 
-                console.log('Notes response', JSON.stringify(response.data.data.User.notes, '', '\t'))
-                return response.data.data.User.notes
+                // console.log('Notes response', JSON.stringify(response.data.data.Notes, '', '\t'))
+                return response.data.data.Notes
             } catch (e) {
                 console.error('note fetch error', e.message)
                 return null
@@ -113,9 +140,9 @@ export default () => {
                 }`
             }
             const response = await axios.post(url, query)
-            console.log('AUDIOS', JSON.stringify(response.data, '', '\t'))
+            // console.log('AUDIOS', JSON.stringify(response.data.data.Audios, '', '\t'))
 
-            return response.data
+            return response.data.data.Audios
         } catch (e) {
             console.error('getAudio error', e.message)
         }
