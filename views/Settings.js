@@ -7,10 +7,12 @@ import { API_URL } from '@env';
 import AppContext from '../AppContext';
 import { useTranslation } from 'react-i18next';
 import COLORS from '../assets/colors';
+import useAsyncStorageHooks from '../services/asyncStorageHooks';
 
 export default ({ navigation, userName }) => {
     const { user, setUser, notes, getNotes, audio, setAudio, queue, position, setTrackPlayerPosition, language, setLanguage, languages } = useContext(AppContext);
     const { t, i18n } = useTranslation();
+    const { removeUser} = useAsyncStorageHooks();
 
     const [input, setInput] = useState();
 
@@ -55,6 +57,13 @@ export default ({ navigation, userName }) => {
             <Icon name='cloud' size={34} color={COLORS.PRIMARY} style={{alignSelf: 'center'}} />
             <Text>
                 {t('save')}
+            </Text>
+        </Button>
+
+        <Button transparent icon onPress={removeUser} style={{ alignSelf: 'flex-end' }} >
+            <Icon name='trashbin' size={34} color={COLORS.PRIMARY} style={{alignSelf: 'center'}} />
+            <Text>
+                remove user
             </Text>
         </Button>
     </View>

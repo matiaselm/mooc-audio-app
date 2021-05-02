@@ -9,6 +9,7 @@ import Main from './views/Main';
 import Notes from './views/Notes';
 import Settings from './views/Settings';
 import playerHandler from './services/playerHandler';
+import playbackService from './services/playbackService';
 import TrackPlayer from 'react-native-track-player';
 import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -42,13 +43,7 @@ const App = (props) => {
   const { t, i18n } = useTranslation();
   const languages = ['en_EN', 'fi_FI']
 
-  const [user, setUser] = useState({
-    id: null,
-    name: null,
-    language: null,
-    audio: null,
-    notes: null
-  })
+  const [user, setUser] = useState(null)
 
   const { postUser, getUser, getNotes, getAudio, postNote } = useAxiosHooks();
   const { storeData, getData, removeUser } = useAsyncStorageHooks();
@@ -56,7 +51,6 @@ const App = (props) => {
   const Stack = createStackNavigator();
 
   useEffect(() => {
-    removeUser();
     loadFont();
     loadUser();
     if (user !== null) {
@@ -69,8 +63,9 @@ const App = (props) => {
     console.log('USER', JSON.stringify(user))
     try {
       if (user.id !== null) {
-        let _notes = getNotes(user.id)
-        setNotes(_notes)
+        updateNotes();
+      } else {
+        console.log(`Waiting for user before getting notes`)
       }
     } catch (e) {
       console.log(`note update error`, e.message)
@@ -106,26 +101,27 @@ const App = (props) => {
     });
   }
 
+  const updateNotes = async () => {
+    let _notes = await getNotes(user.id)
+    setNotes(_notes)
+  }
+
   const initTrackPlayer = async () => {
-    TrackPlayer.registerEventHandler(playerHandler);
-    await TrackPlayer.setupPlayer().then(() => {
-      console.log('player set up')
-      try {
-        getAudio().then(response => {
-          // console.log('Queue: ', JSON.stringify(response.data.length))
-          for (let i in response) {
-            const responseAudio = {
-              ...response[i],
-            }
-            // console.log('Audio: ', JSON.stringify(responseAudio, '', '\t'));
-            TrackPlayer.add(responseAudio)
-          }
-          TrackPlayer.getQueue().then(_queue => setQueue(_queue));
-        });
-      } catch (e) {
-        console.error('initTrackPlayer error', e.message)
+    await TrackPlayer.registerEventHandler(playerHandler);
+    await TrackPlayer.registerPlaybackService(playbackService);
+    await TrackPlayer.setupPlayer();
+    try {
+      console.log('AudioList')
+      const audioList = await getAudio();
+
+      for (let i in audioList) {
+        TrackPlayer.add(audioList[i])
       }
-    })
+
+      await TrackPlayer.getQueue().then(_queue => setQueue(_queue))
+    } catch (e) {
+      console.error('initTrackPlayer error', e.message)
+    }
   };
 
   const initTts = async () => {

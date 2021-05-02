@@ -93,12 +93,28 @@ export default () => {
     };
 
     const getAudio = async () => {
-        try {
-            const url = `${API_URL}/audio`;
-            axios.get(url).then(response => {
-                return response.data
-            });
-        } catch (e) {
+        try{
+            const url = `${API_URL}/graphql`;
+            const query = {
+                query: `{
+                    Audios{
+                        id
+                        url
+                        title
+                        artist
+                        album
+                        genre
+                        date
+                        artwork
+                        duration
+                    }
+                }`
+            }
+            const response = await axios.post(url, query)
+            console.log('AUDIOS', JSON.stringify(response.data,'','\t'))
+
+            return response.data
+        }catch(e){
             console.error('getAudio error', e.message)
         }
     };

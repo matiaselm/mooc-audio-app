@@ -15,7 +15,7 @@ const AudioControls = ({ style }) => {
         skip,
         togglePlayback } = useContext(AppContext);
 
-    const duration = audio.duration && Math.round(audio.duration.$numberDecimal)
+    const duration = audio.duration && Math.round(audio.duration)
     
     const decimalAdjust = (type, value, exp) => {
         // If the exp is undefined or zero...
