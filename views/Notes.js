@@ -57,10 +57,8 @@ const Notes = ({ navigation, userName }) => {
 
     const noteItem = ({ item }) => {
         const timeStamp = minutesAndSeconds(item.timestamp)
-        const itemAudio = {
-            ...item.audioID,
-            id: item.audioID._id
-        }
+        const itemAudio = item.audioID
+
         // console.log('ITEM: ', JSON.stringify(item, '', '\t'))
         return <View style={{ minHeight: 30, borderBottomWidth: 1, borderColor: '#dadada', padding: 8, display: 'flex', flexDirection: 'row' }}>
             <View style={{ flex: 5 }}>
@@ -79,12 +77,12 @@ const Notes = ({ navigation, userName }) => {
     return <View>
         <View style={{ height: '100%', padding: 8, paddingBottom: 76 }}>
             <FlatList
-                keyExtractor={item => item._id}
+                keyExtractor={item => item.id}
                 data={notes ?? []}
                 renderItem={noteItem}
             >
             </FlatList>
-
+r
             <Form style={{ position: 'absolute', bottom: 0, display: 'flex', flexDirection: 'row', backgroundColor: '#fff', width: '105%', padding: 8 }}>
                 <Item style={{ flex: 4 }}>
                     <Input
@@ -96,7 +94,7 @@ const Notes = ({ navigation, userName }) => {
                 <Button icon style={{ flex: 1, borderRadius: 16, maxWidth: 60, alignSelf: 'center', borderWidth: 3, borderColor: '#006064', backgroundColor: '#d4fafc', elevation: 10 }}
                     onPress={() => {
                         if (input.length > 0) {
-                            postNote(0.0, input, "6076dd5b0de13f1ebc13328d", "6081382ffc44d10f48f5197c")
+                            postNote(0.0, input, "6076dd5b0de13f1ebc13328d", user.id)
                             setInput('')
                         } else {
                             Toast.show({ text: `Maybe you'd want to write something before saving it?`, duration: 2000, position: 'bottom', buttonText: 'Okay' });

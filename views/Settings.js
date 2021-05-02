@@ -10,7 +10,7 @@ import COLORS from '../assets/colors';
 import useAsyncStorageHooks from '../services/asyncStorageHooks';
 
 export default ({ navigation, userName }) => {
-    const { user, setUser, notes, getNotes, audio, setAudio, queue, position, setTrackPlayerPosition, language, setLanguage, languages } = useContext(AppContext);
+    const { user, setUser, notes, audio, setAudio, queue, position, setTrackPlayerPosition, language, setLanguage, languages } = useContext(AppContext);
     const { t, i18n } = useTranslation();
     const { removeUser} = useAsyncStorageHooks();
 

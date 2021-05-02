@@ -21,7 +21,7 @@ export default () => {
                 }`
             }
             const response = await axios.post(`${API_URL}/graphql`, query)
-            console.log('Post user response', JSON.stringify(response.data.data.AddUser,'','\t'))
+            console.log('Post user response', JSON.stringify(response.data.data.AddUser, '', '\t'))
             return response.data.data.AddUser
         } catch (e) {
             console.error('post user error', e.message)
@@ -64,36 +64,32 @@ export default () => {
 
     const getNotes = async (userID) => {
         if (userID !== null) {
-            console.log('Getting notes for user: ', userID);
+            // console.log('Getting notes for user: ', userID);
             try {
+                const query = { query: `{
+                    Notes(userID: "${userID}"){
+                        id
+                        data
+                        timestamp
+                        audioID
+                        userID
+                    }
+                }`}
+
                 console.log('Getting notes for user: ', userID);
-                await axios.post(`${API_URL}/graphql`, {
-                    query: `Notes($userID: String!){
-                            id
-                            data
-                            timestamp
-                            audioID
-                            userID
-                        }`,
-                    variables: {
-                        userID: userID
-                    }
-                }).then((response, err) => {
-                    if (err) {
-                        console.error(err)
-                        return null
-                    } else {
-                        return response.data
-                    }
-                })
+                const response = await axios.post(`${API_URL}/graphql`, query)
+
+                console.log('Notes response', JSON.stringify(response.data, '', '\t'))
+                return response.data.data.Notes
             } catch (e) {
-                console.error(e)
+                console.error('note fetch error', e.message)
+                return null
             }
         }
     };
 
     const getAudio = async () => {
-        try{
+        try {
             const url = `${API_URL}/graphql`;
             const query = {
                 query: `{
@@ -111,10 +107,10 @@ export default () => {
                 }`
             }
             const response = await axios.post(url, query)
-            console.log('AUDIOS', JSON.stringify(response.data,'','\t'))
+            console.log('AUDIOS', JSON.stringify(response.data, '', '\t'))
 
             return response.data
-        }catch(e){
+        } catch (e) {
             console.error('getAudio error', e.message)
         }
     };

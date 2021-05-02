@@ -1,4 +1,4 @@
-export default playerHandler = async (data) => {
+export default async (data) => {
     if (data.type == 'playback-state') {
         // console.log('playback-state', data);
         // Update the UI with the new state

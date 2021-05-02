@@ -62,7 +62,7 @@ const App = (props) => {
   useEffect(() => {
     console.log('USER', JSON.stringify(user))
     try {
-      if (user.id !== null) {
+      if (user !== null) {
         updateNotes();
       } else {
         console.log(`Waiting for user before getting notes`)
@@ -103,6 +103,7 @@ const App = (props) => {
 
   const updateNotes = async () => {
     let _notes = await getNotes(user.id)
+    console.log('notes', _notes)
     setNotes(_notes)
   }
 
