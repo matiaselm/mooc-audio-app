@@ -57,6 +57,7 @@ const App = () => {
     try {
       if (user !== null) {
         storeData('user', user)
+        modifyUser(user)
         updateNotes();
       } else {
         console.log(`User shouldn't be null`)
