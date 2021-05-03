@@ -66,10 +66,9 @@ const Notes = ({ navigation, userName }) => {
 
     const noteItem = ({ item }) => {
         const timeStamp = minutesAndSeconds(item.timestamp)
-        console.log('TIMESTAMP', timeStamp);
         const itemAudio = item.audioID
 
-        console.log('ITEM: ', JSON.stringify(item, '', '\t'))
+        // console.log('ITEM: ', JSON.stringify(item, '', '\t'))
         return <View
             style={{ minHeight: 30, borderBottomWidth: 1, borderColor: COLORS.GREY2, padding: 8, display: 'flex', flexDirection: 'row' }}>
             <View style={{ flex: 5 }}>

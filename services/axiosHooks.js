@@ -3,7 +3,7 @@ import { API_URL } from '@env';
 
 export default () => {
     const postUser = async () => {
-        console.log('POST USER')
+        // console.log('POST USER')
         try {
             const query = {
                 query: `mutation{
@@ -21,7 +21,8 @@ export default () => {
                 }`
             }
             const response = await axios.post(`${API_URL}/graphql`, query)
-            console.log('Post user response', JSON.stringify(response.data.data.AddUser, '', '\t'))
+
+            // console.log('Post user response', JSON.stringify(response.data.data.AddUser, '', '\t'))
             return response.data.data.AddUser
         } catch (e) {
             console.error('post user error', e.message)
@@ -47,7 +48,7 @@ export default () => {
                 }
             }
             const response = await axios.post(`${API_URL}/graphql`, query)
-            console.log('Post user response', JSON.stringify(response.data, '', '\t'))
+            // console.log('Modify user response', JSON.stringify(response.data, '', '\t'))
             return response.data
         } catch (e) {
             console.error('post user error', e.message)
@@ -59,7 +60,6 @@ export default () => {
 
     const getUser = async (userID) => {
         if (userID !== null) {
-            // console.log('Getting notes for user: ', userID);
             try {
                 const query = {
                     query: `{
@@ -79,7 +79,7 @@ export default () => {
                   }`
                 }
 
-                console.log('Getting notes for user: ', userID);
+                // console.log('Getting notes for user: ', userID);
                 const response = await axios.post(`${API_URL}/graphql`, query)
 
                 // console.log('Notes response', JSON.stringify(response.data.data.User.notes, '', '\t'))
@@ -92,7 +92,7 @@ export default () => {
     };
 
     const postNote = async (position, note, audioID, userID) => {
-        console.log('POST NOTE', `${API_URL}/graphql`)
+        // console.log('POST NOTE', `${API_URL}/graphql`)
 
         const query = {
             query: `mutation AddNote( $userID: String!, $audioID: String!, $data: String!, $timestamp: Float!){
@@ -105,11 +105,9 @@ export default () => {
                 userID: userID
             }
         }
-        console.log('NOTE POST QUERY', JSON.stringify(query, '', '\t'))
 
         try {
             const response = await axios.post(`${API_URL}/graphql`, query)
-            console.log('POST NOTE', JSON.stringify(response.data, '', '\t'))
             return response.data
         } catch (e) {
             console.log(e.message)
@@ -141,9 +139,8 @@ export default () => {
                         }
                       }`
                 }
-                console.log('NOTE FETCH QUERY', query)
 
-                console.log('Getting notes for user: ', userID);
+                // console.log('Getting notes for user: ', userID);
                 const response = await axios.post(`${API_URL}/graphql`, query)
 
                 // console.log('Notes response', JSON.stringify(response.data.data.Notes, '', '\t'))

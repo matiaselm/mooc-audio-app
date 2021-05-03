@@ -8,8 +8,6 @@ import SpeechToText from 'react-native-google-speech-to-text';
 const Wit = ({ navigation, userName }) => {
     const [intent, setIntent] = useState(null);
     const [input, setInput] = useState(null);
-    const clientId = '4f083ae5f189a802a855a52cd24de5fe30ddea15'; // May be a working soundcloud clientID to pass to it
-    console.log('Bearer token: ' + WIT_BEARER)
 
     const instance = axios.create({
         baseURL: 'https://api.wit.ai',
