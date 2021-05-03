@@ -49,10 +49,10 @@ const Notes = ({ navigation, userName }) => {
         return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
     }
 
-    const changeAudioToNote = (audio, position) => {
+    const changeAudioToNote = async (audio, position) => {
         try {
             setAudio(audio)
-            TrackPlayer.seekTo(position)
+            await TrackPlayer.seekTo(position)
             navigation.goBack();
         } catch (e) {
             console.error(e)
