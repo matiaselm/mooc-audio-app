@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { PermissionsAndroid } from 'react-native';
+import { PermissionsAndroid, AppState } from 'react-native';
 import { Root } from 'native-base';
 import AppLoading from 'expo-app-loading';
 import AppContext from './AppContext';
@@ -45,6 +45,11 @@ const App = () => {
     loadUser();
     populateQueue();
     initTts();
+
+    return (() => {
+      storeData('user', user)
+      modifyUser(user)
+    })
   }, []);
 
   useEffect(() => {
@@ -52,7 +57,6 @@ const App = () => {
     try {
       if (user !== null) {
         storeData('user', user)
-        modifyUser(user)
         updateNotes();
       } else {
         console.log(`User shouldn't be null`)
@@ -62,13 +66,13 @@ const App = () => {
     }
   }, [user])
 
-  useEffect(()=> {
-    console.log(position)
-  },[position])
-
   useEffect(() => {
     console.log('lang: ', language)
     Tts.setDefaultLanguage(language)
+    setUser(prev => ({
+      ...prev,
+      language: language
+    }));
   }, [language])
 
   useEffect(() => {
@@ -90,7 +94,7 @@ const App = () => {
       setIsReady(true)
     });
   }
-  
+
   const initTrackPlayer = async () => {
     TrackPlayer.setupPlayer()
     const stopIcon = Icon.getImageSource('times', 24, '#fff')
