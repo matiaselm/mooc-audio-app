@@ -54,7 +54,7 @@ const AudioControls = ({ style }) => {
 
     return <View style={[{ padding: 8, display: 'flex', flexDirection: 'column' }, style]}>
         <View style={{flex: 3}}>
-            <Text numberOfLines={3} style={[styles.name, {flex: 1}]}>{audio.title}</Text>
+            <Text numberOfLines={3} style={[styles.name, {flex: 1, alignSelf: 'flex-start'}]}>{audio.title}</Text>
 
             <Picker
                 style={{ position: 'absolute', top: 8, right: 8, zIndex: 1, width: 40, height: 40 }}

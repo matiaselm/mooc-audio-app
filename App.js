@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import useAsyncStorageHooks from './services/asyncStorageHooks';
 import useAxiosHooks from './services/axiosHooks';
 import i18n from './services/i18n';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const App = () => {
   const [isReady, setIsReady] = useState(false)
@@ -39,7 +40,7 @@ const App = () => {
   const Stack = createStackNavigator();
 
   useEffect(() => {
-    TrackPlayer.setupPlayer()
+    initTrackPlayer();
     loadFont();
     loadUser();
     populateQueue();
@@ -88,6 +89,25 @@ const App = () => {
     }).then(() => {
       setIsReady(true)
     });
+  }
+
+  
+  const initTrackPlayer = async () => {
+    TrackPlayer.setupPlayer()
+    const stopIcon = Icon.getImageSource('times', 24, '#fff')
+    TrackPlayer.updateOptions({
+      capabilities: [
+        TrackPlayer.CAPABILITY_PLAY,
+        TrackPlayer.CAPABILITY_PAUSE,
+        TrackPlayer.CAPABILITY_STOP,
+      ],
+      compactCapabilities: [
+        TrackPlayer.CAPABILITY_PLAY,
+        TrackPlayer.CAPABILITY_PAUSE,
+        TrackPlayer.CAPABILITY_STOP
+      ],
+      stopIcon: stopIcon
+    })
   }
 
   const updateNotes = async () => {
