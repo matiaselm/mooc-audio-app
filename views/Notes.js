@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 
 const Notes = ({ navigation, userName }) => {
     const [input, setInput] = useState('');
-    const { user, notes, audio, setAudio, position, setTrackPlayerPosition, language } = useContext(AppContext);
+    const { user, notes, audio, setAudio, position, setTrackPlayerPosition, updateNotes, language } = useContext(AppContext);
     const { postNote } = useAxiosHooks();
     const { t } = useTranslation();
 
@@ -52,7 +52,7 @@ const Notes = ({ navigation, userName }) => {
     const changeAudioToNote = (audio, position) => {
         try {
             setAudio(audio)
-            setTrackPlayerPosition(position)
+            TrackPlayer.seekTo(position)
             navigation.goBack();
         } catch (e) {
             console.error(e)
@@ -66,14 +66,15 @@ const Notes = ({ navigation, userName }) => {
 
     const noteItem = ({ item }) => {
         const timeStamp = minutesAndSeconds(item.timestamp)
-        const itemAudio = item.audioID.title
+        console.log('TIMESTAMP', timeStamp);
+        const itemAudio = item.audioID
 
         console.log('ITEM: ', JSON.stringify(item, '', '\t'))
         return <View
             style={{ minHeight: 30, borderBottomWidth: 1, borderColor: COLORS.GREY2, padding: 8, display: 'flex', flexDirection: 'row' }}>
             <View style={{ flex: 5 }}>
                 <Text numberOfLines={1} style={{ color: COLORS.GREY2, marginBottom: 8, fontSize: 14 }}>
-                    {itemAudio}</Text>
+                    {itemAudio.title}</Text>
 
                 <Text style={{ fontSize: 18 }}>{item?.data}</Text>
                 <View style={{ display: 'flex', flexDirection: 'row', marginTop: 8 }}>
@@ -120,6 +121,7 @@ const Notes = ({ navigation, userName }) => {
                         if (input.length > 0) {
                             postNote(position, input, audio.id, user.id)
                             setInput('')
+                            updateNotes();
                         } else {
                             Toast.show({ text: t('pleaseWrite'), duration: 2000, position: 'bottom', buttonText: t('ok') });
                         }

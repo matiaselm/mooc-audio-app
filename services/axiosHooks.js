@@ -128,7 +128,15 @@ export default () => {
                             data
                             timestamp
                             audioID{
+                                id
+                                url
                                 title
+                                artist
+                                album
+                                genre
+                                date
+                                artwork
+                                duration
                             }
                         }
                       }`

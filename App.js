@@ -62,6 +62,10 @@ const App = () => {
     }
   }, [user])
 
+  useEffect(()=> {
+    console.log(position)
+  },[position])
+
   useEffect(() => {
     console.log('lang: ', language)
     Tts.setDefaultLanguage(language)
@@ -222,6 +226,7 @@ const App = () => {
 
       notes: notes,
       setNotes: setNotes,
+      updateNotes: updateNotes,
 
       language: language,
       setLanguage: setLanguage,
