@@ -22,7 +22,7 @@ export default () => {
             }
             const response = await axios.post(`${API_URL}/graphql`, query)
 
-            // console.log('Post user response', JSON.stringify(response.data.data.AddUser, '', '\t'))
+            console.log('Post user response', JSON.stringify(response.data.data.AddUser, '', '\t'))
             return response.data.data.AddUser
         } catch (e) {
             console.error('post user error', e.message)
@@ -48,10 +48,10 @@ export default () => {
                 }
             }
             const response = await axios.post(`${API_URL}/graphql`, query)
-            // console.log('Modify user response', JSON.stringify(response.data, '', '\t'))
+            console.log('Modify user response', JSON.stringify(response.data, '', '\t'))
             return response.data
         } catch (e) {
-            console.error('post user error', e.message)
+            console.error('modify user error', e.message)
             return null
         }
 

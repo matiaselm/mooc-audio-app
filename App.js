@@ -45,19 +45,13 @@ const App = () => {
     loadUser();
     populateQueue();
     initTts();
-
-    return (() => {
-      storeData('user', user)
-      modifyUser(user)
-    })
   }, []);
 
   useEffect(() => {
-    console.log('USER', JSON.stringify(user))
+    // console.log('USER', JSON.stringify(user))
     try {
       if (user !== null) {
         storeData('user', user)
-        modifyUser(user)
         updateNotes();
       } else {
         console.log(`User shouldn't be null`)
@@ -115,14 +109,15 @@ const App = () => {
   }
 
   const updateNotes = async () => {
-    let _notes = await getNotes(user.id)
-    // console.log('notes', _notes)
-    setNotes(_notes)
+    await getNotes(user.id).then(notes => {
+      console.log('notes', notes)
+      setNotes(notes)
+    })
   }
 
   const populateQueue = async () => {
     try {
-      console.log('AudioList')
+      // console.log('AudioList')
       const audioList = await getAudio();
 
       for (let i in audioList) {
@@ -150,7 +145,7 @@ const App = () => {
       if (asyncStorageUser !== null) {
         console.log('asyncStorageUser', asyncStorageUser)
         setUser(asyncStorageUser)
-        console.log('Got user: ', JSON.stringify(user, '', '\t'))
+        console.log('Got user: ', JSON.stringify(asyncStorageUser, '', '\t'))
       } else {
         console.log('No user in storage. Creating a new one...')
         const _user = await postUser()

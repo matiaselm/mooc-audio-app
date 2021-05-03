@@ -93,7 +93,7 @@ const Notes = ({ navigation, userName }) => {
             <Button icon light
                 style={{ flex: 1, alignSelf: 'flex-end', justifyContent: 'center', backgroundColor: COLORS.WHITE, borderRadius: 16, marginStart: 8, elevation: 10 }}
                 onPress={() => changeAudioToNote(itemAudio, item.timestamp)}>
-                <Icon color={COLORS.PRIMARY} name='headphones-alt' size={26} style={{ margin: 8, alignSelf: 'center' }} />
+                <Icon color={COLORS.PRIMARY} name='headphones-alt' size={22} style={{ alignSelf: 'center' }} />
             </Button>
         </View>
     };

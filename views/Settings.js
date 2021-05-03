@@ -8,11 +8,13 @@ import AppContext from '../AppContext';
 import { useTranslation } from 'react-i18next';
 import COLORS from '../assets/colors';
 import useAsyncStorageHooks from '../services/asyncStorageHooks';
+import useAxiosHooks from '../services/axiosHooks';
 
 export default ({ navigation, userName }) => {
     const { user, setUser, notes, audio, setAudio, queue, position, setTrackPlayerPosition, language, setLanguage, languages } = useContext(AppContext);
     const { t, i18n } = useTranslation();
     const { removeUser } = useAsyncStorageHooks();
+    const { modifyUser } = useAxiosHooks();
 
     const [input, setInput] = useState(user.name);
 
@@ -35,6 +37,7 @@ export default ({ navigation, userName }) => {
             ...prev,
             name: input
         }))
+        modifyUser(user)
     }
 
     const changeLang = (lang) => {
@@ -56,8 +59,8 @@ export default ({ navigation, userName }) => {
 
         <View style={{ display: 'flex', flexDirection: 'row', height: 60, justifyContent: 'flex-start', borderBottomColor: '#dadada', borderBottomWidth: 1 }}>
             <Text style={{ flex: 2, alignSelf: 'center' }}>{t('language')}: {prettify(language)}</Text>
-            <Button transparent icon onPress={() => changeLang(language)}>
-                <Icon name='globe' color={COLORS.PRIMARY} size={34}/>
+            <Button style={{backgroundColor: COLORS.PRIMARY, margin: 4 }} onPress={() => changeLang(language)}>
+            <Icon name='globe' color={COLORS.WHITE} size={24} style={{marginStart: 8}} />
                 <Text>
                     {t('language')}
                 </Text>
@@ -70,8 +73,7 @@ export default ({ navigation, userName }) => {
         </View>
 
 
-        <Button transparent icon onPress={save} style={{ alignSelf: 'flex-end' }} >
-            <Icon name='cloud' size={34} color={COLORS.PRIMARY} style={{ alignSelf: 'center' }} />
+        <Button onPress={save} style={{ alignSelf: 'flex-end', backgroundColor: COLORS.PRIMARY, margin: 4, alignSelf: 'center' }} >
             <Text>
                 {t('save')}
             </Text>
