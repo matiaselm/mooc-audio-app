@@ -110,7 +110,7 @@ const App = () => {
 
   const updateNotes = async () => {
     await getNotes(user.id).then(notes => {
-      console.log('notes', notes)
+      console.log('notes', JSON.stringify(notes,'','\t'))
       setNotes(notes)
     })
   }
