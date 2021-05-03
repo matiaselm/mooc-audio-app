@@ -118,7 +118,7 @@ const Notes = ({ navigation, userName }) => {
                 <Button icon style={{ flex: 1, borderRadius: 16, maxWidth: 60, alignSelf: 'center', borderWidth: 3, borderColor: COLORS.PRIMARY, backgroundColor: COLORS.SECONDARY, elevation: 10 }}
                     onPress={() => {
                         if (input.length > 0) {
-                            postNote(0.0, input, audio.id, user.id)
+                            postNote(position, input, audio.id, user.id)
                             setInput('')
                         } else {
                             Toast.show({ text: t('pleaseWrite'), duration: 2000, position: 'bottom', buttonText: t('ok') });

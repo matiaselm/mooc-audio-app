@@ -31,6 +31,30 @@ export default () => {
 
     const modifyUser = async (user) => {
         // axios method to modify user
+        try {
+            const query = {
+                query: `mutation ModifyUser($id: ID!, $name: String, $language: String){
+                    ModifyUser(id: $id, name: $name, language: $language){
+                        id
+                        name
+                        language
+                    }
+                }`,
+                variables: {
+                    id: user.id,
+                    name: user.name,
+                    language: user.language
+                }
+            }
+            const response = await axios.post(`${API_URL}/graphql`, query)
+            console.log('Post user response', JSON.stringify(response.data, '', '\t'))
+            return response.data
+        } catch (e) {
+            console.error('post user error', e.message)
+            return null
+        }
+
+        /**{"id":"608fc01b1c4a393dd886fb12","language":"en_EN","audio":null,"notes":[],"name":"Matias"} */
     }
 
     const getUser = async (userID) => {
@@ -38,7 +62,7 @@ export default () => {
             // console.log('Getting notes for user: ', userID);
             try {
                 const query = {
-                    query:`{
+                    query: `{
                     User(id: "${userID}"){
                         id
                         name
@@ -81,6 +105,7 @@ export default () => {
                 userID: userID
             }
         }
+        console.log('NOTE POST QUERY', JSON.stringify(query, '', '\t'))
 
         try {
             const response = await axios.post(`${API_URL}/graphql`, query)
@@ -97,17 +122,18 @@ export default () => {
             // console.log('Getting notes for user: ', userID);
             try {
                 const query = {
-                    query:`{
-                    Notes(userID: "${userID}"){
-                        id
-                        data
-                        timestamp
-                        audioID{
-                            title
+                    query: `{
+                        Notes(userID: "${userID}"){
+                            id
+                            data
+                            timestamp
+                            audioID{
+                                title
+                            }
                         }
-                    }
-                  }`
+                      }`
                 }
+                console.log('NOTE FETCH QUERY', query)
 
                 console.log('Getting notes for user: ', userID);
                 const response = await axios.post(`${API_URL}/graphql`, query)

@@ -34,7 +34,7 @@ const App = () => {
 
   const [user, setUser] = useState(null)
 
-  const { postUser, getUser, getNotes, getAudio, postNote } = useAxiosHooks();
+  const { postUser, modifyUser, getUser, getNotes, getAudio, postNote } = useAxiosHooks();
   const { storeData, getData, removeUser } = useAsyncStorageHooks();
 
   const Stack = createStackNavigator();
@@ -52,7 +52,7 @@ const App = () => {
     try {
       if (user !== null) {
         storeData('user', user)
-        // postUser(user)
+        modifyUser(user)
         updateNotes();
       } else {
         console.log(`User shouldn't be null`)
@@ -64,10 +64,6 @@ const App = () => {
 
   useEffect(() => {
     console.log('lang: ', language)
-    /*setUser((prev => ({
-      ...prev,
-      language: language
-    })))*/
     Tts.setDefaultLanguage(language)
   }, [language])
 
@@ -90,7 +86,6 @@ const App = () => {
       setIsReady(true)
     });
   }
-
   
   const initTrackPlayer = async () => {
     TrackPlayer.setupPlayer()
