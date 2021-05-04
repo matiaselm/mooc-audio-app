@@ -240,7 +240,7 @@ const App = () => {
     };
   }, [user, audio, queue, notes, position, playing, language]);
 
-  return !isReady.audio && !isReady.font ? <AppLoading /> :
+  return !isReady.audio || !isReady.font ? <AppLoading /> :
     <Root>
       <AppContext.Provider value={appContextProvider}>
         <NavigationContainer
