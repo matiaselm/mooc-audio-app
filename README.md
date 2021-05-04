@@ -1,6 +1,6 @@
 # MOOC audio-app
 
- - APK should be here but it doesn't work correctly so no point in sharing...
+ - Built APK should be here but it didn't work properly so no point in sharing...
 
  - [the backend](https://github.com/matiaselm/mooc-audio-api)
 
