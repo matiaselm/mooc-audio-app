@@ -22,7 +22,7 @@ import i18n from './services/i18n';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const App = () => {
-  const [isReady, setIsReady] = useState(false)
+  const [isReady, setIsReady] = useState({font: false, audio: false})
   const [audio, setAudio] = useState(null)
   const [queue, setQueue] = useState([])
   const [notes, setNotes] = useState([])
@@ -86,7 +86,9 @@ const App = () => {
       Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
       ...Ionicons.font,
     }).then(() => {
-      setIsReady(true)
+      setIsReady(prev => ({
+        ...prev,
+        font: true}));
     });
   }
 
@@ -125,6 +127,10 @@ const App = () => {
       }
 
       TrackPlayer.getQueue().then(_queue => setQueue(_queue))
+      setIsReady(prev => ({
+        ...prev,
+        audio: true
+      }));
     } catch (e) {
       console.error('initTrackPlayer error', e.message)
     }
@@ -234,7 +240,7 @@ const App = () => {
     };
   }, [user, audio, queue, notes, position, playing, language]);
 
-  return !isReady ? <AppLoading /> :
+  return !isReady.audio && !isReady.font ? <AppLoading /> :
     <Root>
       <AppContext.Provider value={appContextProvider}>
         <NavigationContainer

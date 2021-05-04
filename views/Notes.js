@@ -51,9 +51,10 @@ const Notes = ({ navigation, userName }) => {
 
     const changeAudioToNote = async (audio, position) => {
         try {
-            await setAudio(audio).then(()=> {
+            setAudio(audio)
+            await TrackPlayer.getCurrentTrack().then(() => {
                 TrackPlayer.seekTo(position)
-            })
+              })
             navigation.goBack();
         } catch (e) {
             console.error(e)
