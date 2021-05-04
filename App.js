@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PermissionsAndroid, AppState } from 'react-native';
-import { Root } from 'native-base';
+import { Root, View, Button, Text } from 'native-base';
 import AppLoading from 'expo-app-loading';
 import AppContext from './AppContext';
 import * as Font from 'expo-font';
@@ -22,7 +22,8 @@ import i18n from './services/i18n';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const App = () => {
-  const [isReady, setIsReady] = useState({font: false, audio: false})
+  const [isReady, setIsReady] = useState({ font: false, audio: false, trackPlayer: false })
+  const [refresh, setRefresh] = useState(false)
   const [audio, setAudio] = useState(null)
   const [queue, setQueue] = useState([])
   const [notes, setNotes] = useState([])
@@ -46,6 +47,10 @@ const App = () => {
     populateQueue();
     initTts();
   }, []);
+
+  useEffect(() => {
+    populateQueue();
+  }, [refresh])
 
   useEffect(() => {
     // console.log('USER', JSON.stringify(user))
@@ -74,11 +79,15 @@ const App = () => {
     try {
       if (audio !== null) {
         setTrackPlayerAudio(audio.id)
+        setIsReady(prev => ({
+          ...prev,
+          trackPlayer: true
+        }))
       }
     } catch (e) {
       console.log(e)
     }
-  }, [audio])
+  }, [audio, refresh])
 
   const loadFont = async () => {
     await Font.loadAsync({
@@ -88,7 +97,8 @@ const App = () => {
     }).then(() => {
       setIsReady(prev => ({
         ...prev,
-        font: true}));
+        font: true
+      }));
     });
   }
 
@@ -112,7 +122,7 @@ const App = () => {
 
   const updateNotes = async () => {
     await getNotes(user.id).then(notes => {
-      console.log('notes', JSON.stringify(notes,'','\t'))
+      console.log('notes', JSON.stringify(notes, '', '\t'))
       setNotes(notes)
     })
   }
@@ -126,11 +136,12 @@ const App = () => {
         TrackPlayer.add(audioList[i])
       }
 
-      TrackPlayer.getQueue().then(_queue => setQueue(_queue))
+      await TrackPlayer.getQueue().then(_queue => setQueue(_queue))
       setIsReady(prev => ({
         ...prev,
         audio: true
       }));
+      setAudio(audioList[0])
     } catch (e) {
       console.error('initTrackPlayer error', e.message)
     }
@@ -203,7 +214,7 @@ const App = () => {
 
   const setTrackPlayerAudio = async (id) => {
     try {
-      TrackPlayer.skip(id)
+      await TrackPlayer.skip(id)
       console.log('Changed to track ', id)
     } catch (e) {
       console.log('setTrackPlayerAudio error: ', e.message)
@@ -214,6 +225,9 @@ const App = () => {
     return {
       user: user,
       setUser: setUser,
+
+      refresh: refresh,
+      setRefresh: setRefresh,
 
       audio: audio,
       setAudio: setAudio,
@@ -238,9 +252,9 @@ const App = () => {
       setLanguage: setLanguage,
       languages: languages
     };
-  }, [user, audio, queue, notes, position, playing, language]);
+  }, [user, audio, queue, notes, position, playing, language, refresh]);
 
-  return !isReady.audio || !isReady.font ? <AppLoading /> :
+  return !isReady.font ? <AppLoading /> :
     <Root>
       <AppContext.Provider value={appContextProvider}>
         <NavigationContainer

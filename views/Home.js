@@ -15,7 +15,9 @@ const Home = ({ navigation }) => {
         setAudio,
         queue,
         getPosition,
-        language
+        language,
+        refresh,
+        setRefresh
     } = useContext(AppContext);
 
     const { t } = useTranslation();
@@ -77,15 +79,9 @@ const Home = ({ navigation }) => {
         <View style={{ backgroundColor: COLORS.GREY1, height: '100%' }}>
 
             {audio ? <AudioControls style={{paddingBottom: 0, height: '88%'}} />
-                : <Picker
-                    selectedValue={audio ?? 'Valitse jakso'}
-                    onValueChange={(itemValue, itemIndex) =>
-                        setAudio(itemValue)
-                    }>
-                    {queue && queue.map((audio, key) => {
-                        return <Picker.Item key={key} label={audio.title} value={audio} />
-                    })}
-                </Picker>
+                : <Button block style={{alignSelf:'center', margin: 16}} onPress={() => setRefresh(!refresh)}>
+                    <Text>Refresh</Text>
+                </Button>
             }
 
             <View style={{ position: 'absolute', display: 'flex', bottom: 16, width: '100%', flexDirection: 'row', height: 60, paddingBottom: 16 }}>
