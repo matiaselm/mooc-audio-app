@@ -1,5 +1,9 @@
 # MOOC audio-app
 
+ - Built APK should be here but it didn't work properly so no point in sharing...
+
+ - [the backend](https://github.com/matiaselm/mooc-audio-api)
+
 ## Current features
 
 ### Play audio from a selected source, [muutoslehti](https://www.muutoslehti.fi/podcastit/) I apologise for not having any english audio, the app is designed to use specifically these.
