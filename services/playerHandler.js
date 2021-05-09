@@ -21,6 +21,7 @@ export default async (data) => {
             return
         }
         case 'remote-skip': {
+            console.log('remote-skip')
             console.log('remote-skip', data);
             return
         }
