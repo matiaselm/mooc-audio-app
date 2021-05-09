@@ -104,7 +104,6 @@ const App = () => {
 
   const initTrackPlayer = async () => {
     TrackPlayer.setupPlayer()
-    const stopIcon = Icon.getImageSource('times', 24, '#fff')
     TrackPlayer.updateOptions({
       capabilities: [
         TrackPlayer.CAPABILITY_PLAY,
@@ -115,8 +114,7 @@ const App = () => {
         TrackPlayer.CAPABILITY_PLAY,
         TrackPlayer.CAPABILITY_PAUSE,
         TrackPlayer.CAPABILITY_STOP
-      ],
-      stopIcon: stopIcon
+      ]
     })
   }
 
@@ -131,12 +129,12 @@ const App = () => {
     try {
       // console.log('AudioList')
       const audioList = await getAudio();
+      setQueue(audioList)
 
       for (let i in audioList) {
         TrackPlayer.add(audioList[i])
       }
 
-      await TrackPlayer.getQueue().then(_queue => setQueue(_queue))
       setIsReady(prev => ({
         ...prev,
         audio: true

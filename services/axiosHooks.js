@@ -116,6 +116,7 @@ export default () => {
     };
 
     const getNotes = async (userID) => {
+        console.log('API_URL', API_URL)
         if (userID !== null) {
             // console.log('Getting notes for user: ', userID);
             try {
