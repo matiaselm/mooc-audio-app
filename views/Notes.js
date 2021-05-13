@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useLayoutEffect } from 'react';
-import { FlatList } from 'react-native';
+import { EdgeInsetsPropType, FlatList, ProgressViewIOSComponent, TouchableOpacity } from 'react-native';
 import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, FooterTab, Button, View, Form, Item, Input, ScrollView, Toast } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import axios from 'axios';
@@ -13,8 +13,9 @@ import { useTranslation } from 'react-i18next';
 
 const Notes = ({ navigation, userName }) => {
     const [input, setInput] = useState('');
+    const [edit, setEdit] = useState({ state: false, noteID: null });
     const { user, notes, audio, setAudio, position, setTrackPlayerPosition, updateNotes, language } = useContext(AppContext);
-    const { postNote } = useAxiosHooks();
+    const { postNote, modifyNote, deleteNote } = useAxiosHooks();
     const { t } = useTranslation();
 
     useLayoutEffect(() => {
@@ -66,12 +67,27 @@ const Notes = ({ navigation, userName }) => {
         pad(position % 60, 2)
     ]);
 
+    const handleEdit = (editable) => {
+        if(editable.id == edit.noteID) {
+            setEdit({
+                state: false,
+                noteID: null
+            })
+        } else {
+            setEdit({
+                state: true,
+                noteID: editable.id
+            })
+        }
+    }
+
     const noteItem = ({ item }) => {
         const timeStamp = minutesAndSeconds(item.timestamp)
         const itemAudio = item.audioID
 
         // console.log('ITEM: ', JSON.stringify(item, '', '\t'))
-        return <View
+        return <TouchableOpacity
+            onPress={() => handleEdit(item)}
             style={{ minHeight: 30, borderBottomWidth: 1, borderColor: COLORS.GREY2, padding: 8, display: 'flex', flexDirection: 'row' }}>
             <View style={{ flex: 5 }}>
                 <Text numberOfLines={1} style={{ color: COLORS.GREY2, marginBottom: 8, fontSize: 14 }}>
@@ -97,17 +113,21 @@ const Notes = ({ navigation, userName }) => {
                 onPress={() => changeAudioToNote(itemAudio, item.timestamp)}>
                 <Icon color={COLORS.PRIMARY} name='headphones-alt' size={22} style={{ alignSelf: 'center' }} />
             </Button>
-        </View>
+        </TouchableOpacity>
     };
 
     return <View>
-        <View style={{ height: '100%', padding: 8, paddingBottom: 76 }}>
+        <View style={{ height: '100%', paddingBottom: 80, padding: 8 }}>
             <FlatList
                 keyExtractor={item => item.id}
                 data={notes ?? []}
                 renderItem={noteItem}
             >
             </FlatList>
+
+            { edit.state && <View style={{ height: 36, bottom: 0, width: '110%', backgroundColor: COLORS.PRIMARY, right: -8, left: -8 }}>
+                <Text style={{ color: 'white', margin: 4 }}>Muokkaat {edit.noteID}</Text>
+            </View> }
 
             <Form style={{ position: 'absolute', bottom: 0, display: 'flex', flexDirection: 'row', backgroundColor: COLORS.WHITE, width: '105%', padding: 8 }}>
                 <Item style={{ flex: 4 }}>
@@ -119,12 +139,21 @@ const Notes = ({ navigation, userName }) => {
                 </Item>
                 <Button icon style={{ flex: 1, borderRadius: 16, maxWidth: 60, alignSelf: 'center', borderWidth: 3, borderColor: COLORS.PRIMARY, backgroundColor: COLORS.SECONDARY, elevation: 10 }}
                     onPress={() => {
+                        if (edit.state && input.length > 0) {
+                            modifyNote(edit.noteID, input)
+                            setInput('')
+                            updateNotes();
+                            setEdit({state: false, noteID: null})
+                            return
+                        }
                         if (input.length > 0) {
                             postNote(position, input, audio.id, user.id)
                             setInput('')
                             updateNotes();
+                            return
                         } else {
                             Toast.show({ text: t('pleaseWrite'), duration: 2000, position: 'bottom', buttonText: t('ok') });
+                            return
                         }
                     }}>
                     <Icon name='pen-fancy' light size={26} color={COLORS.PRIMARY} style={{ marginStart: 16 }} />

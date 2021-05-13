@@ -115,6 +115,48 @@ export default () => {
         }
     };
 
+    const modifyNote = async (noteID, data) => {
+        const query = {
+            query: `mutation{
+                ModifyNote(id: "${noteID}", data: "${data}") {
+                    id
+                    data
+                }
+            }`
+        }
+
+        try {
+            console.log('Modifying note', noteID, data, query)
+            await axios.post(`${API_URL}/graphql`, query).then((response) => {
+                return response.data
+            })
+        } catch (e) {
+            console.log(e.message)
+            return null
+        }
+    }
+
+    const deleteNote = async (noteID, data) => {
+        const query = {
+            query: `mutation DeleteNote( $noteID: ID!) {
+                ModifyNote( noteID: $noteID)
+            }`,
+            variables: {
+                noteID: noteID,
+                data: data
+            }
+        }
+
+        try {
+            await axios.post(`${API_URL}/graphql`, query).then((response) => {
+                return response.data
+            })
+        } catch (e) {
+            console.log(e.message)
+            return null
+        }
+    }
+
     const getNotes = async (userID) => {
         console.log('API_URL', API_URL)
         if (userID !== null) {
@@ -186,6 +228,8 @@ export default () => {
         getNotes,
         getAudio,
         postNote,
+        modifyNote,
+        deleteNote,
         modifyUser
     }
 }

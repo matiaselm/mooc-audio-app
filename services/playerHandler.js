@@ -4,6 +4,7 @@ export default async (data) => {
     switch(data.type){
         case 'playback-state': {
             console.log('playback-state', data);
+            return
         }
         case 'remote-play': {
             console.log('remote-play', data);

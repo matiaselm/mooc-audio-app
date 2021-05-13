@@ -16,6 +16,10 @@ const AudioControls = ({ style }) => {
         skip,
         togglePlayback } = useContext(AppContext);
 
+    useEffect(()=> {
+        // some method to get audio data to refresh
+    },[audio])
+
     const duration = audio.duration && Math.round(audio.duration)
 
     const decimalAdjust = (type, value, exp) => {
