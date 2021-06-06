@@ -78,11 +78,7 @@ const Home = ({ navigation }) => {
     return <>
         <View style={{ backgroundColor: COLORS.GREY1, height: '100%' }}>
 
-            {audio ? <AudioControls style={{paddingBottom: 0, height: '88%'}} />
-                : <Button block style={{alignSelf:'center', margin: 16}} onPress={() => setRefresh(!refresh)}>
-                    <Text>Refresh</Text>
-                </Button>
-            }
+            <AudioControls style={{paddingBottom: 0, height: '88%'}}/>
 
             <View style={{ position: 'absolute', display: 'flex', bottom: 16, width: '100%', flexDirection: 'row', height: 60, paddingBottom: 16 }}>
                 <Button block style={{ flex: 2, elevation: 10, borderWidth: 3, borderColor: COLORS.PRIMARY, backgroundColor: COLORS.SECONDARY, borderRadius: 16, margin: 8 }} onPress={() => navigation.push("Notes")}>

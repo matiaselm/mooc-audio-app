@@ -1,7 +1,9 @@
 import axios from 'axios';
-import { API_URL } from '@env';
+import { API_URL, TOKEN } from '@env';
 
 export default () => {
+    axios.defaults.headers.common = {'Authorization': `bearer ${TOKEN}`}
+
     const postUser = async () => {
         // console.log('POST USER')
         try {
@@ -45,7 +47,7 @@ export default () => {
                     id: user.id,
                     name: user.name,
                     language: user.language
-                }
+                } 
             }
             const response = await axios.post(`${API_URL}/graphql`, query)
             console.log('Modify user response', JSON.stringify(response.data, '', '\t'))
@@ -148,7 +150,7 @@ export default () => {
         }
 
         try {
-            await axios.post(`${API_URL}/graphql`, query).then((response) => {
+            axios.post(`${API_URL}/graphql`, query).then((response) => {
                 return response.data
             })
         } catch (e) {
@@ -158,7 +160,7 @@ export default () => {
     }
 
     const getNotes = async (userID) => {
-        console.log('API_URL', API_URL)
+        // console.log('API_URL', API_URL)
         if (userID !== null) {
             // console.log('Getting notes for user: ', userID);
             try {

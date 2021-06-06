@@ -240,6 +240,7 @@ const App = () => {
       getPosition: getPosition,
 
       queue: queue,
+      populateQueue: populateQueue,
       setQueue: setQueue,
 
       notes: notes,

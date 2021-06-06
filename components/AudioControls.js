@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { RecyclerViewBackedScrollView, StyleSheet, Image } from 'react-native';
+import { RecyclerViewBackedScrollView, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, FooterTab, Button, View, Icon, Picker } from 'native-base';
-import { skip } from 'react-native-track-player';
+import TrackPlayer from 'react-native-track-player';
 import ProgressBar from './ProgressBar';
 import AppContext from '../AppContext';
 import COLORS from '../assets/colors';
@@ -14,13 +14,10 @@ const AudioControls = ({ style }) => {
         playing,
         queue,
         skip,
-        togglePlayback } = useContext(AppContext);
+        togglePlayback,
+        populateQueue } = useContext(AppContext);
 
-    useEffect(()=> {
-        // some method to get audio data to refresh
-    },[audio])
-
-    const duration = audio.duration && Math.round(audio.duration)
+    const duration = audio && audio.duration && Math.round(audio.duration)
 
     const decimalAdjust = (type, value, exp) => {
         // If the exp is undefined or zero...
@@ -58,16 +55,16 @@ const AudioControls = ({ style }) => {
 
     return <View style={[{ padding: 8, display: 'flex', flexDirection: 'column' }, style]}>
         <View style={{flex: 3}}>
-            <Text numberOfLines={3} style={[styles.name, {flex: 1, alignSelf: 'flex-start'}]}>{audio.title}</Text>
+            <Text numberOfLines={3} style={[styles.name, {flex: 1, alignSelf: 'flex-start'}]}>{audio && audio.title}</Text>
 
             <Picker
                 style={{ position: 'absolute', top: 8, right: 8, zIndex: 1, width: 40, height: 40 }}
-                selectedValue={audio}
+                selectedValue={audio ?? null}
                 onValueChange={(itemValue, itemIndex) =>
                     setAudio(itemValue)
                 }>
-                {queue && queue.map((audio, key) => {
-                    return <Picker.Item key={key} label={audio.title} value={audio} />
+                {queue && queue.map((audio, i) => {
+                    return <Picker.Item key={i} label={audio && audio.title} value={audio && audio} />
                 })}
             </Picker>
 
@@ -78,17 +75,24 @@ const AudioControls = ({ style }) => {
                     marginVertical: 8,
                     borderWidth: 3,
                     borderColor: COLORS.PRIMARY,
-                    backgroundColor: audio.image ? null : COLORS.SECONDARY
+                    backgroundColor: COLORS.SECONDARY
                 }}
-                source={{ uri: audio.image ?? 'https://www.muutoslehti.fi/wp-content/uploads/powerpress/muutos_podcast_logo.jpg' }}
+                source={{ uri: audio?.image ?? 'https://www.muutoslehti.fi/wp-content/uploads/powerpress/muutos_podcast_logo.jpg' }}
+
             />
         </View>
         <View style={{flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingVertical: 30 }}>
             <View style={[styles.buttonGroup, {flex: 2}]}>
-                <Button icon style={styles.audioButton} onPress={() => skip('backward')}>
+                { <TouchableOpacity icon style={styles.lightButton} onPress={ populateQueue }>
+                    <Icon name='sync' style={{color:'#006064'}} />
+                </TouchableOpacity> }
+
+                { audio ? <Button icon style={styles.audioButton} onPress={() => skip('backward')}>
                     <Icon name='play-back-sharp' />
-                </Button>
-                {playing === true ?
+                </Button> : <Button icon style={ styles.audioButton } onPress={ populateQueue } >
+                    <Icon name='sync' />
+                </Button> }
+                {audio && playing === true ?
                     <Button icon style={styles.audioButton} onPress={() => togglePlayback(false)}>
                         <Icon name='pause-sharp' />
                     </Button> :
@@ -97,9 +101,13 @@ const AudioControls = ({ style }) => {
                     </Button>
                 }
 
-                <Button icon style={styles.audioButton} onPress={() => skip('forward')}>
+                { audio && <Button icon style={styles.audioButton} onPress={() => skip('forward')}>
                     <Icon name='play-forward-sharp' />
-                </Button>
+                </Button> }
+
+                { audio && <TouchableOpacity icon style={styles.lightButton} onPress={() => TrackPlayer.destroy()}>
+                    <Icon name='trash' style={{color:'#006064'}} />
+                </TouchableOpacity> }
 
             </View>
 
@@ -138,6 +146,13 @@ const styles = StyleSheet.create({
         borderRadius: 70,
         justifyContent: 'center',
         elevation: 10
+    },
+    lightButton: {
+        margin: 8,
+        width: 70,
+        height: 70,
+        alignItems: 'center',
+        justifyContent: 'center',
     }
 })
 
