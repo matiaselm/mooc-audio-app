@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { API_URL, TOKEN } from '@env';
+console.log('API_URL', API_URL)
 
 export default () => {
     axios.defaults.headers.common = {'Authorization': `bearer ${TOKEN}`}
 
     const postUser = async () => {
-        // console.log('POST USER')
         try {
             const query = {
                 query: `mutation{
@@ -33,7 +33,6 @@ export default () => {
     }
 
     const modifyUser = async (user) => {
-        // axios method to modify user
         try {
             const query = {
                 query: `mutation ModifyUser($id: ID!, $name: String, $language: String){
@@ -56,8 +55,6 @@ export default () => {
             console.error('modify user error', e.message)
             return null
         }
-
-        /**{"id":"608fc01b1c4a393dd886fb12","language":"en_EN","audio":null,"notes":[],"name":"Matias"} */
     }
 
     const getUser = async (userID) => {
@@ -85,9 +82,9 @@ export default () => {
                 const response = await axios.post(`${API_URL}/graphql`, query)
 
                 // console.log('Notes response', JSON.stringify(response.data.data.User.notes, '', '\t'))
-                return response.data.data.User.notes
+                return response.data.data.User
             } catch (e) {
-                console.error('note fetch error', e.message)
+                console.error('user fetch error', e.message)
                 return null
             }
         }

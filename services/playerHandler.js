@@ -27,7 +27,7 @@ export default async (data) => {
             return
         }
         default: {
-            console.log('default')
+            // console.log('default')
             return
         }
     }

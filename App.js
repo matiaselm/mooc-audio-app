@@ -53,16 +53,14 @@ const App = () => {
   }, [refresh])
 
   useEffect(() => {
-    // console.log('USER', JSON.stringify(user))
+    console.log('USER', JSON.stringify(user))
     try {
-      if (user !== null) {
-        storeData('user', user)
-        updateNotes();
-      } else {
-        console.log(`User shouldn't be null`)
+      if (!user) {
+        console.log(`useEffect user === null`)
+        loadUser();
       }
     } catch (e) {
-      console.log(`note update error`, e.message)
+      console.log(`user update error`, e.message)
     }
   }, [user])
 
@@ -103,7 +101,7 @@ const App = () => {
   }
 
   const initTrackPlayer = async () => {
-    TrackPlayer.setupPlayer()
+    await TrackPlayer.setupPlayer()
     TrackPlayer.updateOptions({
       capabilities: [
         TrackPlayer.CAPABILITY_PLAY,
@@ -119,7 +117,7 @@ const App = () => {
   }
 
   const updateNotes = async () => {
-    await getNotes(user.id).then(notes => {
+    getNotes(user.id).then(notes => {
       // console.log('notes', JSON.stringify(notes, '', '\t'))
       setNotes(notes)
     })
@@ -146,7 +144,16 @@ const App = () => {
   }
 
   const initTts = async () => {
-    Tts.setDefaultLanguage(language);
+    try {
+      if(user && user.language) {
+        await Tts.setDefaultLanguage(user.language);
+      } else {
+        await Tts.setDefaultLanguage(language);
+      }
+    } catch(e) {
+      console.error(e)
+    }
+    
     Tts.getInitStatus().then(() => {
       console.log('TTS initialized');
     });
@@ -155,21 +162,28 @@ const App = () => {
   const loadUser = async () => {
     try {
       console.log('Load user')
-      const asyncStorageUser = await getData('user')
+      const user_id = await getData('user_id')
 
-      if (asyncStorageUser !== null) {
-        console.log('asyncStorageUser', asyncStorageUser)
-        setUser(asyncStorageUser)
-        console.log('Got user: ', JSON.stringify(asyncStorageUser, '', '\t'))
+      if (user_id) {
+        console.log('user_id', user_id)
+        console.log('Async storage user id: ', user_id)
+        getUser(user_id).then(user => {
+          console.log('Fetch user: ', JSON.stringify(user,'','\t'))
+          setUser(user)
+          setLanguage(user.language ?? 'en_EN')
+        }).catch(e => {
+          console.error(e)
+        })
+        
       } else {
-        console.log('No user in storage. Creating a new one...')
+        console.log('No user id in storage. Creating a new one...')
         const _user = await postUser()
 
         if (_user) {
           console.log('Saving user', JSON.stringify(_user, '', '\t'))
           setUser(_user)
           setLanguage(_user.language)
-          storeData('user', _user)
+          storeData('user_id', _user.id)
           console.log('Made user', _user.id)
         } else {
           console.log(`Didn't make user`)
@@ -181,7 +195,7 @@ const App = () => {
   };
 
   const getPosition = async () => {
-    await TrackPlayer.getPosition().then(position => {
+    TrackPlayer.getPosition().then(position => {
       setPosition(position);
     }).catch(e => {
       console.error(e)

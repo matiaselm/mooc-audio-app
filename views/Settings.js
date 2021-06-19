@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useContext, useLayoutEffect } from 'react';
 import { FlatList } from 'react-native';
-import { Text, Button, View, Picker, Form, Item, Input, Label } from 'native-base';
+import { Text, Button, View, Picker, Form, Item, Input, Label, Toast } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import axios from 'axios';
-import { API_URL } from '@env';
 import AppContext from '../AppContext';
 import { useTranslation } from 'react-i18next';
 import COLORS from '../assets/colors';
@@ -38,6 +37,7 @@ export default ({ navigation, userName }) => {
             name: input
         }))
         modifyUser(user)
+        Toast.show({ text: 'Muutokset tallennettu', duration: 2000, position: 'bottom', buttonText: t('ok') });
     }
 
     const changeLang = (lang) => {
@@ -72,11 +72,18 @@ export default ({ navigation, userName }) => {
             <Input style={{ flex: 2, backgroundColor: '#FFF', alignSelf: 'center', height: '90%', borderRadius: 8 }} value={input} onChangeText={(text) => setInput(text)} />
         </View>
 
-
-        <Button onPress={save} style={{ alignSelf: 'flex-end', backgroundColor: COLORS.PRIMARY, margin: 4, alignSelf: 'center' }} >
+        <Button onPress={save} style={{ backgroundColor: COLORS.PRIMARY, margin: 8, alignSelf: 'center', widht: '50%' }} >
             <Text>
                 {t('save')}
             </Text>
         </Button>
+
+        <View style={{ paddingVertical: 4, display: 'flex', flexDirection: 'column', height: 100, justifyContent: 'flex-start', borderTopColor: '#dadada', borderTopWidth: 1 }}>
+            <Text style={{ flex: 1 }}>User info: </Text>
+            <Text style={{ flex: 1 }}>Name: {user.name}</Text>
+            <Text style={{ flex: 1 }}>ID: {user.id}</Text>
+            <Text style={{ flex: 1 }}>Language: {prettify(user.language)}</Text>
+        </View>
+
     </View>
 }

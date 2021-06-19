@@ -22,7 +22,7 @@ const useAsyncStorageHooks = () => {
 
     const removeUser = async () => {
         try {
-            await storeData('user', null)
+            await AsyncStorage.removeItem('user')
         } catch (e) {
             console.error(e)
         }
