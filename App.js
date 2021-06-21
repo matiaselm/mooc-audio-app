@@ -9,6 +9,7 @@ import Home from './views/Home';
 import Main from './views/Main';
 import Notes from './views/Notes';
 import Settings from './views/Settings';
+import SpokeStack from './views/SpokeStack';
 import TrackPlayer from 'react-native-track-player';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
@@ -281,6 +282,7 @@ const App = () => {
             <Stack.Screen name="Notes" component={Notes} />
             <Stack.Screen name="Main" component={Main} />
             <Stack.Screen name="Settings" component={Settings} />
+            <Stack.Screen name="SpokeStack" component={SpokeStack} />
           </Stack.Navigator>
         </NavigationContainer>
       </AppContext.Provider>
