@@ -15,6 +15,8 @@ const useVoiceInputHooks = () => {
         partialResults: [],
     })
 
+    const [processing, setProcessing] = useState(false)
+
     const { handleInput } = useVoiceFeedbackHooks();
 
     const onSpeechStart = (e) => {
@@ -51,7 +53,11 @@ const useVoiceInputHooks = () => {
 
     const onSpeechResults = (e) => {
         console.log('onSpeechResults: ', e);
-        handleInput(e.value[0])
+        if(processing === false) {
+            handleInput(e.value[0])
+        } else {
+            setProcessing(false)
+        }
         setVoiceState(prev => ({
             ...prev,
             results: e.value,
@@ -60,6 +66,10 @@ const useVoiceInputHooks = () => {
 
     const onSpeechPartialResults = (e) => {
         console.log('onSpeechPartialResults: ', e);
+        if(e.value?.length > 0) {
+            handleInput(e.value[0])
+            setProcessing(true)
+        }
         setVoiceState(prev => ({
             ...prev,
             partialResults: e.value,

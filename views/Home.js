@@ -81,7 +81,7 @@ const Home = ({ navigation }) => {
             <AudioControls style={{paddingBottom: 0, height: '88%'}}/>
 
             <View style={{ position: 'absolute', display: 'flex', bottom: 16, width: '100%', flexDirection: 'row', height: 60, paddingBottom: 16 }}>
-                <Button block style={{ flex: 2, elevation: 10, borderWidth: 3, borderColor: COLORS.PRIMARY, backgroundColor: COLORS.SECONDARY, borderRadius: 16, margin: 8 }} onPress={() => navigation.push("Notes")}>
+                <Button block style={{ flex: 2, elevation: 10, borderWidth: 3, borderColor: COLORS.PRIMARY, backgroundColor: COLORS.SECONDARY, borderRadius: 16, margin: 8 }} onPress={() => navigation.push("SpokeStack")}>
                     <Icon name={'book-open'} size={26} color={COLORS.PRIMARY} />
                     <Text style={{ color: COLORS.PRIMARY }}>{t('notes')}</Text>
                 </Button>
