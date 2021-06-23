@@ -38,7 +38,8 @@
     "react-native-spokestack": "^6.1.0",
     "react-native-track-player": "^1.2.3",
     "react-native-tts": "^4.1.0",
-    "react-native-unimodules": "^0.14.1",
+    "react-native-unimodules": "^0.12.0",
+    "react-native-update-gradle": "^1.2.0",
     "react-native-vector-icons": "^8.1.0",
     "react-navigation-transitions": "^1.0.12"
   },
