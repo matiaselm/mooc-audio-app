@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API_URL, TOKEN } from '@env';
-console.log('API_URL', API_URL)
+console.log('API_URL  ', API_URL)
 
 export default () => {
     axios.defaults.headers.common = {'Authorization': `bearer ${TOKEN}`}

@@ -20,7 +20,7 @@ const useVoiceInputHooks = () => {
     const { handleInput } = useVoiceFeedbackHooks();
 
     const onSpeechStart = (e) => {
-        //console.log('onSpeechStart: ', e);
+        console.log('onSpeechStart: ', e);
         setVoiceState(prev => ({
             ...prev,
             started: '√',

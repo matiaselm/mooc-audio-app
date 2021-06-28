@@ -9,18 +9,21 @@ import Home from './views/Home';
 import Main from './views/Main';
 import Notes from './views/Notes';
 import Settings from './views/Settings';
-import SpokeStack from './views/SpokeStack';
 import TrackPlayer from 'react-native-track-player';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { fromRight } from 'react-navigation-transitions';
 import Tts from 'react-native-tts';
+import Voice from '@react-native-voice/voice';
 import { useTranslation } from 'react-i18next';
 import useAsyncStorageHooks from './services/asyncStorageHooks';
 import useAxiosHooks from './services/axiosHooks';
+import useVoiceInputHooks from './services/voiceInputHooks';
 import i18n from './services/i18n';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { PorcupineManager } from '@picovoice/porcupine-react-native';
+import RNFS from 'react-native-fs';
 
 const App = () => {
   const [isReady, setIsReady] = useState({ font: false, audio: false, trackPlayer: false })
@@ -30,7 +33,8 @@ const App = () => {
   const [notes, setNotes] = useState([])
   const [position, setPosition] = useState(0)
   const [playing, setPlaying] = useState(false)
-  const [language, setLanguage] = useState('en_EN');
+  const [language, setLanguage] = useState('en_EN')
+  let porcupineManager = null
   const { t, i18n } = useTranslation();
   const languages = ['en_EN', 'fi_FI']
 
@@ -42,11 +46,17 @@ const App = () => {
   const Stack = createStackNavigator();
 
   useEffect(() => {
+    requestRecordAudioPermission();
     initTrackPlayer();
     loadFont();
     loadUser();
     populateQueue();
     initTts();
+    createPorcupineManager();
+
+    return (() => {
+      porcupineManager.delete();
+    })
   }, []);
 
   useEffect(() => {
@@ -99,6 +109,45 @@ const App = () => {
         font: true
       }));
     });
+  }
+
+  const requestRecordAudioPermission = async() => {
+    PermissionsAndroid.request(
+    PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+    {
+        title: 'Microphone Permission',
+        message: 'Can I use your microphone (say yes)',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+    }
+    ).then(granted => {
+      return (granted === PermissionsAndroid.RESULTS.GRANTED)
+    });
+  }
+
+  const createPorcupineManager = async () => {
+    if(porcupineManager === null) {
+      PorcupineManager.fromKeywords(
+        ["blueberry"],
+        detectionCallback).then(pm => {
+          console.log('Porcupine started')
+          porcupineManager = pm
+          porcupineManager.start();
+        }).catch(e => {
+          console.error(e)
+        });
+    }
+  }
+
+  const detectionCallback = async (keywordIndex) => {
+    if (keywordIndex === 0) {
+      let didStop = await porcupineManager.stop();
+      console.log('Blueberry detected!', keywordIndex)
+      Tts.speak('Hi').then(async() => {
+        porcupineManager.start();
+      })
+    }
   }
 
   const initTrackPlayer = async () => {
@@ -282,7 +331,6 @@ const App = () => {
             <Stack.Screen name="Notes" component={Notes} />
             <Stack.Screen name="Main" component={Main} />
             <Stack.Screen name="Settings" component={Settings} />
-            <Stack.Screen name="SpokeStack" component={SpokeStack} />
           </Stack.Navigator>
         </NavigationContainer>
       </AppContext.Provider>
