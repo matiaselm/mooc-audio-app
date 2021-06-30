@@ -1,29 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { PermissionsAndroid, AppState } from 'react-native';
-import { Root, View, Button, Text } from 'native-base';
+import { Root } from 'native-base';
+
 import AppLoading from 'expo-app-loading';
 import AppContext from './AppContext';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
-import Home from './views/Home';
-import Main from './views/Main';
-import Notes from './views/Notes';
-import Settings from './views/Settings';
+
+import Index from './views/Index';
 import TrackPlayer from 'react-native-track-player';
+
 import 'react-native-gesture-handler';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { fromRight } from 'react-navigation-transitions';
+
 import Tts from 'react-native-tts';
-import Voice from '@react-native-voice/voice';
 import { useTranslation } from 'react-i18next';
+import i18n from './services/i18n';
+
 import useAsyncStorageHooks from './services/asyncStorageHooks';
 import useAxiosHooks from './services/axiosHooks';
-import useVoiceInputHooks from './services/voiceInputHooks';
-import i18n from './services/i18n';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import { PorcupineManager } from '@picovoice/porcupine-react-native';
-import RNFS from 'react-native-fs';
 
 const App = () => {
   const [isReady, setIsReady] = useState({ font: false, audio: false, trackPlayer: false })
@@ -34,29 +31,23 @@ const App = () => {
   const [position, setPosition] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [language, setLanguage] = useState('en_EN')
-  let porcupineManager = null
+
   const { t, i18n } = useTranslation();
   const languages = ['en_EN', 'fi_FI']
 
   const [user, setUser] = useState(null)
 
-  const { postUser, modifyUser, getUser, getNotes, getAudio, postNote } = useAxiosHooks();
-  const { storeData, getData, removeUser } = useAsyncStorageHooks();
+  const { postUser, getUser, getNotes, getAudio } = useAxiosHooks();
+  const { storeData, getData } = useAsyncStorageHooks();
 
   const Stack = createStackNavigator();
 
   useEffect(() => {
-    requestRecordAudioPermission();
     initTrackPlayer();
     loadFont();
     loadUser();
     populateQueue();
     initTts();
-    createPorcupineManager();
-
-    return (() => {
-      porcupineManager.delete();
-    })
   }, []);
 
   useEffect(() => {
@@ -111,45 +102,6 @@ const App = () => {
     });
   }
 
-  const requestRecordAudioPermission = async() => {
-    PermissionsAndroid.request(
-    PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-    {
-        title: 'Microphone Permission',
-        message: 'Can I use your microphone (say yes)',
-        buttonNeutral: 'Ask Me Later',
-        buttonNegative: 'Cancel',
-        buttonPositive: 'OK',
-    }
-    ).then(granted => {
-      return (granted === PermissionsAndroid.RESULTS.GRANTED)
-    });
-  }
-
-  const createPorcupineManager = async () => {
-    if(porcupineManager === null) {
-      PorcupineManager.fromKeywords(
-        ["blueberry"],
-        detectionCallback).then(pm => {
-          console.log('Porcupine started')
-          porcupineManager = pm
-          porcupineManager.start();
-        }).catch(e => {
-          console.error(e)
-        });
-    }
-  }
-
-  const detectionCallback = async (keywordIndex) => {
-    if (keywordIndex === 0) {
-      let didStop = await porcupineManager.stop();
-      console.log('Blueberry detected!', keywordIndex)
-      Tts.speak('Hi').then(async() => {
-        porcupineManager.start();
-      })
-    }
-  }
-
   const initTrackPlayer = async () => {
     await TrackPlayer.setupPlayer()
     TrackPlayer.updateOptions({
@@ -195,15 +147,15 @@ const App = () => {
 
   const initTts = async () => {
     try {
-      if(user && user.language) {
+      if (user && user.language) {
         await Tts.setDefaultLanguage(user.language);
       } else {
         await Tts.setDefaultLanguage(language);
       }
-    } catch(e) {
+    } catch (e) {
       console.error(e)
     }
-    
+
     Tts.getInitStatus().then(() => {
       console.log('TTS initialized');
     });
@@ -218,13 +170,13 @@ const App = () => {
         console.log('user_id', user_id)
         console.log('Async storage user id: ', user_id)
         getUser(user_id).then(user => {
-          console.log('Fetch user: ', JSON.stringify(user,'','\t'))
+          console.log('Fetch user: ', JSON.stringify(user, '', '\t'))
           setUser(user)
           setLanguage(user.language ?? 'en_EN')
         }).catch(e => {
           console.error(e)
         })
-        
+
       } else {
         console.log('No user id in storage. Creating a new one...')
         const _user = await postUser()
@@ -327,10 +279,7 @@ const App = () => {
               headerMode: 'screen',
               transitionConfig: fromRight()
             }}>
-            <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="Notes" component={Notes} />
-            <Stack.Screen name="Main" component={Main} />
-            <Stack.Screen name="Settings" component={Settings} />
+              <Stack.Screen name='Index' component={Index} />
           </Stack.Navigator>
         </NavigationContainer>
       </AppContext.Provider>

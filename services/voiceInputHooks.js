@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { PermissionsAndroid, AppState } from 'react-native';
 import AppContext from '../AppContext';
 import Tts from 'react-native-tts';
 import useVoiceFeedbackHooks from './voiceFeedbackHooks';
@@ -15,9 +16,15 @@ const useVoiceInputHooks = () => {
         partialResults: [],
     })
 
-    const [processing, setProcessing] = useState(false)
+    const _stopRecognizing = async () => {
+        try {
+            await Voice.stop();
+        } catch (e) {
+            console.error(e);
+        }
+    };
 
-    const { handleInput } = useVoiceFeedbackHooks();
+    const { handleInput } = useVoiceFeedbackHooks(_stopRecognizing);
 
     const onSpeechStart = (e) => {
         console.log('onSpeechStart: ', e);
@@ -36,7 +43,7 @@ const useVoiceInputHooks = () => {
     };
 
     const onSpeechEnd = (e) => {
-        // console.log('onSpeechEnd: ', e);
+        console.log('onSpeechEnd: ', e);
         setVoiceState(prev => ({
             ...prev,
             end: '√',
@@ -53,10 +60,8 @@ const useVoiceInputHooks = () => {
 
     const onSpeechResults = (e) => {
         console.log('onSpeechResults: ', e);
-        if(processing === false) {
+        if (e.value && e.value[0].length > 0) {
             handleInput(e.value[0])
-        } else {
-            setProcessing(false)
         }
         setVoiceState(prev => ({
             ...prev,
@@ -66,9 +71,8 @@ const useVoiceInputHooks = () => {
 
     const onSpeechPartialResults = (e) => {
         console.log('onSpeechPartialResults: ', e);
-        if(e.value?.length > 0) {
+        if (e.value?.length > 0) {
             handleInput(e.value[0])
-            setProcessing(true)
         }
         setVoiceState(prev => ({
             ...prev,
@@ -97,14 +101,6 @@ const useVoiceInputHooks = () => {
 
         try {
             await Voice.start('fi-FI');
-        } catch (e) {
-            console.error(e);
-        }
-    };
-
-    const _stopRecognizing = async () => {
-        try {
-            await Voice.stop();
         } catch (e) {
             console.error(e);
         }
@@ -148,7 +144,7 @@ const useVoiceInputHooks = () => {
         _stopRecognizing,
         _cancelRecognizing,
         _destroyRecognizer,
-        
+
         voiceState
     }
 }
