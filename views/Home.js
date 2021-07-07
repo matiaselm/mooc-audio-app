@@ -5,11 +5,11 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import AudioControls from '../components/AudioControls';
 import AppContext from '../AppContext';
 import useVoiceInputHooks from '../services/voiceInputHooks';
-import Voice, { SpeechRecognizedEvent, SpeechResultsEvent, SpeechErrorEvent, } from '@react-native-voice/voice';
+
 import { useTranslation } from "react-i18next";
 import COLORS from '../assets/colors';
 
-const Home = ({ navigation }) => {
+const Home = ({ route, navigation }) => {
     const {
         audio,
         setAudio,
@@ -19,7 +19,8 @@ const Home = ({ navigation }) => {
         refresh,
         setRefresh
     } = useContext(AppContext);
-
+    
+    const { _startRecognizing, _stopRecognizing } = route.params;
     const { t } = useTranslation();
 
     useLayoutEffect(() => {
@@ -35,37 +36,6 @@ const Home = ({ navigation }) => {
             )
         })
     }, [navigation, language])
-
-    const {
-        onSpeechStart,
-        onSpeechRecognized,
-        onSpeechEnd,
-        onSpeechError,
-        onSpeechResults,
-        onSpeechPartialResults,
-        onSpeechVolumeChanged,
-
-        _startRecognizing,
-        _stopRecognizing,
-        _cancelRecognizing,
-        _destroyRecognizer,
-
-        voiceState
-    } = useVoiceInputHooks();
-
-    useEffect(() => {
-        Voice.onSpeechStart = onSpeechStart;
-        Voice.onSpeechRecognized = onSpeechRecognized;
-        Voice.onSpeechEnd = onSpeechEnd;
-        Voice.onSpeechError = onSpeechError;
-        Voice.onSpeechResults = onSpeechResults;
-        Voice.onSpeechPartialResults = onSpeechPartialResults;
-        Voice.onSpeechVolumeChanged = onSpeechVolumeChanged;
-
-        return () => {
-            console.log('Home destroyed')
-        }
-    }, [])
 
     useEffect(() => {
         const counter = setInterval(() => {
@@ -90,7 +60,8 @@ const Home = ({ navigation }) => {
                     <Text style={{ color: COLORS.PRIMARY }}></Text>
                 </Button>
             </View>
-
+            
+            
         </View>
     </>
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { ActivityIndicator, View } from 'react-native';
 import { Root } from 'native-base';
 
-import AppLoading from 'expo-app-loading';
 import AppContext from './AppContext';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
@@ -226,13 +226,12 @@ const App = () => {
     }
   }
 
-  const setTrackPlayerAudio = async (id) => {
-    try {
-      await TrackPlayer.skip(id)
+  const setTrackPlayerAudio = (id) => {
+    TrackPlayer.skip(id).then(res => {
       console.log('Changed to track ', id)
-    } catch (e) {
+    }).catch(e => {
       console.log('setTrackPlayerAudio error: ', e.message)
-    }
+    })
   }
 
   const appContextProvider = React.useMemo(() => {
@@ -269,14 +268,13 @@ const App = () => {
     };
   }, [user, audio, queue, notes, position, playing, language, refresh]);
 
-  return !isReady.font ? <AppLoading /> :
+  return !isReady.trackPlayer && !isReady.font ? <View><ActivityIndicator large color='#000' /></View> :
     <Root>
       <AppContext.Provider value={appContextProvider}>
-        <NavigationContainer
-          headerMode={'float'}>
+        <NavigationContainer>
           <Stack.Navigator
             screenOptions={{
-              headerMode: 'screen',
+              headerShown: false,
               transitionConfig: fromRight()
             }}>
               <Stack.Screen name='Index' component={Index} />

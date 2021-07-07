@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
+import { View } from 'react-native';
 
 import useVoiceInputHooks from '../services/voiceInputHooks';
-import usePorcupineManager from '../services/porcupineManager';
 import Voice from '@react-native-voice/voice';
 import Tts from 'react-native-tts';
 
@@ -9,6 +9,8 @@ import Home from './Home';
 import Main from './Main';
 import Notes from './Notes';
 import Settings from './Settings';
+
+import COLORS from '../assets/colors';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import { fromRight } from 'react-navigation-transitions';
@@ -27,39 +29,25 @@ export default ({ navigation }) => {
 
         _startRecognizing,
         _stopRecognizing,
-        _cancelRecognizing,
-        _destroyRecognizer,
+
+        requestRecordAudioPermission,
+        createPorcupineManager,
+        deletePorcupineManager,
 
         voiceState
     } = useVoiceInputHooks();
 
-    const handleVoiceInput = () => {
-        return new Promise((resolve, reject) => {
-            Tts.speak('Hi').then(() => {
-                try {
-                    console.log('Start recognizing')
-                    _startRecognizing();
-                    setTimeout(() => {
-                        _stopRecognizing();
-                        console.log('Stop recognizing')
-                        resolve('Stopped recognizing')
-                    }, 3000);
-                } catch (e) {
-                    reject(e)
-                }
-            })
-        })
-    }
-
-    const {
-        requestRecordAudioPermission,
-        createPorcupineManager,
-        deletePorcupineManager
-    } = usePorcupineManager(handleVoiceInput);
-
     useEffect(() => {
         requestRecordAudioPermission();
         createPorcupineManager();
+
+        Voice.onSpeechStart = onSpeechStart;
+        Voice.onSpeechRecognized = onSpeechRecognized;
+        Voice.onSpeechEnd = onSpeechEnd;
+        Voice.onSpeechError = onSpeechError;
+        Voice.onSpeechResults = onSpeechResults;
+        Voice.onSpeechPartialResults = onSpeechPartialResults;
+        Voice.onSpeechVolumeChanged = onSpeechVolumeChanged;
 
         return (() => {
             console.log('Destroy index :(')
@@ -69,11 +57,14 @@ export default ({ navigation }) => {
     }, []);
 
     return <Stack.Navigator
+        headerMode={'screen'}
         screenOptions={{
-            headerMode: 'screen',
+            headerStyle: {
+                backgroundColor: voiceState?.listening ? COLORS.SECONDARY : '#fff',
+            },
             transitionConfig: fromRight()
         }}>
-        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="Home" component={Home} initialParams={{ _startRecognizing: _startRecognizing, _stopRecognizing: _stopRecognizing }} />
         <Stack.Screen name="Notes" component={Notes} />
         <Stack.Screen name="Main" component={Main} />
         <Stack.Screen name="Settings" component={Settings} />
