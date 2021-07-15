@@ -21,6 +21,10 @@ const useVoiceInputHooks = () => {
         listening: false,
     })
 
+    const { setError } = useContext(AppContext);
+
+    const [porcupineState, setPorcupineState] = useState(false)
+
     const { handleInput } = useVoiceFeedbackHooks();
 
     const handleVoiceInput = () => {
@@ -47,22 +51,7 @@ const useVoiceInputHooks = () => {
             }
         })
     }
-
-    const requestRecordAudioPermission = async () => {
-        PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-            {
-                title: 'Microphone Permission',
-                message: 'Can I use your microphone (say yes)',
-                buttonNeutral: 'Ask Me Later',
-                buttonNegative: 'Cancel',
-                buttonPositive: 'OK',
-            }
-        ).then(granted => {
-            return (granted === PermissionsAndroid.RESULTS.GRANTED)
-        });
-    }
-
+    
     const createPorcupineManager = async () => {
         try {
             if (porcupineManager === null) {
@@ -71,9 +60,11 @@ const useVoiceInputHooks = () => {
                     detectionCallback)
                 console.log('Porcupine started')
                 porcupineManager.start()
+                setPorcupineState(true)
             }
         } catch (e) {
             console.error(e)
+            setError(e)
         }
     }
 
@@ -90,6 +81,7 @@ const useVoiceInputHooks = () => {
                         porcupineManager.start()
                     }).catch(e => {
                         console.error(e)
+                        setError(e)
                     }).finally(() => {
 
                     });
@@ -98,13 +90,32 @@ const useVoiceInputHooks = () => {
         }
     }
 
-    const deletePorcupineManager = () => {
-        if (porcupineManager != null) {
+    const deletePorcupineManager = async () => {
+        if(porcupineManager != null && typeof porcupineManager != 'undefined') {
             try {
-                porcupineManager.destroy();
+                let didStop = await porcupineManager.stop();
+                setPorcupineState(false)
+                if(didStop && porcupineManager != null && typeof porcupineManager != 'undefined') {
+                    porcupineManager.destroy();
+                    console.log('porcupine deleted')
+                }
             } catch (e) {
-                // console.log(e)
+                console.error(e)
+                setError(e)
             }
+        } else {
+            console.log('type of porcupinemanager', typeof porcupineManager)
+        }
+    }
+
+    const stopPorcupineManager = () => {
+        if (porcupineManager != null && typeof porcupineManager != 'undefined') {
+            porcupineManager.stop().then(didStop => {
+                setPorcupineState(false)
+            }).catch(e => {
+                console.error(e)
+                setError(e)
+            });
         }
     }
 
@@ -117,6 +128,7 @@ const useVoiceInputHooks = () => {
             }))
         } catch (e) {
             console.error(e);
+            setError(e)
         }
     };
 
@@ -150,6 +162,7 @@ const useVoiceInputHooks = () => {
 
     const onSpeechError = (e) => {
         console.log('onSpeechError: ', e);
+        setError('onSpeechError: ' + e.error.message)
         setVoiceState(prev => ({
             ...prev,
             error: JSON.stringify(e.error),
@@ -199,7 +212,9 @@ const useVoiceInputHooks = () => {
     };
 
     const _startRecognizing = async () => {
-        porcupineManager.stop()
+        if(porcupineManager) {
+            porcupineManager.stop()
+        }
         setVoiceState({
             recognized: '',
             pitch: '',
@@ -227,6 +242,7 @@ const useVoiceInputHooks = () => {
             }));
         } catch (e) {
             console.error(e);
+            setError(e)
         }
     };
 
@@ -235,6 +251,7 @@ const useVoiceInputHooks = () => {
             await Voice.destroy();
         } catch (e) {
             console.error(e);
+            setError(e)
         }
         setVoiceState({
             recognized: '',
@@ -264,7 +281,9 @@ const useVoiceInputHooks = () => {
 
         createPorcupineManager,
         deletePorcupineManager,
-        requestRecordAudioPermission,
+        stopPorcupineManager,
+
+        porcupineState,
 
         voiceState
     }

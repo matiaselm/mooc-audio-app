@@ -8,6 +8,11 @@
     "createNote": "Create note",
     "pleaseWrite": "Please write something before trying to save",
     "ok": "Okay",
+    "showErrors": "Show errors",
+
+    "requestVoicePermission": "Request microphone permission",
+    "deletePorcupineManager": "Stop listening to wakeword",
+    "createPorcupineManager": "Start listening to wakeword",
     "commands": {
         "hi": "hi",
         "hello": "hello",

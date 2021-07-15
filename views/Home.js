@@ -8,6 +8,7 @@ import useVoiceInputHooks from '../services/voiceInputHooks';
 
 import { useTranslation } from "react-i18next";
 import COLORS from '../assets/colors';
+import { NavigationHelpersContext } from '@react-navigation/native';
 
 const Home = ({ route, navigation }) => {
     const {

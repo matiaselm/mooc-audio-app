@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { View } from 'react-native';
 
 import useVoiceInputHooks from '../services/voiceInputHooks';
 import Voice from '@react-native-voice/voice';
 import Tts from 'react-native-tts';
+
+import AppContext from '../AppContext';
 
 import Home from './Home';
 import Main from './Main';
@@ -18,6 +20,8 @@ import { fromRight } from 'react-navigation-transitions';
 export default ({ navigation }) => {
     const Stack = createStackNavigator();
 
+    const { setError } = useContext(AppContext);
+
     const {
         onSpeechStart,
         onSpeechRecognized,
@@ -30,17 +34,12 @@ export default ({ navigation }) => {
         _startRecognizing,
         _stopRecognizing,
 
-        requestRecordAudioPermission,
-        createPorcupineManager,
         deletePorcupineManager,
 
         voiceState
     } = useVoiceInputHooks();
 
     useEffect(() => {
-        requestRecordAudioPermission();
-        createPorcupineManager();
-
         Voice.onSpeechStart = onSpeechStart;
         Voice.onSpeechRecognized = onSpeechRecognized;
         Voice.onSpeechEnd = onSpeechEnd;
@@ -51,7 +50,12 @@ export default ({ navigation }) => {
 
         return (() => {
             console.log('Destroy index :(')
-            deletePorcupineManager();
+            try {
+                deletePorcupineManager();
+            } catch (e) {
+                console.error(e)
+                setError(e)
+            }
             Voice.destroy().then(Voice.removeAllListeners);
         })
     }, []);
@@ -62,7 +66,7 @@ export default ({ navigation }) => {
             headerStyle: {
                 backgroundColor: voiceState?.listening ? COLORS.SECONDARY : '#fff',
             },
-            transitionConfig: fromRight()
+            transitionConfig: fromRight(),
         }}>
         <Stack.Screen name="Home" component={Home} initialParams={{ _startRecognizing: _startRecognizing, _stopRecognizing: _stopRecognizing }} />
         <Stack.Screen name="Notes" component={Notes} />

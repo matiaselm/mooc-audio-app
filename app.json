@@ -10,6 +10,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "plugins": [
+      "@react-native-voice/voice"
+    ],
     "updates": {
       "fallbackToCacheTimeout": 0
     },

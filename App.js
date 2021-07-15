@@ -31,6 +31,8 @@ const App = () => {
   const [position, setPosition] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [language, setLanguage] = useState('en_EN')
+  const [errors, setErrors] = useState([])
+  const [error, setError] = useState(null)
 
   const { t, i18n } = useTranslation();
   const languages = ['en_EN', 'fi_FI']
@@ -51,8 +53,25 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    let temp = errors
+    temp.push(error)
+    
+    if(temp.length > 5) {
+      temp.shift()
+    }
+    
+    setErrors(temp)
+  }, [error])
+
+  useEffect(() => {
     populateQueue();
   }, [refresh])
+
+  useEffect(() => {
+    if(user && user.language) {
+      Tts.setDefaultLanguage(user.language)
+    }
+  }, [user])
 
   useEffect(() => {
     console.log('USER', JSON.stringify(user))
@@ -141,6 +160,7 @@ const App = () => {
       }));
       setAudio(audioList[0])
     } catch (e) {
+      setError('initTrackPlayer error: ' + e.message)
       console.error('initTrackPlayer error', e.message)
     }
   }
@@ -153,6 +173,7 @@ const App = () => {
         await Tts.setDefaultLanguage(language);
       }
     } catch (e) {
+      setError(e)
       console.error(e)
     }
 
@@ -174,6 +195,7 @@ const App = () => {
           setUser(user)
           setLanguage(user.language ?? 'en_EN')
         }).catch(e => {
+          setError(e)
           console.error(e)
         })
 
@@ -192,6 +214,7 @@ const App = () => {
         }
       }
     } catch (e) {
+      setError(e)
       console.error(e)
     }
   };
@@ -200,6 +223,7 @@ const App = () => {
     TrackPlayer.getPosition().then(position => {
       setPosition(position);
     }).catch(e => {
+      setError(e)
       console.error(e)
     });
   }
@@ -228,8 +252,8 @@ const App = () => {
 
   const setTrackPlayerAudio = (id) => {
     TrackPlayer.skip(id).then(res => {
-      console.log('Changed to track ', id)
     }).catch(e => {
+      setError('setTrackPlayerAudio error: ' + e.message)
       console.log('setTrackPlayerAudio error: ', e.message)
     })
   }
@@ -264,11 +288,16 @@ const App = () => {
 
       language: language,
       setLanguage: setLanguage,
-      languages: languages
-    };
-  }, [user, audio, queue, notes, position, playing, language, refresh]);
+      languages: languages,
 
-  return !isReady.trackPlayer && !isReady.font ? <View><ActivityIndicator large color='#000' /></View> :
+      error: error,
+      setError: setError,
+
+      errors: errors
+    };
+  }, [user, audio, queue, notes, position, playing, language, refresh, error, errors]);
+
+  return !isReady.font ? <View><ActivityIndicator large color='#000' /></View> :
     <Root>
       <AppContext.Provider value={appContextProvider}>
         <NavigationContainer>

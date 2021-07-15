@@ -8,6 +8,11 @@
     "createNote": "Luo muistiinpano",
     "pleaseWrite": "Kirjoitathan jotain ennen tallennusta",
     "ok": "Selvä",
+    "showErrors": "Näytä virhelogi",
+    
+    "requestVoicePermission": "Pyydä mikin käyttö-oikeutta",
+    "deletePorcupineManager": "Lopeta automaattinen kuuntelu",
+    "createPorcupineManager": "Aloita automaattinen kuuntelu",
     "commands": {
         "hi": "moi",
         "hello": "moi",
