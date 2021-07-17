@@ -4,7 +4,7 @@ import { Container, Text, Content, Picker, Spinner, Button, View } from 'native-
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AudioControls from '../components/AudioControls';
 import AppContext from '../AppContext';
-import useVoiceInputHooks from '../services/voiceInputHooks';
+import IndexContext from '../IndexContext';
 
 import { useTranslation } from "react-i18next";
 import COLORS from '../assets/colors';
@@ -21,7 +21,7 @@ const Home = ({ route, navigation }) => {
         setRefresh
     } = useContext(AppContext);
     
-    const { _startRecognizing, _stopRecognizing } = route.params;
+    const { _startRecognizing, _stopRecognizing } = useContext(IndexContext);
     const { t } = useTranslation();
 
     useLayoutEffect(() => {

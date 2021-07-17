@@ -1,14 +1,14 @@
-import React, { useContext, useState, useCallback } from 'react';
-import { PermissionsAndroid, AppState } from 'react-native';
+import { useContext, useState } from 'react';
+
 import AppContext from '../AppContext';
-import Tts from 'react-native-tts';
-import useVoiceFeedbackHooks from './voiceFeedbackHooks';
-import Voice, { SpeechRecognizedEvent, SpeechResultsEvent, SpeechErrorEvent, } from '@react-native-voice/voice';
 import { PorcupineManager } from '@picovoice/porcupine-react-native';
-import { useEffect } from 'react/cjs/react.production.min';
+
+import useVoiceFeedbackHooks from './voiceFeedbackHooks';
+import Voice from '@react-native-voice/voice';
+import Tts from 'react-native-tts';
 
 let porcupineManager = null;
-let recognizing = 0;
+let listening = false;
 const useVoiceInputHooks = () => {
     const [voiceState, setVoiceState] = useState({
         recognized: '',
@@ -21,17 +21,16 @@ const useVoiceInputHooks = () => {
         listening: false,
     })
 
-    const { setError } = useContext(AppContext);
+    const { setError, language } = useContext(AppContext);
 
     const [porcupineState, setPorcupineState] = useState(false)
 
     const { handleInput } = useVoiceFeedbackHooks();
 
     const handleVoiceInput = () => {
-        recognizing = recognizing++
-        console.log('recognizing', recognizing)
         return new Promise((resolve, reject) => {
-            if (voiceState.listening == false && recognizing < 1) {
+            if (voiceState.listening == false && listening == false) {
+                listening = true
                 Tts.speak('Hi').then(() => {
                     try {
                         console.log('Start recognizing')
@@ -41,6 +40,7 @@ const useVoiceInputHooks = () => {
                             console.log('Stop recognizing')
                             recognizing = 0
                             resolve(true)
+                            listening = false
                         }, 3000);
                     } catch (e) {
                         reject(e)
@@ -131,8 +131,6 @@ const useVoiceInputHooks = () => {
             setError(e)
         }
     };
-
-    
 
     const onSpeechStart = (e) => {
         console.log('onSpeechStart: ', e);
@@ -227,7 +225,7 @@ const useVoiceInputHooks = () => {
         });
 
         try {
-            await Voice.start('fi-FI');
+            await Voice.start(language);
         } catch (e) {
             console.error(e);
         }
@@ -284,6 +282,7 @@ const useVoiceInputHooks = () => {
         stopPorcupineManager,
 
         porcupineState,
+        setPorcupineState,
 
         voiceState
     }

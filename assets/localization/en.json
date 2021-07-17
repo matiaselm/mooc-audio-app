@@ -13,6 +13,14 @@
     "requestVoicePermission": "Request microphone permission",
     "deletePorcupineManager": "Stop listening to wakeword",
     "createPorcupineManager": "Start listening to wakeword",
+
+    "porcupineInfoText": "After enabling keyword listening, say 'blueberry' to your phone and it should detect it. Then say whichever command and it should respond accordingly",
+
+    "deleteTrack": "Delete trackplayer instance",
+    "deleteTrackInfo": "If you can't shutdown audio playback",
+
+    "refresh": "Refresh",
+    "refreshInfo": "If you can't see tracks",
     "commands": {
         "hi": "hi",
         "hello": "hello",

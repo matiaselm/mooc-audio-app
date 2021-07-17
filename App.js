@@ -11,10 +11,6 @@ import TrackPlayer from 'react-native-track-player';
 
 import 'react-native-gesture-handler';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { fromRight } from 'react-navigation-transitions';
-
 import Tts from 'react-native-tts';
 import { useTranslation } from 'react-i18next';
 import i18n from './services/i18n';
@@ -42,7 +38,6 @@ const App = () => {
   const { postUser, getUser, getNotes, getAudio } = useAxiosHooks();
   const { storeData, getData } = useAsyncStorageHooks();
 
-  const Stack = createStackNavigator();
 
   useEffect(() => {
     initTrackPlayer();
@@ -300,15 +295,7 @@ const App = () => {
   return !isReady.font ? <View><ActivityIndicator large color='#000' /></View> :
     <Root>
       <AppContext.Provider value={appContextProvider}>
-        <NavigationContainer>
-          <Stack.Navigator
-            screenOptions={{
-              headerShown: false,
-              transitionConfig: fromRight()
-            }}>
-              <Stack.Screen name='Index' component={Index} />
-          </Stack.Navigator>
-        </NavigationContainer>
+        <Index />
       </AppContext.Provider>
     </Root>
 }

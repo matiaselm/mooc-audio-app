@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { RecyclerViewBackedScrollView, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { Container, Header, Body, Title, Left, Right, Text, Content, Footer, FooterTab, Button, View, Icon, Picker } from 'native-base';
-import TrackPlayer from 'react-native-track-player';
+import React, { useContext } from 'react';
+import { StyleSheet, Image } from 'react-native';
+import { Text, Button, View, Icon, Picker } from 'native-base';
 import ProgressBar from './ProgressBar';
 import AppContext from '../AppContext';
 import COLORS from '../assets/colors';
@@ -83,10 +82,6 @@ const AudioControls = ({ style }) => {
         </View>
         <View style={{flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingVertical: 30 }}>
             <View style={[styles.buttonGroup, {flex: 2}]}>
-                { <TouchableOpacity icon style={styles.lightButton} onPress={ populateQueue }>
-                    <Icon name='sync' style={{color:'#006064'}} />
-                </TouchableOpacity> }
-
                 { audio ? <Button icon style={styles.audioButton} onPress={() => skip('backward')}>
                     <Icon name='play-back-sharp' />
                 </Button> : <Button icon style={ styles.audioButton } onPress={ populateQueue } >
@@ -104,10 +99,6 @@ const AudioControls = ({ style }) => {
                 { audio && <Button icon style={styles.audioButton} onPress={() => skip('forward')}>
                     <Icon name='play-forward-sharp' />
                 </Button> }
-
-                { audio && <TouchableOpacity icon style={styles.lightButton} onPress={() => TrackPlayer.destroy()}>
-                    <Icon name='trash' style={{color:'#006064'}} />
-                </TouchableOpacity> }
 
             </View>
 

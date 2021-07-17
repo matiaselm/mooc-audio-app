@@ -13,6 +13,14 @@
     "requestVoicePermission": "Pyydä mikin käyttö-oikeutta",
     "deletePorcupineManager": "Lopeta automaattinen kuuntelu",
     "createPorcupineManager": "Aloita automaattinen kuuntelu",
+    
+    "porcupineInfoText": "Laitettuasi automaattisen kuuntelun päälle, sano 'blueberry' niin sovelluksen pitäisi tunnistaa se. Tämän jälkeen voit sanoa minkä tahansa komennon ja puhelimen pitäisi toimia sen mukaan",
+
+    "deleteTrack": "Sammuta äänentoisto",
+    "deleteTrackInfo": "Jos soitin ei muuten sammu",
+
+    "refresh": "Lataa uudestaan",
+    "refreshInfo": "Jos et näe audio-jaksoja",
     "commands": {
         "hi": "moi",
         "hello": "moi",
